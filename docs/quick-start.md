@@ -18,7 +18,7 @@ const scraper = createScraper()
 
 // Scrape a website
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('title')?.textContent,
     heading: doc.querySelector('h1')?.textContent,
   }),
@@ -35,8 +35,8 @@ Respect server resources with built-in rate limiting:
 ```typescript
 const scraper = createScraper({
   rateLimit: {
-    requestsPerSecond: 2,  // Max 2 requests per second
-    burstSize: 5,          // Allow burst of 5 requests
+    requestsPerSecond: 2, // Max 2 requests per second
+    burstSize: 5, // Allow burst of 5 requests
   },
 })
 ```
@@ -49,8 +49,8 @@ Speed up repeated requests with caching:
 const scraper = createScraper({
   cache: {
     enabled: true,
-    ttl: 60000,    // Cache for 60 seconds
-    maxSize: 100,  // Store up to 100 responses
+    ttl: 60000, // Cache for 60 seconds
+    maxSize: 100, // Store up to 100 responses
   },
 })
 ```
@@ -60,7 +60,7 @@ const scraper = createScraper({
 Use pipelines for complex data extraction:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractProducts = pipeline()
   .step(extractors.structured('.product', {
@@ -68,11 +68,11 @@ const extractProducts = pipeline()
     price: '.product-price',
     image: 'img',
   }))
-  .map('clean', (product) => ({
+  .map('clean', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+    price: Number.parseFloat(product.price.replace(/[^0-9.]/g, '')),
   }))
-  .filter('valid', (products) => products.every(p => p.price > 0))
+  .filter('valid', products => products.every(p => p.price > 0))
 
 const doc = parseHTML(html)
 const result = await extractProducts.execute(doc)
@@ -91,7 +91,7 @@ const urls = [
 ]
 
 const results = await scraper.scrapeMany(urls, {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('h1')?.textContent,
   }),
 }, {
@@ -114,7 +114,7 @@ import { saveExport } from 'ts-web-scraper'
 
 // Scrape data
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     // ... your extraction logic
   }),
 })
@@ -137,7 +137,7 @@ const scraper = createScraper({
 
 // First scrape
 const result1 = await scraper.scrape('https://example.com/price', {
-  extract: (doc) => ({
+  extract: doc => ({
     price: doc.querySelector('.price')?.textContent,
   }),
 })
@@ -145,7 +145,7 @@ console.log(result1.changed) // undefined (no previous data)
 
 // Second scrape
 const result2 = await scraper.scrape('https://example.com/price', {
-  extract: (doc) => ({
+  extract: doc => ({
     price: doc.querySelector('.price')?.textContent,
   }),
 })

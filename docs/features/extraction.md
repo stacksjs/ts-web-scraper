@@ -12,7 +12,7 @@ import { createScraper } from 'ts-web-scraper'
 const scraper = createScraper()
 
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('title')?.textContent,
     headings: Array.from(doc.querySelectorAll('h2')).map(h => h.textContent),
     links: Array.from(doc.querySelectorAll('a')).map(a => a.href),
@@ -26,7 +26,7 @@ Extract all elements matching a selector:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  selector: '.product',  // Extracts all .product elements
+  selector: '.product', // Extracts all .product elements
 })
 
 console.log(result.data) // Array of text content
@@ -70,7 +70,7 @@ const jsonLd = extractors.jsonLd().execute(document)
 Create powerful extraction pipelines:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractProducts = pipeline()
   .step(extractors.structured('.product', {
@@ -78,14 +78,13 @@ const extractProducts = pipeline()
     price: '.product-price',
     rating: '.rating',
   }))
-  .map('clean', (product) => ({
+  .map('clean', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
-    rating: parseFloat(product.rating),
+    price: Number.parseFloat(product.price.replace(/[^0-9.]/g, '')),
+    rating: Number.parseFloat(product.rating),
   }))
-  .filter('valid', (products) =>
-    products.every(p => p.price > 0 && p.rating >= 0)
-  )
+  .filter('valid', products =>
+    products.every(p => p.price > 0 && p.rating >= 0))
   .sort('by-price', (a, b) => a.price - b.price)
 
 const result = await extractProducts.execute(document)
@@ -102,7 +101,7 @@ Transform data:
 ```typescript
 const pipeline = pipeline()
   .step(extractors.text('.price'))
-  .map('parse', (prices) => prices.map(p => parseFloat(p.replace('$', ''))))
+  .map('parse', prices => prices.map(p => Number.parseFloat(p.replace('$', ''))))
 ```
 
 ### Filter
@@ -112,7 +111,7 @@ Remove unwanted data:
 ```typescript
 const pipeline = pipeline()
   .step(extractors.structured('.item', { id: '.id', active: '.status' }))
-  .filter('active-only', (items) => items.filter(i => i.active === 'true'))
+  .filter('active-only', items => items.filter(i => i.active === 'true'))
 ```
 
 ### Sort
@@ -131,9 +130,9 @@ Validate extracted data:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('.title')?.textContent,
-    price: parseFloat(doc.querySelector('.price')?.textContent || '0'),
+    price: Number.parseFloat(doc.querySelector('.price')?.textContent || '0'),
   }),
   validate: {
     title: { type: 'string', required: true, minLength: 1 },

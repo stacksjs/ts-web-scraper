@@ -12,7 +12,7 @@ import { createScraper } from 'ts-web-scraper'
 const scraper = createScraper({
   cache: {
     enabled: true,
-    ttl: 60000,  // Cache for 60 seconds (1 minute)
+    ttl: 60000, // Cache for 60 seconds (1 minute)
   },
 })
 
@@ -33,8 +33,8 @@ Limit cache memory usage:
 const scraper = createScraper({
   cache: {
     enabled: true,
-    ttl: 300000,      // 5 minutes
-    maxSize: 100,     // Store max 100 responses
+    ttl: 300000, // 5 minutes
+    maxSize: 100, // Store max 100 responses
   },
 })
 ```
@@ -79,7 +79,7 @@ console.log(result1.changed) // undefined (no previous data)
 
 // Second scrape (from cache)
 const result2 = await scraper.scrape('https://example.com')
-console.log(result2.cached)  // true
+console.log(result2.cached) // true
 console.log(result2.changed) // false (content same as cache)
 ```
 
@@ -118,7 +118,8 @@ const result = await scraper.scrape('https://example.com')
 if (!result.cached) {
   console.log('Fresh data fetched')
   // Process new data
-} else {
+}
+else {
   console.log('Using cached data')
   // Skip processing if needed
 }
@@ -153,7 +154,7 @@ Caching reduces rate limit impact:
 const scraper = createScraper({
   cache: {
     enabled: true,
-    ttl: 300000,  // 5 minutes
+    ttl: 300000, // 5 minutes
   },
   rateLimit: {
     requestsPerSecond: 1,
@@ -174,12 +175,12 @@ Choose TTL based on content freshness needs:
 ```typescript
 // Static content - long TTL
 const staticScraper = createScraper({
-  cache: { enabled: true, ttl: 3600000 },  // 1 hour
+  cache: { enabled: true, ttl: 3600000 }, // 1 hour
 })
 
 // Dynamic content - short TTL
 const dynamicScraper = createScraper({
-  cache: { enabled: true, ttl: 30000 },  // 30 seconds
+  cache: { enabled: true, ttl: 30000 }, // 30 seconds
 })
 
 // Real-time content - no cache
@@ -201,13 +202,13 @@ const realtimeScraper = createScraper({
 const scraper = createScraper({
   cache: {
     enabled: true,
-    ttl: 120000,      // 2 minutes
-    maxSize: 200,     // 200 pages
+    ttl: 120000, // 2 minutes
+    maxSize: 200, // 200 pages
   },
   rateLimit: {
     requestsPerSecond: 2,
   },
-  monitor: true,  // Track cache effectiveness
+  monitor: true, // Track cache effectiveness
 })
 ```
 

@@ -11,12 +11,12 @@ import { createScraper } from 'ts-web-scraper'
 
 const scraper = createScraper({
   trackChanges: true,
-  cache: { enabled: true },  // Required for change tracking
+  cache: { enabled: true }, // Required for change tracking
 })
 
 // First scrape
 const result1 = await scraper.scrape('https://example.com/price', {
-  extract: (doc) => ({
+  extract: doc => ({
     price: doc.querySelector('.price')?.textContent,
   }),
 })
@@ -24,7 +24,7 @@ console.log(result1.changed) // undefined (no previous data)
 
 // Second scrape
 const result2 = await scraper.scrape('https://example.com/price', {
-  extract: (doc) => ({
+  extract: doc => ({
     price: doc.querySelector('.price')?.textContent,
   }),
 })
@@ -38,14 +38,14 @@ Monitor price changes:
 ```typescript
 const scraper = createScraper({
   trackChanges: true,
-  cache: { enabled: true, ttl: 300000 },  // 5 minutes
+  cache: { enabled: true, ttl: 300000 }, // 5 minutes
 })
 
 async function checkPrice(url: string) {
   const result = await scraper.scrape(url, {
-    extract: (doc) => ({
+    extract: doc => ({
       name: doc.querySelector('.product-name')?.textContent,
-      price: parseFloat(doc.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0'),
+      price: Number.parseFloat(doc.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0'),
       inStock: doc.querySelector('.in-stock') !== null,
     }),
   })
@@ -72,8 +72,8 @@ Use ContentTracker for advanced tracking:
 import { ContentTracker } from 'ts-web-scraper'
 
 const tracker = new ContentTracker({
-  maxSnapshots: 10,           // Keep last 10 snapshots
-  storageDir: './snapshots',  // Persist to disk
+  maxSnapshots: 10, // Keep last 10 snapshots
+  storageDir: './snapshots', // Persist to disk
 })
 
 // Take snapshot
@@ -166,8 +166,8 @@ Track only specific fields:
 ```typescript
 async function monitorPrice(url: string) {
   const result = await scraper.scrape(url, {
-    extract: (doc) => ({
-      price: parseFloat(
+    extract: doc => ({
+      price: Number.parseFloat(
         doc.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0'
       ),
     }),
@@ -196,7 +196,7 @@ const scraper = createScraper({
 
 async function watchUrl(url: string, onChanged: (data: any) => void) {
   const result = await scraper.scrape(url, {
-    extract: (doc) => ({
+    extract: doc => ({
       title: doc.querySelector('h1')?.textContent,
       content: doc.querySelector('.content')?.textContent,
     }),
@@ -231,7 +231,7 @@ Store snapshots persistently:
 ```typescript
 const tracker = new ContentTracker({
   maxSnapshots: 50,
-  storageDir: './data/snapshots',  // Persists to disk
+  storageDir: './data/snapshots', // Persists to disk
 })
 
 // Snapshots survive process restarts
@@ -252,7 +252,7 @@ const scraper = createScraper({
 })
 
 for await (const page of scraper.scrapeAll('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     items: Array.from(doc.querySelectorAll('.item')).map(item => ({
       id: item.getAttribute('data-id'),
       title: item.querySelector('.title')?.textContent,
@@ -283,7 +283,7 @@ const scraper = createScraper({
   trackChanges: true,
   cache: {
     enabled: true,
-    ttl: 300000,  // 5 minutes
+    ttl: 300000, // 5 minutes
   },
   maxSnapshots: 20,
 })
@@ -293,11 +293,11 @@ async function monitorProduct(url: string) {
     extract: (doc) => {
       // Extract only relevant fields (ignore timestamps, ads, etc.)
       return {
-        price: parseFloat(
+        price: Number.parseFloat(
           doc.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0'
         ),
         inStock: doc.querySelector('.in-stock') !== null,
-        rating: parseFloat(
+        rating: Number.parseFloat(
           doc.querySelector('.rating')?.textContent || '0'
         ),
       }

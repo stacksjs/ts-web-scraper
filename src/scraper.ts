@@ -5,7 +5,7 @@
  * Uses ONLY Bun native APIs - no external dependencies!
  */
 
-import type { CachedData, CacheOptions } from './cache'
+import type { CacheOptions } from './cache'
 import type { CookieJarOptions } from './cookies'
 import type { DiffResult } from './diff'
 import type { ExportFormat, ExportOptions } from './export'
@@ -15,7 +15,7 @@ import type { PaginationInfo } from './pagination'
 import type { RateLimiterOptions } from './rate-limiter'
 import type { RetryOptions } from './retry'
 import type { RobotsOptions } from './robots'
-import type { Schema, ValidationResult } from './validation'
+import type { Schema } from './validation'
 import type { Document } from './web-scraper'
 import { ScraperCache } from './cache'
 import { scrapeClientSide } from './client-side-scraper'

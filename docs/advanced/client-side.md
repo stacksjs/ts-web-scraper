@@ -39,7 +39,8 @@ if (isCSR) {
   console.log('Site uses client-side rendering')
   // Use client-side scraper
   const data = await scrapeClientSide('https://example.com')
-} else {
+}
+else {
   console.log('Site uses server-side rendering')
   // Use regular scraper
   const scraper = createScraper()
@@ -79,11 +80,11 @@ Analyze JavaScript to find API endpoints:
 ```typescript
 const result = await scrapeClientSide('https://example.com', {
   analyzeJavaScript: true,
-  maxJSFiles: 10,  // Analyze up to 10 JS files
+  maxJSFiles: 10, // Analyze up to 10 JS files
 })
 
 console.log('Found API endpoints:')
-result.apiEndpoints.forEach(endpoint => {
+result.apiEndpoints.forEach((endpoint) => {
   console.log('  -', endpoint)
 })
 
@@ -100,13 +101,13 @@ Customize client-side scraping:
 
 ```typescript
 const result = await scrapeClientSide('https://example.com', {
-  timeout: 30000,                 // 30 second timeout
-  userAgent: 'MyBot/1.0',        // Custom user agent
-  analyzeJavaScript: true,       // Analyze JS bundles
-  findEmbeddedData: true,        // Extract embedded data
-  reconstructAPI: true,          // Fetch discovered APIs
-  maxJSFiles: 5,                 // Max JS files to analyze
-  headers: {                     // Custom headers
+  timeout: 30000, // 30 second timeout
+  userAgent: 'MyBot/1.0', // Custom user agent
+  analyzeJavaScript: true, // Analyze JS bundles
+  findEmbeddedData: true, // Extract embedded data
+  reconstructAPI: true, // Fetch discovered APIs
+  maxJSFiles: 5, // Max JS files to analyze
+  headers: { // Custom headers
     'Accept-Language': 'en-US',
   },
 })
@@ -184,8 +185,8 @@ Scrape authenticated pages:
 ```typescript
 const result = await scrapeClientSide('https://app.example.com/dashboard', {
   headers: {
-    'Cookie': 'session=abc123; auth_token=xyz789',
-    'Authorization': 'Bearer your-token-here',
+    Cookie: 'session=abc123; auth_token=xyz789',
+    Authorization: 'Bearer your-token-here',
   },
 })
 
@@ -212,7 +213,7 @@ console.log('All meta:', result.meta)
 Use both approaches together:
 
 ```typescript
-import { createScraper, scrapeClientSide, isClientSideRendered } from 'ts-web-scraper'
+import { createScraper, isClientSideRendered, scrapeClientSide } from 'ts-web-scraper'
 
 async function smartScrape(url: string) {
   // Detect rendering method
@@ -226,11 +227,12 @@ async function smartScrape(url: string) {
       apis: result.apiResponses,
       meta: result.meta,
     }
-  } else {
+  }
+  else {
     // Server-side rendered - use regular scraper
     const scraper = createScraper()
     const result = await scraper.scrape(url, {
-      extract: (doc) => ({
+      extract: doc => ({
         title: doc.querySelector('h1')?.textContent,
         content: doc.querySelector('.content')?.textContent,
       }),
@@ -310,8 +312,8 @@ try {
   if (Object.keys(result.embeddedData).length === 0) {
     console.warn('No embedded data found')
   }
-
-} catch (error) {
+}
+catch (error) {
   console.error('Client-side scraping failed:', error)
   // Fall back to regular scraping
 }
@@ -356,12 +358,12 @@ const result = await scrapeClientSide('https://example.com', {
   maxJSFiles: 5,
   analyzeJavaScript: true,
   findEmbeddedData: true,
-  reconstructAPI: false,  // Skip if you only need structure
+  reconstructAPI: false, // Skip if you only need structure
 })
 
 // Priority order: embedded -> API -> meta
-const data =
-  Object.keys(result.embeddedData).length > 0
+const data
+  = Object.keys(result.embeddedData).length > 0
     ? result.embeddedData
     : result.apiResponses.size > 0
       ? Object.fromEntries(result.apiResponses)

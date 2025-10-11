@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'bun:test'
 import { createExporter, exportData, saveExport } from '../src/export'
-import { parseHTML } from '../src/web-scraper'
 
 describe('Export Formats', () => {
   const sampleData = {

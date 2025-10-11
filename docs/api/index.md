@@ -134,18 +134,18 @@ scraper.clearSession()
 Create a data extraction and transformation pipeline.
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extract = pipeline()
   .step(extractors.structured('.item', {
     name: '.name',
     price: '.price'
   }))
-  .map('parse', (item) => ({
+  .map('parse', item => ({
     ...item,
-    price: parseFloat(item.price)
+    price: Number.parseFloat(item.price)
   }))
-  .filter('valid', (items) => items.every(i => i.price > 0))
+  .filter('valid', items => items.every(i => i.price > 0))
   .sort('by-price', (a, b) => a.price - b.price)
 
 const result = await extract.execute(document)
@@ -331,7 +331,8 @@ const result = validate(data, {
 
 if (result.valid) {
   console.log(result.data) // Validated data
-} else {
+}
+else {
   console.log(result.errors) // Validation errors
 }
 ```

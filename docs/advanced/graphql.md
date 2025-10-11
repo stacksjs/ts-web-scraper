@@ -7,8 +7,7 @@ Detect and interact with GraphQL APIs for efficient data extraction.
 Automatically detect GraphQL endpoints:
 
 ```typescript
-import { detectGraphQL } from 'ts-web-scraper'
-import { createScraper } from 'ts-web-scraper'
+import { createScraper, detectGraphQL } from 'ts-web-scraper'
 
 const scraper = createScraper()
 
@@ -21,7 +20,7 @@ const detection = detectGraphQL(result.html, result.url)
 console.log('Has GraphQL:', detection.hasGraphQL)
 console.log('Endpoints found:', detection.endpoints.length)
 
-detection.endpoints.forEach(endpoint => {
+detection.endpoints.forEach((endpoint) => {
   console.log('  URL:', endpoint.url)
   console.log('  Method:', endpoint.method)
 })
@@ -38,7 +37,8 @@ const isValid = await verifyGraphQLEndpoint('https://api.example.com/graphql')
 
 if (isValid) {
   console.log('Valid GraphQL endpoint')
-} else {
+}
+else {
   console.log('Not a GraphQL endpoint')
 }
 ```
@@ -54,7 +54,7 @@ const client = new GraphQLClient({
   endpoint: 'https://api.example.com/graphql',
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer your-token',
+    Authorization: 'Bearer your-token',
   },
 })
 
@@ -80,7 +80,8 @@ const response = await client.query({
 
 if (response.data) {
   console.log('User:', response.data.user)
-} else if (response.errors) {
+}
+else if (response.errors) {
   console.error('GraphQL errors:', response.errors)
 }
 ```
@@ -182,10 +183,10 @@ console.log('Mutation type:', schema?.mutationType?.name)
 console.log('Types:', schema?.types?.length)
 
 // Explore available types
-schema?.types?.forEach(type => {
+schema?.types?.forEach((type) => {
   console.log(`Type: ${type.name}`)
   if (type.fields) {
-    type.fields.forEach(field => {
+    type.fields.forEach((field) => {
       console.log(`  - ${field.name}: ${field.type.name}`)
     })
   }
@@ -207,7 +208,8 @@ const isHealthy = await client.healthCheck()
 
 if (isHealthy) {
   console.log('GraphQL endpoint is healthy')
-} else {
+}
+else {
   console.error('GraphQL endpoint is down')
 }
 ```
@@ -243,7 +245,7 @@ const jsCode = `
 const queries = extractGraphQLQueries(jsCode)
 
 console.log('Found queries:', queries.length)
-queries.forEach(query => {
+queries.forEach((query) => {
   console.log(query)
 })
 ```
@@ -253,8 +255,7 @@ queries.forEach(query => {
 Automatic detection and extraction:
 
 ```typescript
-import { createScraper } from 'ts-web-scraper'
-import { detectGraphQL, GraphQLClient } from 'ts-web-scraper'
+import { createScraper, detectGraphQL, GraphQLClient } from 'ts-web-scraper'
 
 const scraper = createScraper()
 
@@ -291,7 +292,8 @@ if (detection.hasGraphQL && detection.endpoints.length > 0) {
     })
 
     console.log('Products:', response.data?.products)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('GraphQL query failed:', error)
   }
 }
@@ -336,7 +338,7 @@ import { GraphQLClient } from 'ts-web-scraper'
 
 const client = new GraphQLClient({
   endpoint: 'https://api.example.com/graphql',
-  retries: 3,  // Retry on failure
+  retries: 3, // Retry on failure
 })
 
 const response = await client.query({
@@ -351,7 +353,7 @@ const response = await client.query({
 
 if (response.errors) {
   console.error('GraphQL returned errors:')
-  response.errors.forEach(error => {
+  response.errors.forEach((error) => {
     console.error('  -', error.message)
     if (error.locations) {
       console.error('    at line', error.locations[0].line)
@@ -372,7 +374,7 @@ if (response.data) {
 Analyze query types:
 
 ```typescript
-import { getOperationType, getOperationName } from 'ts-web-scraper'
+import { getOperationName, getOperationType } from 'ts-web-scraper'
 
 const query1 = `
   query GetUser($id: ID!) {
@@ -391,11 +393,11 @@ const query2 = `
   }
 `
 
-console.log('Query 1 type:', getOperationType(query1))  // "query"
-console.log('Query 1 name:', getOperationName(query1))  // "GetUser"
+console.log('Query 1 type:', getOperationType(query1)) // "query"
+console.log('Query 1 name:', getOperationName(query1)) // "GetUser"
 
-console.log('Query 2 type:', getOperationType(query2))  // "mutation"
-console.log('Query 2 name:', getOperationName(query2))  // "UpdateUser"
+console.log('Query 2 type:', getOperationType(query2)) // "mutation"
+console.log('Query 2 name:', getOperationName(query2)) // "UpdateUser"
 ```
 
 ## GET Requests
@@ -407,7 +409,7 @@ import { GraphQLClient } from 'ts-web-scraper'
 
 const client = new GraphQLClient({
   endpoint: 'https://api.example.com/graphql',
-  method: 'GET',  // Use GET instead of POST
+  method: 'GET', // Use GET instead of POST
 })
 
 // Query is encoded in URL parameters
@@ -423,12 +425,7 @@ console.log('Products:', response.data?.products)
 Full GraphQL scraping workflow:
 
 ```typescript
-import { createScraper } from 'ts-web-scraper'
-import {
-  detectGraphQL,
-  verifyGraphQLEndpoint,
-  GraphQLClient,
-} from 'ts-web-scraper'
+import { createScraper, detectGraphQL, GraphQLClient, verifyGraphQLEndpoint } from 'ts-web-scraper'
 
 async function scrapeGraphQLSite(url: string) {
   // 1. Scrape the page
@@ -489,12 +486,13 @@ async function scrapeGraphQLSite(url: string) {
       })
 
       console.log('Available queries:')
-      response.data?.__type?.fields?.forEach(field => {
+      response.data?.__type?.fields?.forEach((field) => {
         console.log(`  - ${field.name}: ${field.description}`)
       })
 
       return { client, schema, endpoint: endpoint.url }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Failed to query endpoint:', error)
     }
   }
@@ -530,8 +528,8 @@ import { GraphQLClient } from 'ts-web-scraper'
 const client = new GraphQLClient({
   endpoint: 'https://api.example.com/graphql',
   method: 'POST',
-  timeout: 30000,    // 30 second timeout
-  retries: 3,        // Retry up to 3 times
+  timeout: 30000, // 30 second timeout
+  retries: 3, // Retry up to 3 times
   headers: {
     'User-Agent': 'MyBot/1.0',
   },

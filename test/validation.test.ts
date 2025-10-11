@@ -1,3 +1,4 @@
+import type { Schema } from '../src/validation'
 import { describe, expect, it } from 'bun:test'
 import {
   assert,
@@ -6,7 +7,6 @@ import {
   validate,
   ValidationErrorCode,
 } from '../src/validation'
-import type { Schema } from '../src/validation'
 
 describe('validate', () => {
   it('should validate string type', () => {
@@ -44,7 +44,7 @@ describe('validate', () => {
       age: { type: 'number' },
     }
 
-    const result = validate({ age: NaN }, schema)
+    const result = validate({ age: Number.NaN }, schema)
     expect(result.valid).toBe(false)
   })
 
@@ -191,7 +191,7 @@ describe('validate', () => {
 
   it('should validate pattern matching', () => {
     const schema: Schema = {
-      username: { type: 'string', pattern: /^[a-zA-Z0-9_]+$/ },
+      username: { type: 'string', pattern: /^\w+$/ },
     }
 
     expect(validate({ username: 'john_doe123' }, schema).valid).toBe(true)

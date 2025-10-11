@@ -15,7 +15,8 @@ const allowed = await canFetch('https://example.com/api/data')
 if (allowed) {
   console.log('URL is allowed by robots.txt')
   // Proceed with scraping
-} else {
+}
+else {
   console.log('URL is disallowed by robots.txt')
   // Skip this URL
 }
@@ -29,7 +30,7 @@ Enable automatic robots.txt checking:
 import { createScraper } from 'ts-web-scraper'
 
 const scraper = createScraper({
-  respectRobotsTxt: true,  // Default: true
+  respectRobotsTxt: true, // Default: true
   userAgent: 'MyBot/1.0',
 })
 
@@ -51,7 +52,7 @@ import { RobotsParser } from 'ts-web-scraper'
 const parser = new RobotsParser({
   respectRobotsTxt: true,
   userAgent: 'BunScraper',
-  cacheTime: 3600000,  // 1 hour
+  cacheTime: 3600000, // 1 hour
   timeout: 5000,
 })
 
@@ -86,7 +87,7 @@ if (delay > 0) {
   const scraper = createScraper({
     respectRobotsTxt: true,
     rateLimit: {
-      requestsPerSecond: 1000 / delay,  // Convert delay to rate
+      requestsPerSecond: 1000 / delay, // Convert delay to rate
     },
   })
 }
@@ -111,7 +112,7 @@ console.log('Rules:', parsed.rules)
 console.log('Sitemaps:', parsed.sitemaps)
 
 // Check specific rules
-parsed.rules.forEach(rule => {
+parsed.rules.forEach((rule) => {
   console.log(`User-agent: ${rule.userAgent}`)
   console.log(`  Allow: ${rule.allow}`)
   console.log(`  Disallow: ${rule.disallow}`)
@@ -240,7 +241,7 @@ import { RobotsParser } from 'ts-web-scraper'
 
 const parser = new RobotsParser({
   respectRobotsTxt: true,
-  cacheTime: 3600000,  // Cache for 1 hour
+  cacheTime: 3600000, // Cache for 1 hour
 })
 
 // First check - fetches robots.txt
@@ -266,7 +267,7 @@ const parser = new RobotsParser({
 const sitemaps = await parser.getSitemaps('https://example.com')
 
 console.log('Found sitemaps:')
-sitemaps.forEach(sitemap => {
+sitemaps.forEach((sitemap) => {
   console.log('  -', sitemap)
 })
 
@@ -286,7 +287,7 @@ Disable robots.txt checking (use responsibly):
 import { createScraper } from 'ts-web-scraper'
 
 const scraper = createScraper({
-  respectRobotsTxt: false,  // Disable robots.txt checking
+  respectRobotsTxt: false, // Disable robots.txt checking
 })
 
 // WARNING: Only disable for:
@@ -313,7 +314,8 @@ try {
   if (!canScrape) {
     console.log('URL is disallowed by robots.txt')
   }
-} catch (error) {
+}
+catch (error) {
   // robots.txt not found or error fetching
   // Default: allow scraping if robots.txt doesn't exist
   console.log('robots.txt not found, proceeding with scraping')
@@ -329,7 +331,7 @@ import { getGlobalRobotsParser } from 'ts-web-scraper'
 
 const parser = getGlobalRobotsParser({
   userAgent: 'MyBot/1.0',
-  cacheTime: 7200000,  // 2 hours
+  cacheTime: 7200000, // 2 hours
 })
 
 // Reuse the same parser instance
@@ -369,14 +371,15 @@ async function ethicalScrape(urls: string[]) {
   const results = []
   for (const url of urls) {
     const result = await scraper.scrape(url, {
-      extract: (doc) => ({
+      extract: doc => ({
         title: doc.querySelector('h1')?.textContent,
       }),
     })
 
     if (result.success) {
       results.push(result.data)
-    } else if (result.error?.includes('robots.txt')) {
+    }
+    else if (result.error?.includes('robots.txt')) {
       console.log(`Skipped ${url} - disallowed by robots.txt`)
     }
   }

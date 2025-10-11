@@ -12,7 +12,7 @@ import { createScraper } from 'ts-web-scraper'
 const scraper = createScraper({
   retry: {
     maxRetries: 3,
-    initialDelay: 1000,  // 1 second
+    initialDelay: 1000, // 1 second
   },
 })
 
@@ -29,7 +29,7 @@ const scraper = createScraper({
   retry: {
     maxRetries: 5,
     initialDelay: 1000,
-    backoff: 'exponential',  // 1s, 2s, 4s, 8s, 16s
+    backoff: 'exponential', // 1s, 2s, 4s, 8s, 16s
   },
 })
 ```
@@ -43,7 +43,7 @@ const scraper = createScraper({
   retry: {
     maxRetries: 3,
     initialDelay: 2000,
-    backoff: 'linear',  // 2s, 4s, 6s
+    backoff: 'linear', // 2s, 4s, 6s
   },
 })
 ```
@@ -57,7 +57,7 @@ const scraper = createScraper({
   retry: {
     maxRetries: 3,
     initialDelay: 5000,
-    backoff: 'fixed',  // 5s, 5s, 5s
+    backoff: 'fixed', // 5s, 5s, 5s
   },
 })
 ```
@@ -129,7 +129,7 @@ Set request timeout:
 
 ```typescript
 const scraper = createScraper({
-  timeout: 30000,  // 30 second timeout
+  timeout: 30000, // 30 second timeout
   retry: {
     maxRetries: 2,
     initialDelay: 2000,

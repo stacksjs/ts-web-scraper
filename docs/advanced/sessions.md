@@ -56,7 +56,7 @@ Save and load sessions from disk:
 import { SessionManager } from 'ts-web-scraper'
 
 const session = new SessionManager({
-  persistPath: './session.json',  // Auto-save to file
+  persistPath: './session.json', // Auto-save to file
 })
 
 // Make requests - cookies are automatically saved
@@ -145,9 +145,9 @@ jar.setCookie('session=abc123; Path=/; HttpOnly; Secure', 'https://example.com')
 jar.setCookie({
   name: 'user_pref',
   value: 'dark_mode',
-  domain: '.example.com',  // Works for all subdomains
+  domain: '.example.com', // Works for all subdomains
   path: '/',
-  maxAge: 86400,  // 24 hours in seconds
+  maxAge: 86400, // 24 hours in seconds
   secure: true,
   httpOnly: true,
   sameSite: 'Lax',
@@ -173,7 +173,7 @@ jar.clearCookies()
 Integrate with the main scraper:
 
 ```typescript
-import { createScraper, CookieJar } from 'ts-web-scraper'
+import { CookieJar, createScraper } from 'ts-web-scraper'
 
 const jar = new CookieJar()
 
@@ -188,13 +188,13 @@ jar.setCookie({
 const scraper = createScraper({
   cookies: {
     enabled: true,
-    jar,  // Use our cookie jar
+    jar, // Use our cookie jar
   },
 })
 
 // Requests will include cookies
 const result = await scraper.scrape('https://example.com/protected', {
-  extract: (doc) => ({
+  extract: doc => ({
     content: doc.querySelector('.protected-content')?.textContent,
   }),
 })
@@ -265,14 +265,15 @@ import { CookieJar } from 'ts-web-scraper'
 
 const jar = new CookieJar({
   persistPath: './cookies.json',
-  autoSave: true,  // Auto-save on every change
+  autoSave: true, // Auto-save on every change
 })
 
 // Load existing cookies
 try {
   await jar.loadFromDisk('./cookies.json')
   console.log('Loaded existing session')
-} catch {
+}
+catch {
   console.log('No existing session')
 }
 
@@ -307,7 +308,7 @@ jar.setCookie({
 jar.setCookie({
   name: 'sub_cookie',
   value: 'value2',
-  domain: '.example.com',  // Matches all subdomains
+  domain: '.example.com', // Matches all subdomains
   path: '/',
 })
 
@@ -350,7 +351,7 @@ jar.setCookie({
   name: 'secure_session',
   value: 'abc123',
   domain: 'example.com',
-  secure: true,  // Only sent over HTTPS
+  secure: true, // Only sent over HTTPS
 })
 
 // HTTP request won't include secure cookie
@@ -366,7 +367,7 @@ jar.setCookie({
   name: 'http_only',
   value: 'xyz789',
   domain: 'example.com',
-  httpOnly: true,  // Not accessible to JavaScript
+  httpOnly: true, // Not accessible to JavaScript
 })
 ```
 
@@ -414,7 +415,8 @@ async function scrapeWithAuth() {
     // Try to load existing session
     await session.loadSession()
     console.log('Using existing session')
-  } catch {
+  }
+  catch {
     // No session, login
     console.log('No session found, logging in...')
     const loginSuccess = await login('user', 'pass')

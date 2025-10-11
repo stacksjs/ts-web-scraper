@@ -11,7 +11,7 @@ import { createScraper } from 'ts-web-scraper'
 
 const scraper = createScraper({
   rateLimit: {
-    requestsPerSecond: 2,  // Max 2 requests per second
+    requestsPerSecond: 2, // Max 2 requests per second
   },
 })
 
@@ -29,7 +29,7 @@ Allow bursts of requests:
 const scraper = createScraper({
   rateLimit: {
     requestsPerSecond: 2,
-    burstSize: 5,  // Allow burst of 5 requests
+    burstSize: 5, // Allow burst of 5 requests
   },
 })
 
@@ -45,7 +45,7 @@ Rate limit per domain:
 const scraper = createScraper({
   rateLimit: {
     requestsPerSecond: 2,
-    perDomain: true,  // Separate rate limit per domain
+    perDomain: true, // Separate rate limit per domain
   },
 })
 
@@ -66,8 +66,8 @@ The rate limiter uses a token bucket algorithm:
 ```typescript
 const scraper = createScraper({
   rateLimit: {
-    requestsPerSecond: 10,  // 10 tokens per second
-    burstSize: 20,          // Bucket holds max 20 tokens
+    requestsPerSecond: 10, // 10 tokens per second
+    burstSize: 20, // Bucket holds max 20 tokens
   },
 })
 ```
@@ -125,9 +125,9 @@ const urls = [
 ]
 
 const results = await scraper.scrapeMany(urls, {
-  extract: (doc) => ({ title: doc.querySelector('title')?.textContent }),
+  extract: doc => ({ title: doc.querySelector('title')?.textContent }),
 }, {
-  concurrency: 3,  // Max 3 concurrent, but still rate limited
+  concurrency: 3, // Max 3 concurrent, but still rate limited
 })
 ```
 
@@ -147,10 +147,10 @@ const scraper = createScraper({
     burstSize: 3,
     perDomain: true,
   },
-  respectRobotsTxt: true,  // Automatically respect crawl-delay
+  respectRobotsTxt: true, // Automatically respect crawl-delay
   cache: {
     enabled: true,
-    ttl: 60000,  // Cache for 1 minute
+    ttl: 60000, // Cache for 1 minute
   },
 })
 ```

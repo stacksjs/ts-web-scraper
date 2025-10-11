@@ -13,14 +13,14 @@ const scraper = createScraper()
 
 // Auto-detect and traverse all pages
 for await (const page of scraper.scrapeAll('https://example.com/products', {
-  extract: (doc) => ({
+  extract: doc => ({
     products: Array.from(doc.querySelectorAll('.product')).map(p => ({
       name: p.querySelector('.name')?.textContent,
       price: p.querySelector('.price')?.textContent,
     })),
   }),
 }, {
-  maxPages: 10,  // Limit to 10 pages
+  maxPages: 10, // Limit to 10 pages
 })) {
   console.log(`Page ${page.pageNumber}:`, page.data)
   console.log(`Pagination type: ${page.pagination?.type}`)
@@ -125,13 +125,13 @@ Define custom pagination patterns:
 
 ```typescript
 for await (const page of scraper.scrapeAll('https://example.com/custom', {
-  extract: (doc) => ({
+  extract: doc => ({
     items: Array.from(doc.querySelectorAll('.item')).map(i => i.textContent),
   }),
 }, {
   maxPages: 20,
   pattern: {
-    pageParam: 'offset',  // Custom query parameter
+    pageParam: 'offset', // Custom query parameter
   },
 })) {
   console.log(`Fetched ${page.data.items.length} items`)
@@ -144,12 +144,12 @@ Add delay between page requests:
 
 ```typescript
 for await (const page of scraper.scrapeAll('https://example.com/products', {
-  extract: (doc) => ({
+  extract: doc => ({
     count: doc.querySelectorAll('.product').length,
   }),
 }, {
   maxPages: 50,
-  delay: 2000,  // 2 second delay between pages
+  delay: 2000, // 2 second delay between pages
 })) {
   console.log(`Page ${page.pageNumber}: ${page.data.count} products`)
 }
@@ -167,11 +167,11 @@ const scraper = createScraper({
 const allProducts: any[] = []
 
 for await (const page of scraper.scrapeAll('https://example.com/products', {
-  extract: (doc) => ({
+  extract: doc => ({
     products: Array.from(doc.querySelectorAll('.product')).map(p => ({
       id: p.getAttribute('data-id'),
       name: p.querySelector('.name')?.textContent,
-      price: parseFloat(p.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0'),
+      price: Number.parseFloat(p.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0'),
     })),
   }),
 }, { maxPages: 10 })) {
@@ -215,7 +215,7 @@ const scraper = createScraper({
 
 try {
   for await (const page of scraper.scrapeAll('https://example.com/list', {
-    extract: (doc) => ({
+    extract: doc => ({
       items: Array.from(doc.querySelectorAll('.item')).map(i => i.textContent),
     }),
   }, { maxPages: 100 })) {
@@ -226,7 +226,8 @@ try {
 
     console.log(`Page ${page.pageNumber}: ${page.data.items.length} items`)
   }
-} catch (error) {
+}
+catch (error) {
   console.error('Pagination failed:', error)
 }
 ```
@@ -239,7 +240,7 @@ Implement custom pagination logic:
 import { autoPaginate } from 'ts-web-scraper'
 
 // Custom fetcher function
-const customFetcher = async (url: string) => {
+async function customFetcher(url: string) {
   const response = await fetch(url, {
     headers: {
       'User-Agent': 'CustomBot/1.0',
@@ -279,7 +280,7 @@ const scraper = createScraper({
   },
   cache: {
     enabled: true,
-    ttl: 300000,  // 5 minutes
+    ttl: 300000, // 5 minutes
   },
   retry: {
     maxRetries: 3,
@@ -291,7 +292,7 @@ let successCount = 0
 let failCount = 0
 
 for await (const page of scraper.scrapeAll('https://example.com/products', {
-  extract: (doc) => ({
+  extract: doc => ({
     products: Array.from(doc.querySelectorAll('.product')).map(p => ({
       name: p.querySelector('.name')?.textContent,
     })),
@@ -303,7 +304,8 @@ for await (const page of scraper.scrapeAll('https://example.com/products', {
   if (page.success) {
     successCount++
     console.log(`✓ Page ${page.pageNumber}: ${page.data.products.length} products`)
-  } else {
+  }
+  else {
     failCount++
     console.error(`✗ Page ${page.pageNumber} failed:`, page.error)
   }

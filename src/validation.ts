@@ -353,7 +353,7 @@ function performAdditionalValidations(
  */
 function isValidEmail(email: string): boolean {
   // Simple email regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const emailRegex = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/
   return emailRegex.test(email)
 }
 

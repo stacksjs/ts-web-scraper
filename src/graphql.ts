@@ -217,7 +217,7 @@ export class GraphQLClient {
           response = await fetch(url, {
             method: 'GET',
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               ...headers,
             },
             signal: controller.signal,
@@ -252,7 +252,7 @@ export class GraphQLClient {
         lastError = error as Error
         if (attempt < retries) {
           // Exponential backoff
-          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)))
+          await new Promise(resolve => setTimeout(resolve, 1000 * 2 ** attempt))
           continue
         }
       }
@@ -398,7 +398,7 @@ export function extractGraphQLQueries(jsCode: string): string[] {
   const queriesSet = new Set<string>()
 
   // Match gql template literals (Apollo Client style)
-  const gqlPattern = /gql`([^`]+)`/gs
+  const gqlPattern = /gql`([^`]+)`/g
   const gqlMatches = jsCode.matchAll(gqlPattern)
 
   for (const match of gqlMatches) {
@@ -406,7 +406,7 @@ export function extractGraphQLQueries(jsCode: string): string[] {
   }
 
   // Match graphql() calls
-  const graphqlPattern = /graphql\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/gs
+  const graphqlPattern = /graphql\s*\(\s*['"`]([^'"`]+)['"`]\s*\)/g
   const graphqlMatches = jsCode.matchAll(graphqlPattern)
 
   for (const match of graphqlMatches) {
@@ -414,7 +414,7 @@ export function extractGraphQLQueries(jsCode: string): string[] {
   }
 
   // Match raw GraphQL strings (query/mutation keywords) - only if not already matched
-  const rawPattern = /['"`]\s*((?:query|mutation|subscription)\s+[^'"`]+)['"`]/gs
+  const rawPattern = /['"`]\s*((?:query|mutation|subscription)\s[^'"`]+)['"`]/g
   const rawMatches = jsCode.matchAll(rawPattern)
 
   for (const match of rawMatches) {

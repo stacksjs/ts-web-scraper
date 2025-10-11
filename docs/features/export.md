@@ -23,7 +23,7 @@ import { createScraper, saveExport } from 'ts-web-scraper'
 const scraper = createScraper()
 
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('title')?.textContent,
     headings: Array.from(doc.querySelectorAll('h2')).map(h => h.textContent),
   }),
@@ -231,7 +231,7 @@ const urls = [
 ]
 
 const results = await scraper.scrapeMany(urls, {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('h1')?.textContent,
     content: doc.querySelector('.content')?.textContent,
   }),
@@ -253,16 +253,16 @@ await saveExport(allData, 'all-pages.md')
 Export pipeline results:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractProducts = pipeline()
   .step(extractors.structured('.product', {
     name: '.name',
     price: '.price',
   }))
-  .map('parse', (product) => ({
+  .map('parse', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+    price: Number.parseFloat(product.price.replace(/[^0-9.]/g, '')),
   }))
   .sort('by-price', (a, b) => a.price - b.price)
 
@@ -282,13 +282,13 @@ Format is automatically detected from file extension:
 
 ```typescript
 // These all work automatically
-await saveExport(data, 'output.json')  // JSON
-await saveExport(data, 'output.csv')   // CSV
-await saveExport(data, 'output.xml')   // XML
-await saveExport(data, 'output.yaml')  // YAML
-await saveExport(data, 'output.yml')   // YAML
-await saveExport(data, 'output.md')    // Markdown
-await saveExport(data, 'output.html')  // HTML
+await saveExport(data, 'output.json') // JSON
+await saveExport(data, 'output.csv') // CSV
+await saveExport(data, 'output.xml') // XML
+await saveExport(data, 'output.yaml') // YAML
+await saveExport(data, 'output.yml') // YAML
+await saveExport(data, 'output.md') // Markdown
+await saveExport(data, 'output.html') // HTML
 ```
 
 ## Best Practices

@@ -5,7 +5,7 @@
  * Uses ONLY Bun native APIs - no external dependencies!
  */
 
-import type { Schema, ValidationResult } from './validation'
+import type { Schema } from './validation'
 import type { Document, HTMLElement } from './web-scraper'
 import { sanitize, validate } from './validation'
 

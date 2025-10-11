@@ -7,7 +7,7 @@ Build composable data extraction and transformation pipelines for complex scrapi
 Create a simple extraction pipeline:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractProducts = pipeline()
   .step(extractors.structured('.product', {
@@ -15,10 +15,10 @@ const extractProducts = pipeline()
     price: '.product-price',
     rating: '.rating',
   }))
-  .map('clean', (product) => ({
+  .map('clean', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
-    rating: parseFloat(product.rating),
+    price: Number.parseFloat(product.price.replace(/[^0-9.]/g, '')),
+    rating: Number.parseFloat(product.rating),
   }))
 
 // Execute pipeline on a document
@@ -71,18 +71,18 @@ const jsonLd = extractors.jsonLd().execute(document)
 Add multiple transformation steps:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractPrices = pipeline()
   // 1. Extract prices
   .step(extractors.text('.price'))
 
   // 2. Parse to numbers
-  .map('parse', (price) =>
-    parseFloat(price.replace(/[^0-9.]/g, '')))
+  .map('parse', price =>
+    Number.parseFloat(price.replace(/[^0-9.]/g, '')))
 
   // 3. Filter valid prices
-  .filter('valid', (prices) =>
+  .filter('valid', prices =>
     prices.every(p => !isNaN(p) && p > 0))
 
   // 4. Sort by price
@@ -100,18 +100,18 @@ console.log('Top 10 prices:', result.data)
 Transform data with map:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractProducts = pipeline()
   .step(extractors.structured('.product', {
     name: '.name',
     price: '.price',
   }))
-  .map('parse-price', (product) => ({
+  .map('parse-price', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[$,]/g, '')),
+    price: Number.parseFloat(product.price.replace(/[$,]/g, '')),
   }))
-  .map('add-currency', (product) => ({
+  .map('add-currency', product => ({
     ...product,
     currency: 'USD',
   }))
@@ -124,18 +124,18 @@ const result = await extractProducts.execute(document)
 Filter data based on conditions:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractHighRated = pipeline()
   .step(extractors.structured('.product', {
     name: '.name',
     rating: '.rating',
   }))
-  .map('parse-rating', (p) => ({
+  .map('parse-rating', p => ({
     ...p,
-    rating: parseFloat(p.rating),
+    rating: Number.parseFloat(p.rating),
   }))
-  .filter('high-rated', (products) =>
+  .filter('high-rated', products =>
     products.every(p => p.rating >= 4.0))
 
 const result = await extractHighRated.execute(document)
@@ -147,7 +147,7 @@ console.log('High-rated products:', result.data)
 Validate data in pipeline:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractValidProducts = pipeline()
   .step(extractors.structured('.product', {
@@ -160,9 +160,9 @@ const extractValidProducts = pipeline()
     price: { type: 'string', required: true },
     sku: { type: 'string', required: true, pattern: /^[A-Z0-9-]+$/ },
   })
-  .map('parse-price', (product) => ({
+  .map('parse-price', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+    price: Number.parseFloat(product.price.replace(/[^0-9.]/g, '')),
   }))
 
 const result = await extractValidProducts.execute(document)
@@ -173,14 +173,14 @@ const result = await extractValidProducts.execute(document)
 Sanitize extracted data:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractSafeContent = pipeline()
   .step(extractors.text('.content'))
   .sanitize('clean-html', {
-    allowTags: [],        // Strip all HTML
+    allowTags: [], // Strip all HTML
     trimWhitespace: true, // Trim extra spaces
-    maxLength: 1000,      // Limit length
+    maxLength: 1000, // Limit length
   })
 
 const result = await extractSafeContent.execute(document)
@@ -191,7 +191,7 @@ const result = await extractSafeContent.execute(document)
 Sort extracted data:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractSortedProducts = pipeline()
   .step(extractors.structured('.product', {
@@ -199,13 +199,13 @@ const extractSortedProducts = pipeline()
     price: '.price',
     rating: '.rating',
   }))
-  .map('parse', (p) => ({
+  .map('parse', p => ({
     ...p,
-    price: parseFloat(p.price.replace(/[^0-9.]/g, '')),
-    rating: parseFloat(p.rating),
+    price: Number.parseFloat(p.price.replace(/[^0-9.]/g, '')),
+    rating: Number.parseFloat(p.rating),
   }))
   .sort('by-rating', (a, b) => b.rating - a.rating) // Descending
-  .sort('by-price', (a, b) => a.price - b.price)    // Then by price
+  .sort('by-price', (a, b) => a.price - b.price) // Then by price
 
 const result = await extractSortedProducts.execute(document)
 ```
@@ -215,7 +215,7 @@ const result = await extractSortedProducts.execute(document)
 Group data by a key:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractByCategory = pipeline()
   .step(extractors.structured('.product', {
@@ -223,7 +223,7 @@ const extractByCategory = pipeline()
     category: '.category',
     price: '.price',
   }))
-  .groupBy('by-category', (product) => product.category)
+  .groupBy('by-category', product => product.category)
 
 const result = await extractByCategory.execute(document)
 // Returns: { electronics: [...], clothing: [...], ... }
@@ -234,7 +234,7 @@ const result = await extractByCategory.execute(document)
 Remove duplicates:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractUniqueLinks = pipeline()
   .step(extractors.links())
@@ -248,7 +248,7 @@ const extractUniqueProducts = pipeline()
     id: '.id',
     name: '.name',
   }))
-  .unique('by-id', (product) => product.id)
+  .unique('by-id', product => product.id)
 
 const result2 = await extractUniqueProducts.execute(document)
 ```
@@ -258,16 +258,16 @@ const result2 = await extractUniqueProducts.execute(document)
 Flatten nested arrays:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractAllTags = pipeline()
   .step(extractors.structured('.article', {
     title: '.title',
     tags: '.tag',
   }))
-  .map('split-tags', (article) =>
+  .map('split-tags', article =>
     article.tags.split(',').map(t => t.trim()))
-  .flatMap('flatten', (tags) => tags)
+  .flatMap('flatten', tags => tags)
   .unique('dedupe')
 
 const result = await extractAllTags.execute(document)
@@ -309,11 +309,11 @@ const result = await extractWithCustom.execute(document)
 Handle pipeline errors:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractWithErrors = pipeline({
-  continueOnError: true,  // Continue even if steps fail
-  timeout: 10000,         // 10 second timeout per step
+  continueOnError: true, // Continue even if steps fail
+  timeout: 10000, // 10 second timeout per step
 })
   .step(extractors.text('.content'))
   .map('risky-transform', (text) => {
@@ -327,7 +327,7 @@ const result = await extractWithErrors.execute(document)
 
 if (result.errors.length > 0) {
   console.error('Pipeline errors:')
-  result.errors.forEach(err => {
+  result.errors.forEach((err) => {
     console.error(`  ${err.step}: ${err.error.message}`)
   })
 }
@@ -341,7 +341,7 @@ console.log('Duration:', result.metadata.duration, 'ms')
 Use context for stateful operations:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractWithContext = pipeline()
   .step(extractors.text('.item'))
@@ -367,7 +367,7 @@ const result = await extractWithContext.execute(document, {
 Build and reuse pipelines:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 // Create reusable pipeline
 const productPipeline = pipeline()
@@ -376,12 +376,12 @@ const productPipeline = pipeline()
     price: '.price',
     rating: '.rating',
   }))
-  .map('parse', (p) => ({
+  .map('parse', p => ({
     ...p,
-    price: parseFloat(p.price.replace(/[^0-9.]/g, '')),
-    rating: parseFloat(p.rating),
+    price: Number.parseFloat(p.price.replace(/[^0-9.]/g, '')),
+    rating: Number.parseFloat(p.rating),
   }))
-  .filter('valid', (products) =>
+  .filter('valid', products =>
     products.every(p => p.price > 0 && p.rating > 0))
   .sort('by-rating', (a, b) => b.rating - a.rating)
 
@@ -398,8 +398,7 @@ const result2 = await extractProducts(document2)
 Full-featured pipeline:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
-import { createScraper } from 'ts-web-scraper'
+import { createScraper, extractors, pipeline } from 'ts-web-scraper'
 
 const productExtractor = pipeline()
   // 1. Extract product data
@@ -415,19 +414,19 @@ const productExtractor = pipeline()
   }))
 
   // 2. Parse numeric values
-  .map('parse-numbers', (product) => ({
+  .map('parse-numbers', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+    price: Number.parseFloat(product.price.replace(/[^0-9.]/g, '')),
     originalPrice: product.originalPrice
-      ? parseFloat(product.originalPrice.replace(/[^0-9.]/g, ''))
+      ? Number.parseFloat(product.originalPrice.replace(/[^0-9.]/g, ''))
       : null,
-    rating: parseFloat(product.rating),
-    reviews: parseInt(product.reviews.replace(/[^0-9]/g, ''), 10),
+    rating: Number.parseFloat(product.rating),
+    reviews: Number.parseInt(product.reviews.replace(/\D/g, ''), 10),
     inStock: product.inStock?.toLowerCase() === 'in stock',
   }))
 
   // 3. Calculate discount
-  .map('add-discount', (product) => ({
+  .map('add-discount', product => ({
     ...product,
     discount: product.originalPrice
       ? ((product.originalPrice - product.price) / product.originalPrice) * 100
@@ -443,14 +442,14 @@ const productExtractor = pipeline()
   })
 
   // 5. Filter
-  .filter('in-stock-only', (products) =>
+  .filter('in-stock-only', products =>
     products.every(p => p.inStock))
 
-  .filter('high-rated', (products) =>
+  .filter('high-rated', products =>
     products.every(p => p.rating >= 4.0))
 
   // 6. Remove duplicates
-  .unique('by-id', (product) => product.id)
+  .unique('by-id', product => product.id)
 
   // 7. Sort by rating then price
   .sort('by-rating', (a, b) => b.rating - a.rating)
@@ -472,12 +471,13 @@ if (pipelineResult.success) {
   console.log(`Duration: ${pipelineResult.metadata.duration}ms`)
   console.log(`Steps executed: ${pipelineResult.metadata.stepsExecuted}`)
 
-  pipelineResult.data.forEach(product => {
+  pipelineResult.data.forEach((product) => {
     console.log(`- ${product.name}: $${product.price} (${product.rating}★)`)
   })
-} else {
+}
+else {
   console.error('Pipeline failed with errors:')
-  pipelineResult.errors.forEach(err => {
+  pipelineResult.errors.forEach((err) => {
     console.error(`  ${err.step}: ${err.error.message}`)
   })
 }
@@ -494,29 +494,30 @@ if (pipelineResult.success) {
 7. Monitor pipeline performance
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 // Good: Small, focused steps with clear names
 const goodPipeline = pipeline()
   .step(extractors.structured('.item', { name: '.name', price: '.price' }))
-  .map('parse-price', (item) => ({
+  .map('parse-price', item => ({
     ...item,
-    price: parseFloat(item.price.replace(/[^0-9.]/g, '')),
+    price: Number.parseFloat(item.price.replace(/[^0-9.]/g, '')),
   }))
   .validate('check-required', {
     name: { type: 'string', required: true },
     price: { type: 'number', min: 0, required: true },
   })
-  .filter('valid-items', (items) => items.every(i => i.price > 0))
+  .filter('valid-items', items => items.every(i => i.price > 0))
 
 // Bad: Large, complex steps
 const badPipeline = pipeline()
   .transform('do-everything', (doc) => {
     const items = doc.querySelectorAll('.item')
-    return items.map(item => {
+    return items.map((item) => {
       const name = item.querySelector('.name')?.textContent
-      const price = parseFloat(item.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0')
-      if (!name || price <= 0) return null
+      const price = Number.parseFloat(item.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0')
+      if (!name || price <= 0)
+        return null
       return { name, price }
     }).filter(Boolean)
   })

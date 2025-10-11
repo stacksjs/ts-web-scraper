@@ -61,20 +61,20 @@ Available metrics in summary:
 
 ```typescript
 interface MetricsSummary {
-  totalRequests: number       // Total number of requests
-  successfulRequests: number  // Number of successful requests
-  failedRequests: number      // Number of failed requests
-  totalRetries: number        // Total retry attempts
-  averageDuration: number     // Average request duration (ms)
-  minDuration: number         // Fastest request (ms)
-  maxDuration: number         // Slowest request (ms)
-  p50Duration: number         // 50th percentile (median)
-  p95Duration: number         // 95th percentile
-  p99Duration: number         // 99th percentile
-  successRate: number         // Success rate (0-1)
-  cacheHitRate: number        // Cache hit rate (0-1)
+  totalRequests: number // Total number of requests
+  successfulRequests: number // Number of successful requests
+  failedRequests: number // Number of failed requests
+  totalRetries: number // Total retry attempts
+  averageDuration: number // Average request duration (ms)
+  minDuration: number // Fastest request (ms)
+  maxDuration: number // Slowest request (ms)
+  p50Duration: number // 50th percentile (median)
+  p95Duration: number // 95th percentile
+  p99Duration: number // 99th percentile
+  successRate: number // Success rate (0-1)
+  cacheHitRate: number // Cache hit rate (0-1)
   totalBytesDownloaded: number // Total bytes downloaded
-  totalItemsExtracted: number  // Total items extracted
+  totalItemsExtracted: number // Total items extracted
 }
 ```
 
@@ -113,8 +113,8 @@ Use PerformanceMonitor directly:
 import { PerformanceMonitor } from 'ts-web-scraper'
 
 const monitor = new PerformanceMonitor({
-  maxMetrics: 1000,           // Keep last 1000 metrics
-  flushInterval: 60000,       // Flush every minute
+  maxMetrics: 1000, // Keep last 1000 metrics
+  flushInterval: 60000, // Flush every minute
   onFlush: async (metrics) => {
     // Send metrics to external service
     await sendToDatadog(metrics)
@@ -179,14 +179,13 @@ const scraper = createScraper({
 })
 
 const urls = Array.from({ length: 100 }, (_, i) =>
-  `https://example.com/page${i}`
-)
+  `https://example.com/page${i}`)
 
 console.log('Starting batch scrape...')
 const startTime = Date.now()
 
 const results = await scraper.scrapeMany(urls, {
-  extract: (doc) => ({ title: doc.querySelector('h1')?.textContent }),
+  extract: doc => ({ title: doc.querySelector('h1')?.textContent }),
 }, {
   concurrency: 5,
 })
@@ -284,7 +283,7 @@ const scraper = createScraper({
 })
 
 await scraper.scrapeMany(urls, {
-  extract: (doc) => ({
+  extract: doc => ({
     items: Array.from(doc.querySelectorAll('.item')).map(item => ({
       title: item.querySelector('.title')?.textContent,
     })),
@@ -303,7 +302,7 @@ Export metrics to external services:
 
 ```typescript
 const monitor = new PerformanceMonitor({
-  flushInterval: 60000,  // Flush every minute
+  flushInterval: 60000, // Flush every minute
   onFlush: async (metrics) => {
     // Send to Datadog
     await fetch('https://api.datadoghq.com/api/v1/series', {

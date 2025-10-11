@@ -25,48 +25,48 @@ import { createScraper } from 'ts-web-scraper'
 
 const scraper = createScraper({
   // Request settings
-  timeout: 30000,  // Request timeout in milliseconds (default: 30000)
-  userAgent: 'MyBot/1.0 (+https://example.com/bot)',  // Custom user agent
-  followRedirects: true,  // Follow HTTP redirects (default: true)
+  timeout: 30000, // Request timeout in milliseconds (default: 30000)
+  userAgent: 'MyBot/1.0 (+https://example.com/bot)', // Custom user agent
+  followRedirects: true, // Follow HTTP redirects (default: true)
 
   // Rate limiting
   rateLimit: {
-    requestsPerSecond: 2,  // Max requests per second (default: no limit)
-    burstSize: 5,          // Allow burst of N requests (default: 1)
-    perDomain: true,       // Rate limit per domain (default: false)
+    requestsPerSecond: 2, // Max requests per second (default: no limit)
+    burstSize: 5, // Allow burst of N requests (default: 1)
+    perDomain: true, // Rate limit per domain (default: false)
   },
 
   // Caching
   cache: {
-    enabled: true,      // Enable caching (default: false)
-    ttl: 60000,        // Cache TTL in milliseconds (default: 300000)
-    maxSize: 100,      // Max cached items (default: 100)
+    enabled: true, // Enable caching (default: false)
+    ttl: 60000, // Cache TTL in milliseconds (default: 300000)
+    maxSize: 100, // Max cached items (default: 100)
   },
 
   // Retry logic
   retry: {
-    maxRetries: 3,           // Max retry attempts (default: 0)
-    initialDelay: 1000,      // Initial delay in ms (default: 1000)
-    backoff: 'exponential',  // 'fixed' | 'linear' | 'exponential' (default: 'exponential')
-    maxDelay: 30000,         // Max delay between retries (default: 30000)
+    maxRetries: 3, // Max retry attempts (default: 0)
+    initialDelay: 1000, // Initial delay in ms (default: 1000)
+    backoff: 'exponential', // 'fixed' | 'linear' | 'exponential' (default: 'exponential')
+    maxDelay: 30000, // Max delay between retries (default: 30000)
   },
 
   // Robots.txt
-  respectRobotsTxt: true,  // Respect robots.txt rules (default: true)
+  respectRobotsTxt: true, // Respect robots.txt rules (default: true)
 
   // Session & cookies
   cookies: {
-    enabled: true,                   // Enable cookie handling (default: false)
-    persistPath: './session.json',  // Persist cookies to file
-    autoSave: true,                 // Auto-save cookies (default: false)
+    enabled: true, // Enable cookie handling (default: false)
+    persistPath: './session.json', // Persist cookies to file
+    autoSave: true, // Auto-save cookies (default: false)
   },
 
   // Monitoring
-  monitor: true,  // Enable performance monitoring (default: false)
+  monitor: true, // Enable performance monitoring (default: false)
 
   // Change tracking
-  trackChanges: true,     // Track content changes (default: false)
-  maxSnapshots: 10,       // Max snapshots per URL (default: 5)
+  trackChanges: true, // Track content changes (default: false)
+  maxSnapshots: 10, // Max snapshots per URL (default: 5)
 
   // Headers
   headers: {
@@ -219,7 +219,7 @@ const scraper = createScraper({
 
   cache: {
     enabled: true,
-    ttl: 300000,  // 5 minutes
+    ttl: 300000, // 5 minutes
     maxSize: 200,
   },
 
@@ -240,11 +240,11 @@ Optimized for development and testing:
 ```typescript
 const scraper = createScraper({
   timeout: 10000,
-  respectRobotsTxt: false,  // For testing only!
+  respectRobotsTxt: false, // For testing only!
 
   cache: {
     enabled: true,
-    ttl: 60000,  // 1 minute
+    ttl: 60000, // 1 minute
   },
 
   monitor: true,
@@ -265,7 +265,7 @@ const scraper = createScraper({
 
   cache: {
     enabled: true,
-    ttl: 600000,  // 10 minutes
+    ttl: 600000, // 10 minutes
     maxSize: 1000,
   },
 
@@ -292,11 +292,11 @@ const scraper = createScraper({
   },
 
   headers: {
-    'Authorization': 'Bearer your-token',
+    Authorization: 'Bearer your-token',
   },
 
   cache: {
-    enabled: false,  // Disable for authenticated content
+    enabled: false, // Disable for authenticated content
   },
 })
 ```

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'bun:test'
 import type { SitemapEntry } from '../src/sitemap'
+import { describe, expect, it } from 'bun:test'
 import { discoverSitemaps, parseSitemap, SitemapParser } from '../src/sitemap'
 
 // Mock sitemap XML content
@@ -49,7 +49,7 @@ describe('SitemapParser', () => {
       timeout: 10000,
     })
 
-    const entries = parser['parseUrlSet'](mockSitemapXML)
+    const entries = parser.parseUrlSet(mockSitemapXML)
     expect(entries.length).toBe(3)
 
     expect(entries[0].loc).toBe('https://example.com/')
@@ -77,7 +77,7 @@ describe('SitemapParser', () => {
       <priority>0.5</priority>
     `
 
-    const entry = parser['parseUrlBlock'](urlBlock)
+    const entry = parser.parseUrlBlock(urlBlock)
     expect(entry).not.toBeNull()
     expect(entry!.loc).toBe('https://example.com/page')
     expect(entry!.lastmod).toBeInstanceOf(Date)
@@ -94,7 +94,7 @@ describe('SitemapParser', () => {
     })
 
     const urlBlock = '<loc>https://example.com/page</loc>'
-    const entry = parser['parseUrlBlock'](urlBlock)
+    const entry = parser.parseUrlBlock(urlBlock)
 
     expect(entry).not.toBeNull()
     expect(entry!.loc).toBe('https://example.com/page')
@@ -112,7 +112,7 @@ describe('SitemapParser', () => {
     })
 
     const urlBlock = '<changefreq>daily</changefreq>'
-    const entry = parser['parseUrlBlock'](urlBlock)
+    const entry = parser.parseUrlBlock(urlBlock)
 
     expect(entry).toBeNull()
   })
@@ -125,7 +125,7 @@ describe('SitemapParser', () => {
       timeout: 10000,
     })
 
-    const urls = parser['extractSitemapUrls'](mockSitemapIndexXML)
+    const urls = parser.extractSitemapUrls(mockSitemapIndexXML)
     expect(urls.length).toBe(2)
     expect(urls).toContain('https://example.com/sitemap1.xml')
     expect(urls).toContain('https://example.com/sitemap2.xml')
@@ -148,7 +148,7 @@ describe('SitemapParser', () => {
       { loc: 'https://example.com/about' },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(2)
     expect(filtered[0].loc).toBe('https://example.com/blog')
     expect(filtered[1].loc).toBe('https://example.com/blog/post-1')
@@ -171,7 +171,7 @@ describe('SitemapParser', () => {
       { loc: 'https://example.com/blog' },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(2)
     expect(filtered[0].loc).toBe('https://example.com/')
     expect(filtered[1].loc).toBe('https://example.com/blog')
@@ -193,7 +193,7 @@ describe('SitemapParser', () => {
       { loc: 'https://example.com/newer', lastmod: new Date('2024-01-05') },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(2)
     expect(filtered[0].loc).toBe('https://example.com/new')
     expect(filtered[1].loc).toBe('https://example.com/newer')
@@ -215,7 +215,7 @@ describe('SitemapParser', () => {
       { loc: 'https://example.com/newer', lastmod: new Date('2024-01-05') },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(2)
     expect(filtered[0].loc).toBe('https://example.com/old')
     expect(filtered[1].loc).toBe('https://example.com/new')
@@ -237,7 +237,7 @@ describe('SitemapParser', () => {
       { loc: 'https://example.com/high', priority: 0.9 },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(1)
     expect(filtered[0].loc).toBe('https://example.com/high')
   })
@@ -261,7 +261,7 @@ describe('SitemapParser', () => {
       { loc: 'https://example.com/blog/post-2', priority: 0.3 },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(1)
     expect(filtered[0].loc).toBe('https://example.com/blog/post-1')
   })
@@ -329,7 +329,7 @@ describe('Sitemap Entry Types', () => {
 
     frequencies.forEach((freq) => {
       const urlBlock = `<loc>https://example.com/</loc><changefreq>${freq}</changefreq>`
-      const entry = parser['parseUrlBlock'](urlBlock)
+      const entry = parser.parseUrlBlock(urlBlock)
       expect(entry?.changefreq).toBe(freq)
     })
   })
@@ -346,7 +346,7 @@ describe('Sitemap Entry Types', () => {
 
     priorities.forEach((priority) => {
       const urlBlock = `<loc>https://example.com/</loc><priority>${priority}</priority>`
-      const entry = parser['parseUrlBlock'](urlBlock)
+      const entry = parser.parseUrlBlock(urlBlock)
       expect(entry?.priority).toBe(priority)
     })
   })
@@ -360,7 +360,7 @@ describe('Sitemap Entry Types', () => {
     })
 
     const urlBlock = '<loc>https://example.com/</loc><lastmod>2024-01-15T10:30:00Z</lastmod>'
-    const entry = parser['parseUrlBlock'](urlBlock)
+    const entry = parser.parseUrlBlock(urlBlock)
 
     expect(entry?.lastmod).toBeInstanceOf(Date)
     expect(entry?.lastmod?.toISOString()).toBe('2024-01-15T10:30:00.000Z')
@@ -383,7 +383,7 @@ describe('Filter edge cases', () => {
       { loc: 'https://example.com/without-date' },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(1)
     expect(filtered[0].loc).toBe('https://example.com/with-date')
   })
@@ -403,7 +403,7 @@ describe('Filter edge cases', () => {
       { loc: 'https://example.com/without-priority' },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(1)
     expect(filtered[0].loc).toBe('https://example.com/with-priority')
   })
@@ -421,7 +421,7 @@ describe('Filter edge cases', () => {
       { loc: 'https://example.com/page2' },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(2)
   })
 
@@ -440,7 +440,7 @@ describe('Filter edge cases', () => {
       { loc: 'https://example.com/page2' },
     ]
 
-    const filtered = parser['applyFilters'](entries)
+    const filtered = parser.applyFilters(entries)
     expect(filtered.length).toBe(2)
   })
 })

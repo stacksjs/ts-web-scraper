@@ -49,7 +49,7 @@ const scraper = createScraper({
 
 // Scrape a website
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('title')?.textContent,
     headings: Array.from(doc.querySelectorAll('h1')).map(h => h.textContent),
   }),
@@ -103,7 +103,7 @@ const scraper = createScraper({
 Extract and transform data using pipelines:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractProducts = pipeline()
   .step(extractors.structured('.product', {
@@ -111,11 +111,11 @@ const extractProducts = pipeline()
     price: '.product-price',
     rating: '.rating',
   }))
-  .map('parse-price', (p) => ({
+  .map('parse-price', p => ({
     ...p,
-    price: parseFloat(p.price.replace(/[^0-9.]/g, '')),
+    price: Number.parseFloat(p.price.replace(/[^0-9.]/g, '')),
   }))
-  .filter('in-stock', (products) => products.every(p => p.price > 0))
+  .filter('in-stock', products => products.every(p => p.price > 0))
   .sort('by-price', (a, b) => a.price - b.price)
 
 const result = await extractProducts.execute(document)
@@ -130,13 +130,13 @@ const scraper = createScraper({ trackChanges: true })
 
 // First scrape
 const result1 = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({ price: doc.querySelector('.price')?.textContent }),
+  extract: doc => ({ price: doc.querySelector('.price')?.textContent }),
 })
 // result1.changed === undefined (no previous snapshot)
 
 // Second scrape
 const result2 = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({ price: doc.querySelector('.price')?.textContent }),
+  extract: doc => ({ price: doc.querySelector('.price')?.textContent }),
 })
 // result2.changed === false (if price hasn't changed)
 ```
@@ -168,7 +168,7 @@ Automatically traverse paginated content:
 
 ```typescript
 for await (const page of scraper.scrapeAll('https://example.com/posts', {
-  extract: (doc) => ({
+  extract: doc => ({
     posts: extractors.structured('article', {
       title: 'h2',
       content: '.content',
@@ -204,9 +204,9 @@ Validate extracted data against schemas:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('title')?.textContent,
-    price: parseFloat(doc.querySelector('.price')?.textContent || '0'),
+    price: Number.parseFloat(doc.querySelector('.price')?.textContent || '0'),
   }),
   validate: {
     title: { type: 'string', required: true },
@@ -217,7 +217,8 @@ const result = await scraper.scrape('https://example.com', {
 if (result.success) {
   // Data is valid and typed
   console.log(result.data.title, result.data.price)
-} else {
+}
+else {
   console.error(result.error)
 }
 ```

@@ -1,9 +1,9 @@
+import type { Cookie } from '../src/cookies'
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { CookieJar, SessionManager } from '../src/cookies'
-import type { Cookie } from '../src/cookies'
 
 describe('CookieJar', () => {
   let tempDir: string

@@ -9,7 +9,7 @@ describe('Scraper - Unified API', () => {
       })
 
       const result = await scraper.scrape('https://example.com', {
-        extract: (doc) => ({
+        extract: doc => ({
           title: doc.querySelector('title')?.textContent,
           heading: doc.querySelector('h1')?.textContent,
           body: doc.body?.textContent?.slice(0, 100), // Get some body text
@@ -224,7 +224,7 @@ describe('Scraper - Unified API', () => {
       })
 
       const result1 = await scraper.scrape('https://example.com', {
-        extract: (doc) => ({
+        extract: doc => ({
           title: doc.querySelector('title')?.textContent,
         }),
       })
@@ -232,7 +232,7 @@ describe('Scraper - Unified API', () => {
       expect(result1.changed).toBeUndefined() // No previous snapshot
 
       const result2 = await scraper.scrape('https://example.com', {
-        extract: (doc) => ({
+        extract: doc => ({
           title: doc.querySelector('title')?.textContent,
         }),
       })
@@ -273,7 +273,7 @@ describe('Scraper - Unified API', () => {
       ]
 
       const results = await scraper.scrapeMany(urls, {
-        extract: (doc) => ({
+        extract: doc => ({
           title: doc.querySelector('title')?.textContent,
         }),
       })
@@ -309,7 +309,7 @@ describe('Scraper - Unified API', () => {
 
       // Only scrape first page for test speed
       for await (const page of scraper.scrapeAll('https://example.com', {
-        extract: (doc) => ({
+        extract: doc => ({
           title: doc.querySelector('title')?.textContent,
         }),
       }, {
@@ -433,7 +433,7 @@ describe('Scraper - Unified API', () => {
       })
 
       const result = await scraper.scrape('https://example.com', {
-        extract: (doc) => ({
+        extract: doc => ({
           title: doc.querySelector('title')?.textContent,
           heading: doc.querySelector('h1')?.textContent,
         }),
@@ -662,7 +662,7 @@ describe('Scraper - Unified API', () => {
       const scraper = createScraper()
 
       const result = await scraper.scrape('https://example.com', {
-        extract: (doc) => ({
+        extract: doc => ({
           content: doc.body?.textContent,
         }),
       })

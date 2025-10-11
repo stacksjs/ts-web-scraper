@@ -242,7 +242,7 @@ describe('GraphQLClient', () => {
     const client = new GraphQLClient({
       endpoint: 'https://api.example.com/graphql',
       headers: {
-        'Authorization': 'Bearer token123',
+        Authorization: 'Bearer token123',
       },
     })
 

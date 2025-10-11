@@ -10,9 +10,9 @@ Validate extracted data:
 import { createScraper } from 'ts-web-scraper'
 
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     title: doc.querySelector('.title')?.textContent,
-    price: parseFloat(doc.querySelector('.price')?.textContent || '0'),
+    price: Number.parseFloat(doc.querySelector('.price')?.textContent || '0'),
   }),
   validate: {
     title: { type: 'string', required: true },
@@ -37,7 +37,7 @@ const schema = {
     required: true,
     minLength: 1,
     maxLength: 100,
-    pattern: /^[A-Za-z\s]+$/,
+    pattern: /^[A-Z\s]+$/i,
   },
 
   // Number validation
@@ -78,7 +78,7 @@ Validate string fields:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     email: doc.querySelector('.email')?.textContent,
     url: doc.querySelector('.website')?.textContent,
   }),
@@ -86,7 +86,7 @@ const result = await scraper.scrape('https://example.com', {
     email: {
       type: 'string',
       required: true,
-      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      pattern: /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/,
     },
     url: {
       type: 'string',
@@ -102,10 +102,10 @@ Validate numeric fields:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
-    price: parseFloat(doc.querySelector('.price')?.textContent || '0'),
-    quantity: parseInt(doc.querySelector('.qty')?.textContent || '0'),
-    rating: parseFloat(doc.querySelector('.rating')?.textContent || '0'),
+  extract: doc => ({
+    price: Number.parseFloat(doc.querySelector('.price')?.textContent || '0'),
+    quantity: Number.parseInt(doc.querySelector('.qty')?.textContent || '0'),
+    rating: Number.parseFloat(doc.querySelector('.rating')?.textContent || '0'),
   }),
   validate: {
     price: {
@@ -133,9 +133,9 @@ Validate arrays and their items:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     tags: Array.from(doc.querySelectorAll('.tag')).map(t => t.textContent),
-    prices: Array.from(doc.querySelectorAll('.price')).map(p => parseFloat(p.textContent || '0')),
+    prices: Array.from(doc.querySelectorAll('.price')).map(p => Number.parseFloat(p.textContent || '0')),
   }),
   validate: {
     tags: {
@@ -162,13 +162,13 @@ Validate nested structures:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     product: {
       name: doc.querySelector('.name')?.textContent,
-      price: parseFloat(doc.querySelector('.price')?.textContent || '0'),
+      price: Number.parseFloat(doc.querySelector('.price')?.textContent || '0'),
       seller: {
         name: doc.querySelector('.seller-name')?.textContent,
-        rating: parseFloat(doc.querySelector('.seller-rating')?.textContent || '0'),
+        rating: Number.parseFloat(doc.querySelector('.seller-rating')?.textContent || '0'),
       },
     },
   }),
@@ -213,7 +213,8 @@ const result = validate(data, {
 
 if (result.valid) {
   console.log('Valid data:', result.data)
-} else {
+}
+else {
   console.error('Validation errors:', result.errors)
 }
 ```
@@ -224,8 +225,8 @@ Handle validation errors:
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
-    price: doc.querySelector('.price')?.textContent,  // might be null
+  extract: doc => ({
+    price: doc.querySelector('.price')?.textContent, // might be null
   }),
   validate: {
     price: { type: 'number', required: true, min: 0 },
@@ -246,24 +247,23 @@ if (!result.success) {
 Validate data in pipelines:
 
 ```typescript
-import { pipeline, extractors } from 'ts-web-scraper'
+import { extractors, pipeline } from 'ts-web-scraper'
 
 const extractProducts = pipeline()
   .step(extractors.structured('.product', {
     name: '.name',
     price: '.price',
   }))
-  .map('parse', (product) => ({
+  .map('parse', product => ({
     ...product,
-    price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+    price: Number.parseFloat(product.price.replace(/[^0-9.]/g, '')),
   }))
-  .filter('valid', (products) =>
+  .filter('valid', products =>
     products.every(p =>
-      typeof p.name === 'string' &&
-      typeof p.price === 'number' &&
-      p.price > 0
-    )
-  )
+      typeof p.name === 'string'
+      && typeof p.price === 'number'
+      && p.price > 0
+    ))
 
 const result = await extractProducts.execute(document)
 ```
@@ -283,9 +283,9 @@ const scraper = createScraper({
 })
 
 const result = await scraper.scrape('https://example.com', {
-  extract: (doc) => ({
+  extract: doc => ({
     name: doc.querySelector('.name')?.textContent,
-    price: parseFloat(doc.querySelector('.price')?.textContent || '0'),
+    price: Number.parseFloat(doc.querySelector('.price')?.textContent || '0'),
     email: doc.querySelector('.email')?.textContent,
     tags: Array.from(doc.querySelectorAll('.tag')).map(t => t.textContent),
   }),
@@ -304,7 +304,7 @@ const result = await scraper.scrape('https://example.com', {
     },
     email: {
       type: 'string',
-      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      pattern: /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/,
     },
     tags: {
       type: 'array',
