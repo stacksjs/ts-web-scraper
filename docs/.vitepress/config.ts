@@ -54,21 +54,49 @@ const sidebar = [
   {
     text: 'Get Started',
     items: [
-      { text: 'Intro', link: '/intro' },
-      { text: 'Install', link: '/install' },
-      { text: 'Usage', link: '/usage' },
-      { text: 'Config', link: '/config' },
+      { text: 'Introduction', link: '/intro' },
+      { text: 'Installation', link: '/install' },
+      { text: 'Quick Start', link: '/quick-start' },
+      { text: 'Configuration', link: '/config' },
     ],
   },
-  { text: 'Showcase', link: '/Showcase' },
+  {
+    text: 'Features',
+    items: [
+      { text: 'Web Scraping', link: '/features/scraping' },
+      { text: 'Data Extraction', link: '/features/extraction' },
+      { text: 'Rate Limiting', link: '/features/rate-limiting' },
+      { text: 'Caching', link: '/features/caching' },
+      { text: 'Retry Logic', link: '/features/retry' },
+      { text: 'Validation', link: '/features/validation' },
+      { text: 'Export Formats', link: '/features/export' },
+      { text: 'Change Detection', link: '/features/diff' },
+      { text: 'Monitoring', link: '/features/monitoring' },
+    ],
+  },
+  {
+    text: 'Advanced',
+    items: [
+      { text: 'Pagination', link: '/advanced/pagination' },
+      { text: 'Client-Side Rendering', link: '/advanced/client-side' },
+      { text: 'Session Management', link: '/advanced/sessions' },
+      { text: 'Robots.txt', link: '/advanced/robots' },
+      { text: 'GraphQL Detection', link: '/advanced/graphql' },
+      { text: 'Pipelines', link: '/advanced/pipelines' },
+    ],
+  },
+  {
+    text: 'API Reference',
+    link: '/api/',
+  },
 ]
-const description = 'A TypeScript Starter Kit. For a better Development Experience.'
-const title = 'ts-starter | A TypeScript Starter Kit. For a better Development Experience.'
+const description = 'A powerful, type-safe web scraping library for TypeScript and Bun with zero external dependencies.'
+const title = 'ts-web-scraper | Zero-Dependency Web Scraping for TypeScript'
 
 export default withPwa(
   defineConfig({
     lang: 'en-US',
-    title: 'ts-starter',
+    title: 'ts-web-scraper',
     description,
     metaChunk: true,
     cleanUrls: true,

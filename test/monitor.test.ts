@@ -669,10 +669,16 @@ describe('Real-World Scenarios', () => {
 
       monitor.recordScrape({
         url: `https://example.com/page/${i}`,
-        duration: 2000 + Math.random() * 1000,
+        totalDuration: 2000 + Math.random() * 1000,
+        fetchDuration: 1000,
+        parseDuration: 500,
+        extractionDuration: 500,
         itemsExtracted: 10 + Math.floor(Math.random() * 5),
+        bytesDownloaded: 50000 + Math.random() * 10000,
         cached: i % 3 === 0,
-        success: i % 10 !== 0, // 9 out of 10 succeed
+        retries: 0,
+        timestamp: new Date(),
+        error: i % 10 === 0 ? 'Error' : undefined,
       })
     }
 
