@@ -3,7 +3,7 @@ import type { BuddyBotConfig } from 'buddy-bot'
 const config: BuddyBotConfig = {
   repository: {
     owner: 'stacksjs',
-    name: 'ts-starter',
+    name: 'ts-web-scraper',
     provider: 'github',
     // token: process.env.BUDDY_BOT_TOKEN,
   },
