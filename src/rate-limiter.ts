@@ -90,7 +90,9 @@ export class RateLimiter {
       this.maxTokens = Number.POSITIVE_INFINITY
     }
     else {
-      this.maxTokens = burstSize || Math.max(Math.ceil(tokensPerMs * 1000), 10)
+      // Default burst size is the requests per second, or 1 minimum
+      const defaultBurst = requestsPerSecond || Math.ceil(tokensPerMs * 1000) || 1
+      this.maxTokens = burstSize !== undefined ? burstSize : defaultBurst
     }
 
     this.refillRate = tokensPerMs

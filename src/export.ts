@@ -157,13 +157,17 @@ function exportYAML(data: any, options: ExportOptions): string {
         .map((item) => {
           if (typeof item === 'object' && item !== null) {
             const yaml = toYAML(item, level + 1)
-            const lines = yaml.split('\n')
-            // First line goes right after the dash, rest are indented
-            if (lines.length === 1) {
-              return `\n${indent}- ${lines[0]}`
+            // Filter out empty lines from the split
+            const lines = yaml.split('\n').filter(line => line.length > 0)
+            if (lines.length === 0) {
+              return `\n${indent}- {}`
             }
-            const first = lines[0]
-            const rest = lines.slice(1).map(line => `${indent}  ${line}`).join('\n')
+            // First line goes right after the dash, rest are indented with 2 spaces
+            const first = lines[0].trim()
+            if (lines.length === 1) {
+              return `\n${indent}- ${first}`
+            }
+            const rest = lines.slice(1).map(line => `${indent}  ${line.trim()}`).join('\n')
             return `\n${indent}- ${first}\n${rest}`
           }
           return `\n${indent}- ${toYAML(item, level + 1)}`

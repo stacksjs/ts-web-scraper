@@ -138,9 +138,26 @@ export class PerformanceMonitor {
   recordScrape(metrics: ScrapeMetrics): void {
     this.scrapeMetrics.push(metrics)
 
+    // Also record as request metrics for summary statistics
+    const requestMetric: RequestMetrics = {
+      url: metrics.url,
+      method: 'GET',
+      statusCode: metrics.error ? undefined : 200,
+      duration: metrics.totalDuration,
+      size: metrics.bytesDownloaded,
+      cached: metrics.cached,
+      retries: metrics.retries,
+      error: metrics.error,
+      timestamp: metrics.timestamp,
+    }
+    this.requestMetrics.push(requestMetric)
+
     // Limit metrics
     if (this.options.maxMetrics && this.scrapeMetrics.length > this.options.maxMetrics) {
       this.scrapeMetrics.shift()
+    }
+    if (this.options.maxMetrics && this.requestMetrics.length > this.options.maxMetrics) {
+      this.requestMetrics.shift()
     }
   }
 

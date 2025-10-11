@@ -552,13 +552,13 @@ describe('Edge Cases', () => {
   })
 
   it('should handle null values', () => {
-    const data = [{ id: 1, value: null }]
+    const data = [{ id: 1, value: null, name: 'test' }]
 
     const jsonResult = exportData(data, { format: 'json' })
     const csvResult = exportData(data, { format: 'csv' })
 
     expect(JSON.parse(jsonResult)[0].value).toBe(null)
-    expect(csvResult).toContain(',,') // Empty value for null
+    expect(csvResult).toContain(',,') // Empty value for null in middle field
   })
 
   it('should handle undefined values', () => {

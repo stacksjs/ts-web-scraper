@@ -255,7 +255,12 @@ export class Scraper {
       // Track changes if enabled
       let changed: boolean | undefined
       if (this.contentTracker && data) {
-        changed = await this.contentTracker.hasChanged(url, data)
+        const latest = this.contentTracker.getLatest(url)
+        if (latest) {
+          // Has previous snapshot - check if changed
+          changed = await this.contentTracker.hasChanged(url, data)
+        }
+        // else: No previous snapshot, changed stays undefined
         await this.contentTracker.snapshot(url, data)
       }
 
@@ -305,6 +310,22 @@ export class Scraper {
     catch (error) {
       const totalDuration = performance.now() - startTime
       const err = error as Error
+
+      // Record failed metrics
+      const metrics: ScrapeMetrics = {
+        url,
+        totalDuration,
+        fetchDuration: 0,
+        parseDuration: 0,
+        extractionDuration: 0,
+        itemsExtracted: 0,
+        bytesDownloaded: 0,
+        cached: false,
+        retries: 0,
+        error: err.message || String(error),
+        timestamp: new Date(),
+      }
+      this.monitor.recordScrape(metrics)
 
       return {
         success: false,
@@ -390,7 +411,8 @@ export class Scraper {
         detectPagination: true,
       })
 
-      yield result
+      // Add page number to result
+      yield { ...result, pageNumber: pageNum }
 
       // Get next page
       if (!result.pagination || !hasMorePages(result.pagination)) {
