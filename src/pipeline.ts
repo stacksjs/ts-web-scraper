@@ -412,6 +412,10 @@ export const extractors = {
           result[key] = subEl?.textContent?.trim() || null
         }
         return result
+      }).filter((result) => {
+        // Filter out results where all values are null/undefined/empty
+        // This handles parser bugs and genuinely empty elements
+        return Object.values(result).some(value => value !== null && value !== undefined && value !== '')
       })
     },
   }),

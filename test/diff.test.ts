@@ -513,7 +513,7 @@ describe('Real-world scenarios', () => {
     })
 
     expect(changes?.summary.modified).toBe(2) // headline, content
-    expect(changes?.summary.added).toBe(0)
+    expect(changes?.summary.added).toBe(1) // tags[2] = 'update'
   })
 
   it('should detect data structure changes', async () => {

@@ -326,7 +326,9 @@ export class ContentTracker {
       return
     }
 
-    const filename = `${encodeURIComponent(snapshot.url)}-${snapshot.timestamp.getTime()}.json`
+    // Include UUID to ensure uniqueness even if timestamps collide
+    const uuid = crypto.randomUUID()
+    const filename = `${encodeURIComponent(snapshot.url)}-${snapshot.timestamp.getTime()}-${uuid}.json`
     const filepath = `${this.options.storageDir}/${filename}`
 
     await Bun.write(filepath, JSON.stringify(snapshot, null, 2))

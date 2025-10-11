@@ -66,6 +66,11 @@ function exportCSV(data: any, options: ExportOptions): string {
     ),
   )
 
+  // Handle empty objects (no keys)
+  if (keys.length === 0) {
+    return ''
+  }
+
   // Create header row
   const rows: string[] = [keys.map(escapeCSV).join(',')]
 
@@ -74,7 +79,11 @@ function exportCSV(data: any, options: ExportOptions): string {
     const flat = flattenObject(item)
     const values = keys.map((key) => {
       const value = flat[key]
-      return escapeCSV(value !== undefined ? String(value) : '')
+      // Handle null, undefined, or missing values as empty
+      if (value === null || value === undefined) {
+        return ''
+      }
+      return escapeCSV(String(value))
     })
     rows.push(values.join(','))
   }
@@ -94,7 +103,8 @@ function exportXML(data: any, options: ExportOptions): string {
     const nextSpacing = ' '.repeat((level + 1) * indent)
 
     if (Array.isArray(obj)) {
-      return obj.map(item => toXML(item, name, level)).join('\n')
+      const items = obj.map(item => toXML(item, 'item', level + 1)).join('\n')
+      return `${spacing}<${name}>\n${items}\n${spacing}</${name}>`
     }
 
     if (typeof obj === 'object' && obj !== null) {
@@ -112,8 +122,7 @@ function exportXML(data: any, options: ExportOptions): string {
     return `${spacing}<${name}>${escaped}</${name}>`
   }
 
-  const rootName = Array.isArray(data) ? 'items' : 'item'
-  return declaration + toXML(data, rootName)
+  return declaration + toXML(data, 'root')
 }
 
 /**
@@ -148,7 +157,14 @@ function exportYAML(data: any, options: ExportOptions): string {
         .map((item) => {
           if (typeof item === 'object' && item !== null) {
             const yaml = toYAML(item, level + 1)
-            return `\n${indent}- ${yaml.split('\n').slice(1).join(`\n${indent}  `)}`
+            const lines = yaml.split('\n')
+            // First line goes right after the dash, rest are indented
+            if (lines.length === 1) {
+              return `\n${indent}- ${lines[0]}`
+            }
+            const first = lines[0]
+            const rest = lines.slice(1).map(line => `${indent}  ${line}`).join('\n')
+            return `\n${indent}- ${first}\n${rest}`
           }
           return `\n${indent}- ${toYAML(item, level + 1)}`
         })
@@ -216,7 +232,7 @@ function exportMarkdown(data: any, options: ExportOptions): string {
     return `| ${values.join(' | ')} |`
   })
 
-  return `# Data Export\n\n${header}\n${separator}\n${rows.join('\n')}\n`
+  return `${header}\n${separator}\n${rows.join('\n')}\n`
 }
 
 /**

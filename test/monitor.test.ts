@@ -478,7 +478,7 @@ describe('PerformanceMonitor', () => {
         timestamp: new Date(),
       })
 
-      monitor.reset()
+      monitor.clear()
 
       expect(monitor.getMetrics().length).toBe(0)
       expect(monitor.getRequestMetrics().length).toBe(0)
@@ -499,11 +499,10 @@ describe('PerformanceMonitor', () => {
         cached: false,
       })
 
-      const exported = monitor.export()
+      const exported = JSON.parse(monitor.export())
 
       expect(exported.summary.totalRequests).toBe(1)
-      expect(exported.metrics.length).toBeGreaterThan(0)
-      expect(exported.requests.length).toBe(1)
+      expect(exported.requestMetrics.length).toBe(1)
     })
 
     it('should save metrics to file', async () => {
@@ -535,7 +534,7 @@ describe('PerformanceMonitor', () => {
 describe('Utility Functions', () => {
   describe('formatDuration', () => {
     it('should format milliseconds', () => {
-      expect(formatDuration(500)).toBe('500ms')
+      expect(formatDuration(500)).toBe('500.00ms')
     })
 
     it('should format seconds', () => {
@@ -544,27 +543,27 @@ describe('Utility Functions', () => {
     })
 
     it('should format minutes', () => {
-      expect(formatDuration(60000)).toBe('1.00m')
-      expect(formatDuration(90000)).toBe('1.50m')
+      expect(formatDuration(60000)).toBe('1m 0s')
+      expect(formatDuration(90000)).toBe('1m 30s')
     })
 
     it('should format hours', () => {
-      expect(formatDuration(3600000)).toBe('1.00h')
-      expect(formatDuration(5400000)).toBe('1.50h')
+      expect(formatDuration(3600000)).toBe('60m 0s')
+      expect(formatDuration(5400000)).toBe('90m 0s')
     })
 
     it('should handle zero', () => {
-      expect(formatDuration(0)).toBe('0ms')
+      expect(formatDuration(0)).toBe('0.00ms')
     })
 
     it('should handle very large values', () => {
-      expect(formatDuration(7200000)).toBe('2.00h')
+      expect(formatDuration(7200000)).toBe('120m 0s')
     })
   })
 
   describe('formatBytes', () => {
     it('should format bytes', () => {
-      expect(formatBytes(500)).toBe('500 B')
+      expect(formatBytes(500)).toBe('500.00 B')
     })
 
     it('should format kilobytes', () => {

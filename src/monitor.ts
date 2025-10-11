@@ -45,6 +45,11 @@ export interface MetricsSummary {
   failedRequests: number
   averageDuration: number
   totalDuration: number
+  minDuration: number
+  maxDuration: number
+  p50Duration: number
+  p95Duration: number
+  p99Duration: number
   averageSize: number
   totalSize: number
   cacheHitRate: number
@@ -173,6 +178,11 @@ export class PerformanceMonitor {
         failedRequests: 0,
         averageDuration: 0,
         totalDuration: 0,
+        minDuration: 0,
+        maxDuration: 0,
+        p50Duration: 0,
+        p95Duration: 0,
+        p99Duration: 0,
         averageSize: 0,
         totalSize: 0,
         cacheHitRate: 0,
@@ -187,12 +197,31 @@ export class PerformanceMonitor {
     const totalDuration = requests.reduce((sum, r) => sum + r.duration, 0)
     const totalSize = requests.reduce((sum, r) => sum + (r.size || 0), 0)
 
+    // Calculate durations statistics
+    const durations = requests.map(r => r.duration).sort((a, b) => a - b)
+    const minDuration = durations.length > 0 ? durations[0] : 0
+    const maxDuration = durations.length > 0 ? durations[durations.length - 1] : 0
+
+    // Calculate percentiles
+    const p50Index = Math.ceil(0.50 * durations.length) - 1
+    const p95Index = Math.ceil(0.95 * durations.length) - 1
+    const p99Index = Math.ceil(0.99 * durations.length) - 1
+
+    const p50Duration = durations.length > 0 ? durations[Math.max(0, p50Index)] : 0
+    const p95Duration = durations.length > 0 ? durations[Math.max(0, p95Index)] : 0
+    const p99Duration = durations.length > 0 ? durations[Math.max(0, p99Index)] : 0
+
     return {
       totalRequests: requests.length,
       successfulRequests: successful.length,
       failedRequests: failed.length,
       averageDuration: totalDuration / requests.length,
       totalDuration,
+      minDuration,
+      maxDuration,
+      p50Duration,
+      p95Duration,
+      p99Duration,
       averageSize: totalSize / requests.length,
       totalSize,
       cacheHitRate: cached.length / requests.length,
@@ -399,14 +428,14 @@ export function measure(name?: string) {
  * Format bytes to human readable
  */
 export function formatBytes(bytes: number): string {
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+
   if (bytes === 0) {
     return '0 B'
   }
 
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-
   return `${(bytes / k ** i).toFixed(2)} ${sizes[i]}`
 }
 

@@ -67,14 +67,19 @@ export interface ScraperOptions {
 }
 
 export interface ScrapeResult<T = any> {
+  success: boolean
   url: string
-  html: string
-  document: Document
+  html?: string
+  document?: Document
   data?: T
   pagination?: PaginationInfo
   graphql?: GraphQLDetectionResult
   cached: boolean
-  metrics: ScrapeMetrics
+  duration: number
+  changed?: boolean
+  pageNumber?: number
+  metrics?: ScrapeMetrics
+  error?: Error | string
 }
 
 /**
@@ -141,149 +146,173 @@ export class Scraper {
   ): Promise<ScrapeResult<T>> {
     const startTime = performance.now()
 
-    // Rate limit
-    if (this.rateLimiter) {
-      await this.rateLimiter.throttle()
-    }
-
-    // Check robots.txt
-    if (this.robots) {
-      const allowed = await this.robots.canFetch(url)
-      if (!allowed) {
-        throw new Error(`Blocked by robots.txt: ${url}`)
-      }
-    }
-
-    let html: string
-    let cached = false
-
-    // Try cache first
-    if (this.cache) {
-      const cachedData = await this.cache.get<string>(url)
-      if (cachedData) {
-        html = cachedData.data
-        cached = true
-      }
-    }
-
-    // Fetch if not cached
-    if (!cached) {
-      const fetchStart = performance.now()
-
-      if (this.options.enableClientSideRendering) {
-        const result = await withRetry(
-          () => scrapeClientSide(url, {
-            waitTime: this.options.clientSideWaitTime,
-          }),
-          this.options.retry,
-        )
-        html = result.html
-      }
-      else if (this.sessionManager) {
-        const response = await withRetry(
-          () => this.sessionManager!.fetch(url, {
-            headers: {
-              'User-Agent': this.options.userAgent || 'ts-web-scraper',
-            },
-          }),
-          this.options.retry,
-        )
-        html = await response.text()
-      }
-      else {
-        html = await withRetry(
-          () => fetchHTML(url, {
-            timeout: this.options.timeout,
-            userAgent: this.options.userAgent,
-          }),
-          this.options.retry,
-        )
+    try {
+      // Rate limit
+      if (this.rateLimiter) {
+        await this.rateLimiter.throttle()
       }
 
-      const fetchDuration = performance.now() - fetchStart
-
-      // Cache the result
-      if (this.cache) {
-        await this.cache.set(url, html)
-      }
-
-      this.monitor.recordMetric({
-        name: 'fetch',
-        value: fetchDuration,
-        unit: 'ms',
-        timestamp: new Date(),
-        tags: { url },
-      })
-    }
-
-    // Parse HTML
-    const parseStart = performance.now()
-    const document = parseHTML(html)
-    const parseDuration = performance.now() - parseStart
-
-    // Extract data
-    let data: T | undefined
-    let extractionDuration = 0
-
-    if (options.extract) {
-      const extractStart = performance.now()
-      data = await options.extract(document)
-      extractionDuration = performance.now() - extractStart
-
-      // Validate if schema provided
-      if (options.validate) {
-        const validation = validate(data, options.validate)
-        if (!validation.valid) {
-          const errors = validation.errors.map(e => e.message).join('; ')
-          throw new Error(`Validation failed: ${errors}`)
+      // Check robots.txt
+      if (this.robots) {
+        const allowed = await this.robots.canFetch(url)
+        if (!allowed) {
+          throw new Error(`Blocked by robots.txt: ${url}`)
         }
-        data = validation.data as T
+      }
+
+      let html: string
+      let cached = false
+
+      // Try cache first
+      if (this.cache) {
+        const cachedData = await this.cache.get<string>(url)
+        if (cachedData) {
+          html = cachedData.data
+          cached = true
+        }
+      }
+
+      // Fetch if not cached
+      if (!cached) {
+        const fetchStart = performance.now()
+
+        if (this.options.enableClientSideRendering) {
+          const result = await withRetry(
+            () => scrapeClientSide(url, {
+              waitTime: this.options.clientSideWaitTime,
+            }),
+            this.options.retry,
+          )
+          html = result.html
+        }
+        else if (this.sessionManager) {
+          const response = await withRetry(
+            () => this.sessionManager!.fetch(url, {
+              headers: {
+                'User-Agent': this.options.userAgent || 'ts-web-scraper',
+              },
+            }),
+            this.options.retry,
+          )
+          html = await response.text()
+        }
+        else {
+          html = await withRetry(
+            () => fetchHTML(url, {
+              timeout: this.options.timeout,
+              userAgent: this.options.userAgent,
+            }),
+            this.options.retry,
+          )
+        }
+
+        const fetchDuration = performance.now() - fetchStart
+
+        // Cache the result
+        if (this.cache) {
+          await this.cache.set(url, html)
+        }
+
+        this.monitor.recordMetric({
+          name: 'fetch',
+          value: fetchDuration,
+          unit: 'ms',
+          timestamp: new Date(),
+          tags: { url },
+        })
+      }
+
+      // Parse HTML
+      const parseStart = performance.now()
+      const document = parseHTML(html)
+      const parseDuration = performance.now() - parseStart
+
+      // Extract data
+      let data: T | undefined
+      let extractionDuration = 0
+
+      if (options.extract) {
+        const extractStart = performance.now()
+        data = await options.extract(document)
+        extractionDuration = performance.now() - extractStart
+
+        // Validate if schema provided
+        if (options.validate) {
+          const validation = validate(data, options.validate)
+          if (!validation.valid) {
+            const errors = validation.errors.map(e => e.message).join('; ')
+            throw new Error(`Validation failed: ${errors}`)
+          }
+          data = validation.data as T
+        }
+      }
+      else if (options.selector) {
+        // Simple selector extraction
+        const elements = document.querySelectorAll(options.selector)
+        data = elements.map(el => el.textContent?.trim() || '') as any
       }
 
       // Track changes if enabled
-      if (this.contentTracker) {
+      let changed: boolean | undefined
+      if (this.contentTracker && data) {
+        changed = await this.contentTracker.hasChanged(url, data)
         await this.contentTracker.snapshot(url, data)
       }
+
+      // Detect pagination if requested
+      let pagination: PaginationInfo | undefined
+      if (options.detectPagination) {
+        pagination = detectPagination(html, url)
+      }
+
+      // Detect GraphQL if requested
+      let graphql: GraphQLDetectionResult | undefined
+      if (options.detectGraphQL) {
+        graphql = detectGraphQL(html, url)
+      }
+
+      // Record metrics
+      const totalDuration = performance.now() - startTime
+      const metrics: ScrapeMetrics = {
+        url,
+        totalDuration,
+        fetchDuration: cached ? 0 : totalDuration - parseDuration - extractionDuration,
+        parseDuration,
+        extractionDuration,
+        itemsExtracted: data ? (Array.isArray(data) ? data.length : 1) : 0,
+        bytesDownloaded: html.length,
+        cached,
+        retries: 0,
+        timestamp: new Date(),
+      }
+
+      this.monitor.recordScrape(metrics)
+
+      return {
+        success: true,
+        url,
+        html,
+        document,
+        data,
+        pagination,
+        graphql,
+        cached,
+        duration: totalDuration,
+        changed,
+        metrics,
+      }
     }
+    catch (error) {
+      const totalDuration = performance.now() - startTime
+      const err = error as Error
 
-    // Detect pagination if requested
-    let pagination: PaginationInfo | undefined
-    if (options.detectPagination) {
-      pagination = detectPagination(html, url)
-    }
-
-    // Detect GraphQL if requested
-    let graphql: GraphQLDetectionResult | undefined
-    if (options.detectGraphQL) {
-      graphql = detectGraphQL(html, url)
-    }
-
-    // Record metrics
-    const totalDuration = performance.now() - startTime
-    const metrics: ScrapeMetrics = {
-      url,
-      totalDuration,
-      fetchDuration: cached ? 0 : totalDuration - parseDuration - extractionDuration,
-      parseDuration,
-      extractionDuration,
-      itemsExtracted: data ? (Array.isArray(data) ? data.length : 1) : 0,
-      bytesDownloaded: html.length,
-      cached,
-      retries: 0,
-      timestamp: new Date(),
-    }
-
-    this.monitor.recordScrape(metrics)
-
-    return {
-      url,
-      html,
-      document,
-      data,
-      pagination,
-      graphql,
-      cached,
-      metrics,
+      return {
+        success: false,
+        url,
+        cached: false,
+        duration: totalDuration,
+        error: err.message || String(error),
+      }
     }
   }
 
@@ -412,6 +441,40 @@ export class Scraper {
       summary: this.monitor.getSummary(),
       requests: this.monitor.getRequestMetrics(),
       scrapes: this.monitor.getScrapeMetrics(),
+    }
+  }
+
+  /**
+   * Get performance stats summary
+   */
+  getStats() {
+    return this.monitor.getSummary()
+  }
+
+  /**
+   * Get formatted performance report
+   */
+  getReport(): string {
+    const { createReport } = require('./monitor')
+    return createReport(this.monitor)
+  }
+
+  /**
+   * Get cookies for a URL
+   */
+  getCookies(url: string) {
+    return this.cookieJar?.getCookies(url) || []
+  }
+
+  /**
+   * Clear session cookies
+   */
+  clearSession(): void {
+    if (this.sessionManager) {
+      this.sessionManager.clearSession()
+    }
+    else if (this.cookieJar) {
+      this.cookieJar.clearCookies()
     }
   }
 
