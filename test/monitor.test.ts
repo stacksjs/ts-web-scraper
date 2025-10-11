@@ -678,7 +678,8 @@ describe('Real-World Scenarios', () => {
 
     const summary = monitor.getSummary()
 
-    expect(summary.totalRequests).toBe(10)
+    // recordScrape also creates request metrics, so we get 20 total (10 recordRequest + 10 recordScrape)
+    expect(summary.totalRequests).toBe(20)
     expect(summary.cacheHitRate).toBeGreaterThan(0)
     expect(summary.cacheHitRate).toBeLessThan(1)
     expect(summary.averageDuration).toBeGreaterThan(1000)
