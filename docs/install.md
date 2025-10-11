@@ -1,118 +1,72 @@
-# Install
+# Installation
 
-_This is just an example of the ts-starter docs._
-
-Installing `rpx` is easy. Simply pull it in via your package manager of choice, or download the binary directly.
+Installing ts-web-scraper is easy. Simply pull it in via your package manager of choice.
 
 ## Package Managers
 
-Choose your package manager of choice:
+Choose your package manager:
 
 ::: code-group
 
-```sh [npm]
-npm install --save-dev @stacksjs/rpx
-# npm i -d @stacksjs/rpx
+```sh [bun]
+bun add ts-web-scraper
 
-# or, install globally via
-npm i -g @stacksjs/rpx
+# or, install as a dev dependency
+bun add --dev ts-web-scraper
 ```
 
-```sh [bun]
-bun install --dev @stacksjs/rpx
-# bun add --dev @stacksjs/rpx
-# bun i -d @stacksjs/rpx
+```sh [npm]
+npm install ts-web-scraper
 
-# or, install globally via
-bun add --global @stacksjs/rpx
+# or, install as a dev dependency
+npm install --save-dev ts-web-scraper
 ```
 
 ```sh [pnpm]
-pnpm add --save-dev @stacksjs/rpx
-# pnpm i -d @stacksjs/rpx
+pnpm add ts-web-scraper
 
-# or, install globally via
-pnpm add --global @stacksjs/rpx
+# or, install as a dev dependency
+pnpm add --save-dev ts-web-scraper
 ```
 
 ```sh [yarn]
-yarn add --dev @stacksjs/rpx
-# yarn i -d @stacksjs/rpx
+yarn add ts-web-scraper
 
-# or, install globally via
-yarn global add @stacksjs/rpx
-```
-
-```sh [brew]
-brew install rpx # coming soon
-```
-
-```sh [pkgx]
-pkgx rpx # coming soon
+# or, install as a dev dependency
+yarn add --dev ts-web-scraper
 ```
 
 :::
 
-Read more about how to use it in the Usage section of the documentation.
+## Requirements
 
-## Binaries
+- **Bun** v1.0.0 or higher (recommended)
+- **Node.js** v18.0.0 or higher (also supported)
+- **TypeScript** v5.0.0 or higher (for TypeScript users)
 
-Choose the binary that matches your platform and architecture:
+## Verify Installation
 
-::: code-group
+After installation, verify it's working:
 
-```sh [macOS (arm64)]
-# Download the binary
-curl -L https://github.com/stacksjs/rpx/releases/download/v0.9.1/rpx-darwin-arm64 -o rpx
+```typescript
+import { createScraper } from 'ts-web-scraper'
 
-# Make it executable
-chmod +x rpx
-
-# Move it to your PATH
-mv rpx /usr/local/bin/rpx
+const scraper = createScraper()
+console.log('ts-web-scraper installed successfully!')
 ```
 
-```sh [macOS (x64)]
-# Download the binary
-curl -L https://github.com/stacksjs/rpx/releases/download/v0.9.1/rpx-darwin-x64 -o rpx
+## CLI Installation
 
-# Make it executable
-chmod +x rpx
+ts-web-scraper also comes with a CLI tool:
 
-# Move it to your PATH
-mv rpx /usr/local/bin/rpx
+```bash
+# Install globally
+bun add --global ts-web-scraper
+
+# Or use with bunx without installing
+bunx ts-web-scraper --help
 ```
 
-```sh [Linux (arm64)]
-# Download the binary
-curl -L https://github.com/stacksjs/rpx/releases/download/v0.9.1/rpx-linux-arm64 -o rpx
+## Next Steps
 
-# Make it executable
-chmod +x rpx
-
-# Move it to your PATH
-mv rpx /usr/local/bin/rpx
-```
-
-```sh [Linux (x64)]
-# Download the binary
-curl -L https://github.com/stacksjs/rpx/releases/download/v0.9.1/rpx-linux-x64 -o rpx
-
-# Make it executable
-chmod +x rpx
-
-# Move it to your PATH
-mv rpx /usr/local/bin/rpx
-```
-
-```sh [Windows (x64)]
-# Download the binary
-curl -L https://github.com/stacksjs/rpx/releases/download/v0.9.1/rpx-windows-x64.exe -o rpx.exe
-
-# Move it to your PATH (adjust the path as needed)
-move rpx.exe C:\Windows\System32\rpx.exe
-```
-
-::: tip
-You can also find the `rpx` binaries in GitHub [releases](https://github.com/stacksjs/rpx/releases).
-:::
+Now that you have ts-web-scraper installed, head over to the [Quick Start](/quick-start) guide to start scraping!

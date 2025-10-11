@@ -1,93 +1,101 @@
-<p align="center"><img src="https://github.com/stacksjs/rpx/blob/main/.github/art/cover.jpg?raw=true" alt="Social Card of this repo"></p>
+# Introduction
 
-# A Better Developer Experience
+A powerful, type-safe web scraping library for TypeScript and Bun with **zero external dependencies**.
 
-> A TypeScript Starter Kit that will help you bootstrap your next project without minimal opinion.
+## What is ts-web-scraper?
 
-# bun-ts-starter
+ts-web-scraper is a modern web scraping library built entirely on Bun's native APIs. It provides a comprehensive toolkit for extracting data from both static and client-side rendered websites with maximum performance and minimal footprint.
 
-This is an opinionated TypeScript Starter kit to help kick-start development of your next Bun package.
+## Key Features
 
-## Get Started
+### Zero Dependencies
+Built entirely on Bun native APIs - no external dependencies means faster installs, smaller bundle sizes, and better security.
 
-It's rather simple to get your package development started:
+### Fully Typed
+Complete TypeScript support with type inference ensures type safety throughout your scraping workflows.
 
-```bash
-# you may use this GitHub template or the following command:
-bunx degit stacksjs/ts-starter my-pkg
-cd my-pkg
+### High Performance
+Optimized for speed with native Bun performance. Efficient memory usage and fast execution.
 
- # if you don't have pnpm installed, run `npm i -g pnpm`
-bun i # install all deps
-bun run build # builds the library for production-ready use
+### Rate Limiting
+Built-in token bucket rate limiter with burst support and per-domain limits to respect server resources.
 
-# after you have successfully committed, you may create a "release"
-bun run release # automates git commits, versioning, and changelog generations
-```
+### Smart Caching
+LRU cache with TTL support reduces redundant requests and improves performance.
 
-_Check out the package.json scripts for more commands._
+### Automatic Retries
+Exponential backoff retry logic handles transient failures gracefully.
 
-### Developer Experience (DX)
+### Data Extraction
+Powerful pipeline-based data extraction and transformation with composable steps.
 
-This Starter Kit comes pre-configured with the following:
+### Validation
+Built-in schema validation ensures data quality with comprehensive type checking.
 
-- [Powerful Build Process](https://github.com/oven-sh/bun) - via Bun
-- [Fully Typed APIs](https://www.typescriptlang.org/) - via TypeScript
-- [Documentation-ready](https://vitepress.dev/) - via VitePress
-- [CLI & Binary](https://www.npmjs.com/package/bunx) - via Bun & CAC
-- [Be a Good Commitizen](https://www.npmjs.com/package/git-cz) - pre-configured Commitizen & git-cz setup to simplify semantic git commits, versioning, and changelog generations
-- [Built With Testing In Mind](https://bun.sh/docs/cli/test) - pre-configured unit-testing powered by [Bun](https://bun.sh/docs/cli/test)
-- [Renovate](https://renovatebot.com/) - optimized & automated PR dependency updates
-- [ESLint](https://eslint.org/) - for code linting _(and formatting)_
-- [GitHub Actions](https://github.com/features/actions) - runs your CI _(fixes code style issues, tags releases & creates its changelogs, runs the test suite, etc.)_
+### Monitoring
+Performance metrics and analytics track scraping efficiency and success rates.
 
-## Changelog
+### Change Detection
+Track content changes over time with diff algorithms and snapshot history.
 
-Please see our [releases](https://github.com/stacksjs/stacks/releases) page for more information on what has changed recently.
+### Ethical Scraping
+Robots.txt support, user-agent management, and crawl-delay respect ensure ethical scraping practices.
 
-## Stargazers
+### Session Management
+Cookie jar and session persistence enable authenticated scraping workflows.
 
-[![Stargazers](https://starchart.cc/stacksjs/ts-starter.svg?variant=adaptive)](https://starchart.cc/stacksjs/ts-starter)
+### Multiple Export Formats
+Export data to JSON, CSV, XML, YAML, Markdown, or HTML formats.
 
-## Contributing
+### Pagination Support
+Automatic pagination detection and traversal for multi-page content.
 
-Please review the [Contributing Guide](https://github.com/stacksjs/contributing) for details.
+### Client-Side Rendering
+Support for JavaScript-heavy sites (React, Vue, Next.js) with API endpoint discovery.
 
-## Community
+## Why ts-web-scraper?
 
-For help, discussion about best practices, or any other conversation that would benefit from being searchable:
+### Modern Architecture
+Built from the ground up for Bun and modern JavaScript runtimes, leveraging native APIs for optimal performance.
 
-[Discussions on GitHub](https://github.com/stacksjs/stacks/discussions)
+### Developer Experience
+Intuitive API design with excellent TypeScript support makes scraping tasks straightforward and maintainable.
 
-For casual chit-chat with others using this package:
+### Production Ready
+Comprehensive error handling, retry logic, rate limiting, and monitoring make it suitable for production use.
 
-[Join the Stacks Discord Server](https://discord.gg/stacksjs)
+### Ethical & Compliant
+Built-in robots.txt support and rate limiting encourage responsible scraping practices.
 
-## Postcardware
+### Feature Complete
+From basic scraping to advanced features like GraphQL detection, pagination, and change tracking - everything you need in one package.
 
-Two things are true: Stacks OSS will always stay open-source, and we do love to receive postcards from wherever Stacks is used! 🌍 _We also publish them on our website. And thank you, Spatie_
+## Use Cases
 
-Our address: Stacks.js, 12665 Village Ln #2306, Playa Vista, CA 90094
+- **Data Aggregation**: Collect product prices, reviews, or availability from e-commerce sites
+- **Content Monitoring**: Track changes on news sites, blogs, or documentation
+- **Price Tracking**: Monitor price changes across multiple retailers
+- **Research**: Gather data for analysis, machine learning, or academic research
+- **Testing**: Automated testing of web applications and content validation
+- **Integration**: Extract data from sites without APIs for system integration
 
-## Sponsors
+## Getting Started
 
-We would like to extend our thanks to the following sponsors for funding Stacks development. If you are interested in becoming a sponsor, please reach out to us.
+Ready to start scraping? Head over to the [Installation](/install) guide to get set up, or jump straight into the [Quick Start](/quick-start) tutorial.
 
-- [JetBrains](https://www.jetbrains.com/)
-- [The Solana Foundation](https://solana.com/)
+## Community & Support
 
-## Credits
-
-- [Chris Breuer](https://github.com/chrisbbreuer)
-- [All Contributors](https://github.com/stacksjs/rpx/graphs/contributors)
+- **GitHub**: [stacksjs/ts-web-scraper](https://github.com/stacksjs/ts-web-scraper)
+- **Issues**: [Report bugs or request features](https://github.com/stacksjs/ts-web-scraper/issues)
+- **Discussions**: [Ask questions and share ideas](https://github.com/stacksjs/ts-web-scraper/discussions)
+- **Discord**: [Join the Stacks community](https://discord.gg/stacksjs)
 
 ## License
 
-The MIT License (MIT). Please see [LICENSE](https://github.com/stacksjs/ts-starter/tree/main/LICENSE.md) for more information.
+ts-web-scraper is open-source software licensed under the [MIT License](https://github.com/stacksjs/ts-web-scraper/blob/main/LICENSE.md).
 
-Made with 💙
+## Postcardware
 
-<!-- Badges -->
+We love receiving postcards from wherever ts-web-scraper is being used! 🌍
 
-<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/stacksjs/rpx/main?style=flat-square
-[codecov-href]: https://codecov.io/gh/stacksjs/rpx -->
+Our address: **Stacks.js, 12665 Village Ln #2306, Playa Vista, CA 90094, United States**
