@@ -351,7 +351,7 @@ export const extractors = {
   /**
    * Extract text from elements
    */
-  text: (selector: string) => ({
+  text: (selector: string): PipelineStep<Document, string[]> => ({
     name: `extract-text:${selector}`,
     execute: (doc: Document) => {
       const elements = doc.querySelectorAll(selector)
@@ -362,7 +362,7 @@ export const extractors = {
   /**
    * Extract attributes from elements
    */
-  attr: (selector: string, attribute: string) => ({
+  attr: (selector: string, attribute: string): PipelineStep<Document, string[]> => ({
     name: `extract-attr:${selector}@${attribute}`,
     execute: (doc: Document) => {
       const elements = doc.querySelectorAll(selector)
@@ -373,7 +373,7 @@ export const extractors = {
   /**
    * Extract links
    */
-  links: (selector: string = 'a[href]') => ({
+  links: (selector: string = 'a[href]'): PipelineStep<Document, string[]> => ({
     name: `extract-links:${selector}`,
     execute: (doc: Document) => {
       const elements = doc.querySelectorAll(selector) as HTMLElement[]
@@ -386,7 +386,7 @@ export const extractors = {
   /**
    * Extract images
    */
-  images: (selector: string = 'img[src]') => ({
+  images: (selector: string = 'img[src]'): PipelineStep<Document, Array<{ src: string | null, alt: string | null, title: string | null }>> => ({
     name: `extract-images:${selector}`,
     execute: (doc: Document) => {
       const elements = doc.querySelectorAll(selector) as HTMLElement[]
@@ -402,7 +402,7 @@ export const extractors = {
   /**
    * Extract structured data
    */
-  structured: (selector: string, schema: Record<string, string>) => ({
+  structured: (selector: string, schema: Record<string, string>): PipelineStep<Document, Array<Record<string, any>>> => ({
     name: `extract-structured:${selector}`,
     execute: (doc: Document) => {
       const elements = doc.querySelectorAll(selector)
@@ -424,7 +424,7 @@ export const extractors = {
   /**
    * Extract JSON-LD structured data
    */
-  jsonLd: () => ({
+  jsonLd: (): PipelineStep<Document, any[]> => ({
     name: 'extract-json-ld',
     execute: (doc: Document) => {
       const scripts = doc.querySelectorAll('script[type="application/ld+json"]')

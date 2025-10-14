@@ -12,7 +12,7 @@ describe('Scraper - Unified API', () => {
         extract: doc => ({
           title: doc.querySelector('title')?.textContent,
           heading: doc.querySelector('h1')?.textContent,
-          body: doc.body?.textContent?.slice(0, 100), // Get some body text
+          body: doc.querySelector('body')?.textContent?.slice(0, 100), // Get some body text
         }),
       })
 
@@ -135,8 +135,11 @@ describe('Scraper - Unified API', () => {
       })
 
       expect(result.success).toBe(true)
-      expect(result.data.title).toBe('Test Product')
-      expect(result.data.price).toBe(99.99)
+      expect(result.data).toBeDefined()
+      if (result.data) {
+        expect(result.data.title).toBe('Test Product')
+        expect(result.data.price).toBe(99.99)
+      }
     })
 
     it('should fail validation for invalid data', async () => {
@@ -210,7 +213,7 @@ describe('Scraper - Unified API', () => {
 
       await scraper.scrape('https://example.com')
 
-      const report = scraper.getReport()
+      const report = await scraper.getReport()
 
       expect(report).toContain('Performance Report')
       expect(report).toContain('Total Requests')
@@ -291,7 +294,8 @@ describe('Scraper - Unified API', () => {
 
       const results = await scraper.scrapeMany(urls, {
         extract: () => ({ page: true }),
-      }, { concurrency: 2 })
+        concurrency: 2,
+      })
 
       // Should return all results
       expect(results.length).toBe(3)
@@ -312,7 +316,6 @@ describe('Scraper - Unified API', () => {
         extract: doc => ({
           title: doc.querySelector('title')?.textContent,
         }),
-      }, {
         maxPages: 1,
       })) {
         pages.push(page)
@@ -327,7 +330,7 @@ describe('Scraper - Unified API', () => {
 
       const pages: any[] = []
 
-      for await (const page of scraper.scrapeAll('https://example.com', {}, { maxPages: 2 })) {
+      for await (const page of scraper.scrapeAll('https://example.com', { maxPages: 2 })) {
         pages.push(page)
       }
 
@@ -394,7 +397,7 @@ describe('Scraper - Unified API', () => {
   describe('Cookie and Session Management', () => {
     it('should maintain session across requests', async () => {
       const scraper = createScraper({
-        cookies: { enabled: true },
+        cookies: {},
       })
 
       // First request sets cookies
@@ -410,7 +413,7 @@ describe('Scraper - Unified API', () => {
 
     it('should clear session', async () => {
       const scraper = createScraper({
-        cookies: { enabled: true },
+        cookies: {},
       })
 
       await scraper.scrape('https://example.com')
@@ -427,7 +430,7 @@ describe('Scraper - Unified API', () => {
         rateLimit: { requestsPerSecond: 10 },
         retry: { maxRetries: 2 },
         cache: { enabled: true, ttl: 60000 },
-        cookies: { enabled: true },
+        cookies: {},
         monitor: true,
         trackChanges: true,
       })
@@ -501,7 +504,7 @@ describe('Scraper - Unified API', () => {
         retry: { maxRetries: 3, initialDelay: 1000 },
         cache: { enabled: true, ttl: 3600000, maxSize: 100 },
         respectRobotsTxt: true,
-        cookies: { enabled: true },
+        cookies: {},
         monitor: true,
         trackChanges: true,
       })
@@ -546,7 +549,9 @@ describe('Scraper - Unified API', () => {
 
       expect(result.success).toBe(true)
       expect(result.data).toBeDefined()
-      expect(result.data.title).toBe('Sample Product')
+      if (result.data) {
+        expect(result.data.title).toBe('Sample Product')
+      }
       expect(result.duration).toBeGreaterThan(0)
     }, 10000)
 
@@ -566,7 +571,6 @@ describe('Scraper - Unified API', () => {
             date: article.querySelector('time')?.getAttribute('datetime'),
           }))
         },
-      }, {
         maxPages: 2,
       })) {
         if (page.success && page.data) {
@@ -622,7 +626,7 @@ describe('Scraper - Unified API', () => {
       const result = await scraper.scrape('https://api.example.com/data', {
         extract: (doc) => {
           // Parse JSON from API response
-          const text = doc.body?.textContent
+          const text = doc.querySelector('body')?.textContent
           return text ? JSON.parse(text) : null
         },
       })
@@ -646,7 +650,6 @@ describe('Scraper - Unified API', () => {
           title: 'Product',
           price: 99.99,
         }),
-      }, {
         concurrency: 1,
       })
 
@@ -663,7 +666,7 @@ describe('Scraper - Unified API', () => {
 
       const result = await scraper.scrape('https://example.com', {
         extract: doc => ({
-          content: doc.body?.textContent,
+          content: doc.querySelector('body')?.textContent,
         }),
       })
 

@@ -477,7 +477,11 @@ export class Scraper {
   /**
    * Get performance metrics
    */
-  getMetrics() {
+  getMetrics(): {
+    summary: import('./monitor').MetricsSummary
+    requests: import('./monitor').RequestMetrics[]
+    scrapes: import('./monitor').ScrapeMetrics[]
+  } {
     return {
       summary: this.monitor.getSummary(),
       requests: this.monitor.getRequestMetrics(),
@@ -488,7 +492,7 @@ export class Scraper {
   /**
    * Get performance stats summary
    */
-  getStats() {
+  getStats(): import('./monitor').MetricsSummary {
     return this.monitor.getSummary()
   }
 
@@ -503,7 +507,7 @@ export class Scraper {
   /**
    * Get cookies for a URL
    */
-  getCookies(url: string) {
+  getCookies(url: string): import('./cookies').Cookie[] {
     return this.cookieJar?.getCookies(url) || []
   }
 
@@ -545,7 +549,7 @@ export class Scraper {
   /**
    * Get cache stats
    */
-  getCacheStats() {
+  getCacheStats(): import('./cache').CacheStats | undefined {
     return this.cache?.getStats()
   }
 }

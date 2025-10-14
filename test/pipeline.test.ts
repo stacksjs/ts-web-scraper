@@ -131,8 +131,9 @@ describe('Pipeline transformations', () => {
   })
 
   it('should group by key', async () => {
-    const pipe = pipeline<Array<{ type: string }>, Record<string, any>>()
-      .groupBy('by-type', (item: { type: string }) => item.type)
+    interface Item { type: string, value: number }
+    const pipe = pipeline<Item[], Record<string, Item[]>>()
+      .groupBy('by-type', (item: Item) => item.type)
 
     const result = await pipe.execute([
       { type: 'a', value: 1 },
@@ -140,8 +141,8 @@ describe('Pipeline transformations', () => {
       { type: 'a', value: 3 },
     ])
 
-    expect(result.data.a.length).toBe(2)
-    expect(result.data.b.length).toBe(1)
+    expect(result.data?.a.length).toBe(2)
+    expect(result.data?.b.length).toBe(1)
   })
 
   it('should deduplicate arrays', async () => {
@@ -153,8 +154,9 @@ describe('Pipeline transformations', () => {
   })
 
   it('should deduplicate with key function', async () => {
-    const pipe = pipeline<Array<{ id: number }>, Array<{ id: number }>>()
-      .unique('dedupe-by-id', item => item.id.toString())
+    interface Item { id: number, name: string }
+    const pipe = pipeline<Item[], Item[]>()
+      .unique('dedupe-by-id', (item: Item) => item.id.toString())
 
     const result = await pipe.execute([
       { id: 1, name: 'a' },
@@ -162,13 +164,13 @@ describe('Pipeline transformations', () => {
       { id: 1, name: 'c' },
     ])
 
-    expect(result.data.length).toBe(2)
-    expect(result.data[0].name).toBe('a')
+    expect(result.data?.length).toBe(2)
+    expect(result.data?.[0].name).toBe('a')
   })
 
   it('should sort arrays', async () => {
     const pipe = pipeline<number[], number[]>()
-      .sort('ascending', (a, b) => a - b)
+      .sort('ascending', (a: number, b: number) => a - b)
 
     const result = await pipe.execute([3, 1, 4, 1, 5, 9, 2, 6])
     expect(result.data).toEqual([1, 1, 2, 3, 4, 5, 6, 9])
@@ -187,8 +189,13 @@ describe('Pipeline chaining', () => {
   it('should chain multiple transformations', async () => {
     const pipe = pipeline<number[], number[]>()
       .map('double', (n: number) => n * 2)
-      .filter('positive', (nums: number[]) => nums.every(n => n > 0))
-      .sort('ascending', (a, b) => a - b)
+      .transform('filter-positive', (nums: number[]) => {
+        if (!nums.every(n => n > 0)) {
+          throw new Error('Contains negative numbers')
+        }
+        return nums
+      })
+      .sort('ascending', (a: number, b: number) => a - b)
       .limit('top-5', 5)
 
     const result = await pipe.execute([3, -1, 2, 5, 1])
@@ -196,9 +203,14 @@ describe('Pipeline chaining', () => {
   })
 
   it('should build reusable pipeline', async () => {
-    const extractNumbers = pipeline<number[], number>()
-      .filter('valid', (nums: number[]) => nums.length > 0)
-      .sort('ascending', (a, b) => a - b)
+    const extractNumbers = pipeline<number[], number[]>()
+      .transform('validate-not-empty', (nums: number[]) => {
+        if (nums.length === 0) {
+          throw new Error('Array cannot be empty')
+        }
+        return nums
+      })
+      .sort('ascending', (a: number, b: number) => a - b)
       .transform('sum', (nums: number[]) => nums.reduce((a, b) => a + b, 0))
 
     const execute = extractNumbers.build()
@@ -212,55 +224,55 @@ describe('Pipeline chaining', () => {
 })
 
 describe('Extractors', () => {
-  it('should extract text from elements', () => {
+  it('should extract text from elements', async () => {
     const html = '<div><p>First</p><p>Second</p></div>'
     const doc = parseHTML(html)
 
     const extractor = extractors.text('p')
-    const result = extractor.execute(doc)
+    const result = await extractor.execute(doc)
 
     expect(result).toEqual(['First', 'Second'])
   })
 
-  it('should extract attributes', () => {
+  it('should extract attributes', async () => {
     const html = '<div><a href="/page1">Link 1</a><a href="/page2">Link 2</a></div>'
     const doc = parseHTML(html)
 
     const extractor = extractors.attr('a', 'href')
-    const result = extractor.execute(doc)
+    const result = await extractor.execute(doc)
 
     expect(result).toEqual(['/page1', '/page2'])
   })
 
-  it('should extract links', () => {
+  it('should extract links', async () => {
     const html = '<div><a href="/page1">Link</a><a href="/page2">Link</a></div>'
     const doc = parseHTML(html)
 
     const extractor = extractors.links()
-    const result = extractor.execute(doc)
+    const result = await extractor.execute(doc)
 
     // Filter out empty hrefs from document structure
-    const validLinks = result.filter(link => link && link !== '')
+    const validLinks = result.filter((link: string) => link && link !== '')
     expect(validLinks.length).toBeGreaterThanOrEqual(2)
     expect(validLinks).toContain('/page1')
     expect(validLinks).toContain('/page2')
   })
 
-  it('should extract images', () => {
+  it('should extract images', async () => {
     const html = '<div><img src="/img1.jpg" alt="Image 1"><img src="/img2.jpg" alt="Image 2"></div>'
     const doc = parseHTML(html)
 
     const extractor = extractors.images()
-    const result = extractor.execute(doc)
+    const result = await extractor.execute(doc)
 
     // Filter out images without src
-    const validImages = result.filter(img => img.src && img.src !== '')
+    const validImages = result.filter((img: { src: string | null, alt: string | null, title: string | null }) => img.src && img.src !== '')
     expect(validImages.length).toBeGreaterThanOrEqual(2)
     expect(validImages[0].src).toBe('/img1.jpg')
     expect(validImages[0].alt).toBe('Image 1')
   })
 
-  it('should extract structured data', () => {
+  it('should extract structured data', async () => {
     const html = `
       <div class="product">
         <h2 class="name">Product 1</h2>
@@ -278,14 +290,14 @@ describe('Extractors', () => {
       price: '.price',
     })
 
-    const result = extractor.execute(doc)
+    const result = await extractor.execute(doc)
 
     expect(result.length).toBe(2)
     expect(result[0].name).toBe('Product 1')
     expect(result[0].price).toBe('$10')
   })
 
-  it('should extract JSON-LD', () => {
+  it('should extract JSON-LD', async () => {
     const html = `
       <script type="application/ld+json">
       { "name": "Product", "price": 99 }
@@ -297,14 +309,14 @@ describe('Extractors', () => {
     const doc = parseHTML(html)
 
     const extractor = extractors.jsonLd()
-    const result = extractor.execute(doc)
+    const result = await extractor.execute(doc)
 
     // Filter out null/undefined values
-    const validResults = result.filter(r => r != null)
+    const validResults = result.filter((r: any) => r != null)
     expect(validResults.length).toBeGreaterThanOrEqual(2)
 
-    const productData = validResults.find(r => r.name === 'Product')
-    const authorData = validResults.find(r => r.author === 'John Doe')
+    const productData = validResults.find((r: any) => r.name === 'Product')
+    const authorData = validResults.find((r: any) => r.author === 'John Doe')
 
     expect(productData).toBeDefined()
     expect(productData.name).toBe('Product')
@@ -312,7 +324,7 @@ describe('Extractors', () => {
     expect(authorData.author).toBe('John Doe')
   })
 
-  it('should handle invalid JSON-LD gracefully', () => {
+  it('should handle invalid JSON-LD gracefully', async () => {
     const html = `
       <script type="application/ld+json">
       { invalid json }
@@ -321,7 +333,7 @@ describe('Extractors', () => {
     const doc = parseHTML(html)
 
     const extractor = extractors.jsonLd()
-    const result = extractor.execute(doc)
+    const result = await extractor.execute(doc)
 
     expect(result.length).toBe(0)
   })
@@ -445,12 +457,12 @@ describe('Complex pipelines', () => {
     const result = await extractProducts.execute(doc)
 
     expect(result.success).toBe(true)
-    expect(result.data.length).toBe(3)
+    expect(result.data?.length).toBe(3)
     // Verify all products have valid ratings
-    expect(result.data.every((p: any) => p.rating >= 4.0)).toBe(true)
+    expect(result.data?.every((p: any) => p.rating >= 4.0)).toBe(true)
     // Check cheapest first
-    expect(result.data[0].name).toBe('Mouse')
-    expect(result.data[0].price).toBe(29)
+    expect(result.data?.[0].name).toBe('Mouse')
+    expect(result.data?.[0].price).toBe(29)
   })
 
   it('should handle blog post extraction with pagination', async () => {
@@ -473,7 +485,7 @@ describe('Complex pipelines', () => {
     const result = await extractPosts.execute(doc)
 
     expect(result.success).toBe(true)
-    expect(result.data.length).toBe(2)
-    expect(result.data[0].title).toBe('Post 2') // Newest first
+    expect(result.data?.length).toBe(2)
+    expect(result.data?.[0].title).toBe('Post 2') // Newest first
   })
 })

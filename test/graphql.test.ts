@@ -279,7 +279,7 @@ describe('GraphQLClient', () => {
 
 describe('GraphQL types', () => {
   it('should handle GraphQL response with data', () => {
-    const response = {
+    const response: { data: { user: { id: string, name: string } }, errors?: any[] } = {
       data: {
         user: {
           id: '1',

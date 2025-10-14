@@ -243,7 +243,14 @@ export class RetryBudget {
   /**
    * Get statistics
    */
-  getStats() {
+  getStats(): {
+    totalRetries: number
+    successfulRetries: number
+    failedRetries: number
+    elapsed: number
+    remaining: number
+    canRetry: boolean
+  } {
     return {
       totalRetries: this.totalRetries,
       successfulRetries: this.successfulRetries,

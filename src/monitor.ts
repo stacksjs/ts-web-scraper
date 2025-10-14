@@ -390,12 +390,12 @@ export function monitored<T extends (...args: any[]) => any>(
 /**
  * Performance decorator
  */
-export function measure(name?: string) {
+export function measure(name?: string): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor {
   return function (
     target: any,
     propertyKey: string,
     descriptor: PropertyDescriptor,
-  ) {
+  ): PropertyDescriptor {
     const originalMethod = descriptor.value
     const metricName = name || `${target.constructor.name}.${propertyKey}`
 

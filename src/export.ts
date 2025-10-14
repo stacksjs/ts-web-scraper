@@ -386,7 +386,7 @@ export async function saveExport(
 /**
  * Create an exporter function
  */
-export function createExporter(defaultOptions: Partial<ExportOptions> = {}) {
+export function createExporter(defaultOptions: Partial<ExportOptions> = {}): (data: any, options?: Partial<ExportOptions>) => string {
   return (data: any, options?: Partial<ExportOptions>) => {
     const merged = { ...defaultOptions, ...options, format: options?.format || defaultOptions.format || 'json' }
     return exportData(data, merged as ExportOptions)

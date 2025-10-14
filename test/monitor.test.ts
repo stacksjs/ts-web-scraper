@@ -73,6 +73,7 @@ describe('PerformanceMonitor', () => {
         duration: 1234,
         size: 50000,
         cached: false,
+        timestamp: new Date(),
       })
 
       const requests = monitor.getRequestMetrics()
@@ -91,6 +92,7 @@ describe('PerformanceMonitor', () => {
         duration: 1234,
         size: 50000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordRequest({
@@ -100,6 +102,7 @@ describe('PerformanceMonitor', () => {
         duration: 5,
         size: 50000,
         cached: true,
+        timestamp: new Date(),
       })
 
       const summary = monitor.getSummary()
@@ -116,7 +119,8 @@ describe('PerformanceMonitor', () => {
         duration: 1234,
         size: 0,
         cached: false,
-        error: new Error('Server error'),
+        error: 'Server error',
+        timestamp: new Date(),
       })
 
       const summary = monitor.getSummary()
@@ -134,6 +138,7 @@ describe('PerformanceMonitor', () => {
         duration: 100,
         size: 1000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordRequest({
@@ -143,6 +148,7 @@ describe('PerformanceMonitor', () => {
         duration: 200,
         size: 500,
         cached: false,
+        timestamp: new Date(),
       })
 
       const requests = monitor.getRequestMetrics()
@@ -160,6 +166,7 @@ describe('PerformanceMonitor', () => {
         duration: 100,
         size: 1000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordRequest({
@@ -169,6 +176,7 @@ describe('PerformanceMonitor', () => {
         duration: 100,
         size: 5000,
         cached: false,
+        timestamp: new Date(),
       })
 
       const summary = monitor.getSummary()
@@ -183,10 +191,15 @@ describe('PerformanceMonitor', () => {
 
       monitor.recordScrape({
         url: 'https://example.com',
-        duration: 2000,
+        totalDuration: 2000,
+        fetchDuration: 1000,
+        parseDuration: 500,
+        extractionDuration: 500,
         itemsExtracted: 10,
+        bytesDownloaded: 50000,
         cached: false,
-        success: true,
+        retries: 0,
+        timestamp: new Date(),
       })
 
       const scrapes = monitor.getScrapeMetrics()
@@ -199,24 +212,34 @@ describe('PerformanceMonitor', () => {
 
       monitor.recordScrape({
         url: 'https://example.com/1',
-        duration: 1000,
+        totalDuration: 1000,
+        fetchDuration: 500,
+        parseDuration: 250,
+        extractionDuration: 250,
         itemsExtracted: 10,
+        bytesDownloaded: 50000,
         cached: false,
-        success: true,
+        retries: 0,
+        timestamp: new Date(),
       })
 
       monitor.recordScrape({
         url: 'https://example.com/2',
-        duration: 1000,
+        totalDuration: 1000,
+        fetchDuration: 500,
+        parseDuration: 250,
+        extractionDuration: 250,
         itemsExtracted: 0,
+        bytesDownloaded: 0,
         cached: false,
-        success: false,
-        error: new Error('Parse error'),
+        retries: 0,
+        error: 'Parse error',
+        timestamp: new Date(),
       })
 
       const scrapes = monitor.getScrapeMetrics()
-      const successful = scrapes.filter(s => s.success).length
-      const failed = scrapes.filter(s => !s.success).length
+      const successful = scrapes.filter(s => !s.error).length
+      const failed = scrapes.filter(s => s.error).length
 
       expect(successful).toBe(1)
       expect(failed).toBe(1)
@@ -227,18 +250,28 @@ describe('PerformanceMonitor', () => {
 
       monitor.recordScrape({
         url: 'https://example.com/1',
-        duration: 1000,
+        totalDuration: 1000,
+        fetchDuration: 500,
+        parseDuration: 250,
+        extractionDuration: 250,
         itemsExtracted: 10,
+        bytesDownloaded: 50000,
         cached: false,
-        success: true,
+        retries: 0,
+        timestamp: new Date(),
       })
 
       monitor.recordScrape({
         url: 'https://example.com/2',
-        duration: 1000,
+        totalDuration: 1000,
+        fetchDuration: 500,
+        parseDuration: 250,
+        extractionDuration: 250,
         itemsExtracted: 25,
+        bytesDownloaded: 50000,
         cached: false,
-        success: true,
+        retries: 0,
+        timestamp: new Date(),
       })
 
       const scrapes = monitor.getScrapeMetrics()
@@ -259,6 +292,7 @@ describe('PerformanceMonitor', () => {
         duration: 1000,
         size: 5000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordRequest({
@@ -268,6 +302,7 @@ describe('PerformanceMonitor', () => {
         duration: 2000,
         size: 3000,
         cached: true,
+        timestamp: new Date(),
       })
 
       const summary = monitor.getSummary()
@@ -296,6 +331,7 @@ describe('PerformanceMonitor', () => {
           duration,
           size: 1000,
           cached: false,
+          timestamp: new Date(),
         })
       }
 
@@ -317,6 +353,7 @@ describe('PerformanceMonitor', () => {
         duration: 100,
         size: 1000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordRequest({
@@ -326,6 +363,7 @@ describe('PerformanceMonitor', () => {
         duration: 1000,
         size: 1000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordRequest({
@@ -335,6 +373,7 @@ describe('PerformanceMonitor', () => {
         duration: 500,
         size: 1000,
         cached: false,
+        timestamp: new Date(),
       })
 
       const summary = monitor.getSummary()
@@ -461,14 +500,20 @@ describe('PerformanceMonitor', () => {
         duration: 1000,
         size: 5000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordScrape({
         url: 'https://example.com',
-        duration: 2000,
+        totalDuration: 2000,
+        fetchDuration: 1000,
+        parseDuration: 500,
+        extractionDuration: 500,
         itemsExtracted: 10,
+        bytesDownloaded: 50000,
         cached: false,
-        success: true,
+        retries: 0,
+        timestamp: new Date(),
       })
 
       monitor.recordMetric({
@@ -497,6 +542,7 @@ describe('PerformanceMonitor', () => {
         duration: 1000,
         size: 5000,
         cached: false,
+        timestamp: new Date(),
       })
 
       const exported = JSON.parse(monitor.export())
@@ -515,6 +561,7 @@ describe('PerformanceMonitor', () => {
         duration: 1000,
         size: 5000,
         cached: false,
+        timestamp: new Date(),
       })
 
       const tmpPath = `/tmp/test-metrics-${Date.now()}.json`
@@ -601,6 +648,7 @@ describe('Utility Functions', () => {
         duration: 1234,
         size: 50000,
         cached: false,
+        timestamp: new Date(),
       })
 
       monitor.recordRequest({
@@ -610,6 +658,7 @@ describe('Utility Functions', () => {
         duration: 5,
         size: 50000,
         cached: true,
+        timestamp: new Date(),
       })
 
       const report = createReport(monitor)
@@ -640,6 +689,7 @@ describe('Utility Functions', () => {
           duration: i * 10,
           size: 1000,
           cached: false,
+          timestamp: new Date(),
         })
       }
 
@@ -665,6 +715,7 @@ describe('Real-World Scenarios', () => {
         duration: 1000 + Math.random() * 500,
         size: 50000 + Math.random() * 10000,
         cached: i % 3 === 0, // Every 3rd request is cached
+        timestamp: new Date(),
       })
 
       monitor.recordScrape({
@@ -704,6 +755,7 @@ describe('Real-World Scenarios', () => {
         duration: i * 100, // Increasing duration
         size: 5000,
         cached: false,
+        timestamp: new Date(),
       })
     }
 
@@ -726,6 +778,7 @@ describe('Real-World Scenarios', () => {
         duration: 1000,
         size: 5000,
         cached: false,
+        timestamp: new Date(),
       })
     }
 
@@ -738,7 +791,8 @@ describe('Real-World Scenarios', () => {
         duration: 1000,
         size: 0,
         cached: false,
-        error: new Error('Server error'),
+        error: 'Server error',
+        timestamp: new Date(),
       })
     }
 
@@ -769,6 +823,7 @@ describe('Real-World Scenarios', () => {
         duration: 1000,
         size: 50000,
         cached: false,
+        timestamp: new Date(),
       })
     }
 
@@ -781,6 +836,7 @@ describe('Real-World Scenarios', () => {
         duration: 5,
         size: 50000,
         cached: true,
+        timestamp: new Date(),
       })
     }
 
@@ -804,6 +860,7 @@ describe('Real-World Scenarios', () => {
         duration: 1000,
         size: 50000,
         cached: false,
+        timestamp: new Date(),
       })
     }
 
@@ -825,6 +882,7 @@ describe('Edge Cases', () => {
       duration: 0.5,
       size: 100,
       cached: true,
+      timestamp: new Date(),
     })
 
     const summary = monitor.getSummary()
@@ -843,6 +901,7 @@ describe('Edge Cases', () => {
       duration: 60000, // 1 minute
       size: 100000,
       cached: false,
+      timestamp: new Date(),
     })
 
     const summary = monitor.getSummary()
@@ -861,6 +920,7 @@ describe('Edge Cases', () => {
       duration: 5000,
       size: 100000000, // 100MB
       cached: false,
+      timestamp: new Date(),
     })
 
     const summary = monitor.getSummary()
@@ -879,6 +939,7 @@ describe('Edge Cases', () => {
       duration: 100,
       size: 0,
       cached: false,
+      timestamp: new Date(),
     })
 
     const summary = monitor.getSummary()
@@ -899,6 +960,7 @@ describe('Edge Cases', () => {
         duration: Math.random() * 1000,
         size: Math.random() * 100000,
         cached: Math.random() > 0.5,
+        timestamp: new Date(),
       })
     }
 
