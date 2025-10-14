@@ -74,7 +74,7 @@ describe('Retry Logic', () => {
         },
       )
     }
-    catch (error) {
+    catch {
       expect(attempts).toBe(3) // Initial + 2 retries
     }
   })
@@ -100,7 +100,7 @@ describe('Retry Logic', () => {
         },
       )
     }
-    catch (error) {
+    catch {
       // Check delays are increasing (exponentially)
       expect(delays.length).toBe(3)
 
@@ -123,11 +123,11 @@ describe('Retry Logic', () => {
         {
           maxRetries: 5,
           initialDelay: 10,
-          shouldRetry: (error, attempt) => attempt < 2, // Only retry once
+          shouldRetry: (_error, attempt) => attempt < 2, // Only retry once
         },
       )
     }
-    catch (error) {
+    catch {
       expect(attempts).toBe(2) // Initial + 1 retry
     }
   })
@@ -147,7 +147,7 @@ describe('Retry Logic', () => {
       {
         maxRetries: 3,
         initialDelay: 10,
-        onRetry: (error, attempt, delay) => {
+        onRetry: (_error, attempt, _delay) => {
           retries.push(attempt)
         },
       },
@@ -208,7 +208,7 @@ describe('Retry Logic', () => {
         },
       )
     }
-    catch (error) {
+    catch {
       expect(attempts).toBeGreaterThan(1) // Should retry
     }
   })
@@ -231,7 +231,7 @@ describe('Retry Logic', () => {
         },
       )
     }
-    catch (error) {
+    catch {
       expect(attempts).toBe(1) // Should not retry
     }
   })

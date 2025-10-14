@@ -362,7 +362,7 @@ function isValidEmail(email: string): boolean {
  */
 function isValidUrl(url: string): boolean {
   try {
-    new URL(url)
+    const _parsed = new URL(url)
     return true
   }
   catch {

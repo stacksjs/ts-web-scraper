@@ -83,7 +83,7 @@ const extractPrices = pipeline()
 
   // 3. Filter valid prices
   .filter('valid', prices =>
-    prices.every(p => !isNaN(p) && p > 0))
+    prices.every(p => !Number.isNaN(p) && p > 0))
 
   // 4. Sort by price
   .sort('ascending', (a, b) => a - b)

@@ -101,13 +101,7 @@ export class RateLimiter {
     this.debug = debug
 
     if (this.debug) {
-      console.log('[RateLimiter] Initialized:', {
-        maxTokens: this.maxTokens,
-        refillRate: this.refillRate,
-        requestsPerSecond,
-        requestsPerMinute,
-        requestsPerHour,
-      })
+      // Debug: Initialized with maxTokens, refillRate, requestsPerSecond, etc.
     }
   }
 
@@ -127,11 +121,7 @@ export class RateLimiter {
     this.lastRefill = now
 
     if (this.debug && tokensToAdd > 0) {
-      console.log('[RateLimiter] Refilled:', {
-        tokensToAdd,
-        currentTokens: this.tokens,
-        timePassed,
-      })
+      // Debug: Refilled tokens
     }
   }
 
@@ -152,9 +142,7 @@ export class RateLimiter {
     if (this.tokens >= 1) {
       this.tokens -= 1
       if (this.debug) {
-        console.log('[RateLimiter] Token consumed:', {
-          remainingTokens: this.tokens,
-        })
+        // Debug: Token consumed
       }
       return
     }
@@ -165,11 +153,7 @@ export class RateLimiter {
     const waitTime = Math.ceil(tokensNeeded / this.refillRate)
 
     if (this.debug) {
-      console.log('[RateLimiter] Throttling:', {
-        waitTime,
-        tokensNeeded,
-        currentTokens: this.tokens,
-      })
+      // Debug: Throttling with waitTime
     }
 
     await new Promise(resolve => setTimeout(resolve, waitTime))
@@ -254,7 +238,7 @@ export class RateLimiter {
     this.throttledRequests = 0
 
     if (this.debug) {
-      console.log('[RateLimiter] Reset')
+      // Debug: Reset
     }
   }
 }

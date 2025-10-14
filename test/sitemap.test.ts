@@ -35,7 +35,7 @@ const mockSitemapIndexXML = `<?xml version="1.0" encoding="UTF-8"?>
   </sitemap>
 </sitemapindex>`
 
-const mockRobotsTxt = `User-agent: *
+const _mockRobotsTxt = `User-agent: *
 Disallow: /admin
 Sitemap: https://example.com/sitemap.xml
 Sitemap: https://example.com/sitemap-news.xml`

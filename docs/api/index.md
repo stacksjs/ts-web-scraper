@@ -12,16 +12,16 @@ Creates a new scraper instance with optional configuration.
 import { createScraper } from 'ts-web-scraper'
 
 const scraper = createScraper({
-  rateLimit?: RateLimiterOptions
-  retry?: RetryOptions
-  cache?: CacheOptions
-  respectRobotsTxt?: boolean
-  cookies?: CookieJarOptions
-  monitor?: boolean
-  trackChanges?: boolean
-  maxSnapshots?: number
-  timeout?: number
-  userAgent?: string
+  rateLimit: { requestsPerSecond: 2 },
+  retry: { maxRetries: 3, initialDelay: 1000 },
+  cache: { enabled: true, ttl: 3600000 },
+  respectRobotsTxt: true,
+  cookies: { persistPath: './cookies.json' },
+  monitor: true,
+  trackChanges: true,
+  maxSnapshots: 10,
+  timeout: 30000,
+  userAgent: 'MyBot/1.0'
 })
 ```
 
@@ -37,11 +37,14 @@ Scrape a single URL and extract data.
 
 ```typescript
 const result = await scraper.scrape('https://example.com', {
-  extract?: (doc: Document) => T | Promise<T>
-  selector?: string
-  validate?: Schema
-  detectPagination?: boolean
-  detectGraphQL?: boolean
+  extract: doc => ({
+    title: doc.querySelector('h1')?.textContent,
+    links: Array.from(doc.querySelectorAll('a')).map(a => a.href)
+  }),
+  selector: 'body',
+  validate: { title: { type: 'string', required: true } },
+  detectPagination: true,
+  detectGraphQL: true
 })
 ```
 
@@ -65,7 +68,7 @@ Scrape multiple URLs concurrently.
 ```typescript
 const results = await scraper.scrapeMany(
   ['https://example.com/1', 'https://example.com/2'],
-  { extract: (doc) => ({ ... }) },
+  { extract: doc => ({ title: doc.querySelector('h1')?.textContent }) },
   { concurrency: 5 }
 )
 ```
@@ -76,7 +79,7 @@ Auto-paginate and scrape all pages.
 
 ```typescript
 for await (const page of scraper.scrapeAll('https://example.com', {
-  extract: (doc) => ({ ... })
+  extract: doc => ({ title: doc.querySelector('h1')?.textContent })
 }, {
   maxPages: 10,
   delay: 1000
@@ -224,8 +227,8 @@ Export data to various formats.
 import { exportData } from 'ts-web-scraper'
 
 const result = exportData(data, {
-  format: 'json' | 'csv' | 'xml' | 'yaml' | 'markdown' | 'html',
-  pretty?: boolean
+  format: 'json',
+  pretty: true
 })
 ```
 

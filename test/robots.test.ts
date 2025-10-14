@@ -19,7 +19,7 @@ Sitemap: https://example.com/sitemap.xml
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     expect(parsed.rules.length).toBe(1)
     expect(parsed.rules[0].userAgent).toBe('*')
@@ -45,7 +45,7 @@ Disallow: /admin/
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     expect(parsed.rules.length).toBe(2)
     expect(parsed.rules[0].userAgent).toBe('Googlebot')
@@ -66,7 +66,7 @@ Disallow: /admin/
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     expect(parsed.rules[0].crawlDelay).toBe(2000) // Converted to ms
   })
@@ -85,7 +85,7 @@ Disallow: /admin/ # don't crawl admin
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     expect(parsed.rules.length).toBe(1)
     expect(parsed.rules[0].userAgent).toBe('*')
@@ -108,7 +108,7 @@ Disallow: /admin/
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     expect(parsed.rules.length).toBe(1)
     expect(parsed.rules[0].disallow).toContain('/admin/')
@@ -127,7 +127,7 @@ Disallow: /admin
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // @ts-expect-error accessing private method for testing
     expect(parser.matchesPattern('/admin', '/admin')).toBe(true)
@@ -153,7 +153,7 @@ Disallow: /temp*
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // @ts-expect-error accessing private method for testing
     expect(parser.matchesPattern('/document.pdf', '/*.pdf$')).toBe(true)
@@ -184,7 +184,7 @@ Allow: /private/public/
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // @ts-expect-error accessing private method
     expect(parser.isAllowedByRules('/private/secret', parsed)).toBe(false)
@@ -205,7 +205,7 @@ Disallow: /admin/
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // @ts-expect-error accessing private method
     expect(parser.isAllowedByRules('/admin/', parsed)).toBe(true)
@@ -227,7 +227,7 @@ Disallow: /admin/
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // @ts-expect-error accessing private method
     const rule = parser.findMatchingRule('Googlebot', parsed)
@@ -251,7 +251,7 @@ Disallow: /admin/
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // @ts-expect-error accessing private method
     const rule = parser.findMatchingRule('TestBot', parsed)
@@ -272,7 +272,7 @@ Disallow: /
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // @ts-expect-error accessing private method
     expect(parser.isAllowedByRules('/', parsed)).toBe(false)
@@ -293,7 +293,7 @@ Disallow:
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     // Empty disallow means allow everything
     // @ts-expect-error accessing private method
@@ -316,7 +316,7 @@ Sitemap: https://example.com/sitemap-news.xml
       timeout: 5000,
     })
 
-    const parsed = parser.parse(content)
+    const _parsed = parser.parse(content)
 
     expect(parsed.sitemaps.length).toBe(2)
     expect(parsed.sitemaps).toContain('https://example.com/sitemap.xml')

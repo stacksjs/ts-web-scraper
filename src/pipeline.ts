@@ -124,15 +124,15 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
     name: string,
     fn: (item: TItem, index: number) => TItemOut | Promise<TItemOut>,
   ): ExtractionPipeline<TIn, TItemOut[]> {
-    return this.step({
+    return this.step<TItemOut[]>({
       name,
-      execute: async (input: TItem[]) => {
+      execute: async (input: TOut) => {
         if (!Array.isArray(input)) {
           throw new TypeError('Input must be an array')
         }
-        return Promise.all(input.map((item, index) => fn(item, index)))
+        return Promise.all((input as TItem[]).map((item, index) => fn(item, index)))
       },
-    }) as any
+    })
   }
 
   /**
@@ -142,16 +142,16 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
     name: string,
     fn: (item: TItem, index: number) => TItemOut[] | Promise<TItemOut[]>,
   ): ExtractionPipeline<TIn, TItemOut[]> {
-    return this.step({
+    return this.step<TItemOut[]>({
       name,
-      execute: async (input: TItem[]) => {
+      execute: async (input: TOut) => {
         if (!Array.isArray(input)) {
           throw new TypeError('Input must be an array')
         }
-        const results = await Promise.all(input.map((item, index) => fn(item, index)))
+        const results = await Promise.all((input as TItem[]).map((item, index) => fn(item, index)))
         return results.flat()
       },
-    }) as any
+    })
   }
 
   /**
@@ -161,15 +161,15 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
     name: string,
     keyFn: (item: TItem) => string,
   ): ExtractionPipeline<TIn, Record<string, TItem[]>> {
-    return this.step({
+    return this.step<Record<string, TItem[]>>({
       name,
-      execute: (input: TItem[]) => {
+      execute: (input: TOut) => {
         if (!Array.isArray(input)) {
           throw new TypeError('Input must be an array')
         }
 
         const groups: Record<string, TItem[]> = {}
-        for (const item of input) {
+        for (const item of input as TItem[]) {
           const key = keyFn(item)
           if (!groups[key]) {
             groups[key] = []
@@ -178,7 +178,7 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
         }
         return groups
       },
-    }) as any
+    })
   }
 
   /**
@@ -188,16 +188,17 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
     name: string,
     keyFn?: (item: TItem) => string,
   ): ExtractionPipeline<TIn, TItem[]> {
-    return this.step({
+    return this.step<TItem[]>({
       name,
-      execute: (input: TItem[]) => {
+      execute: (input: TOut) => {
         if (!Array.isArray(input)) {
           throw new TypeError('Input must be an array')
         }
 
+        const arr = input as TItem[]
         if (keyFn) {
           const seen = new Set<string>()
-          return input.filter((item) => {
+          return arr.filter((item) => {
             const key = keyFn(item)
             if (seen.has(key)) {
               return false
@@ -207,9 +208,9 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
           })
         }
 
-        return Array.from(new Set(input))
+        return Array.from(new Set(arr))
       },
-    }) as any
+    })
   }
 
   /**
@@ -219,28 +220,28 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
     name: string,
     compareFn: (a: TItem, b: TItem) => number,
   ): ExtractionPipeline<TIn, TItem[]> {
-    return this.step({
+    return this.step<TItem[]>({
       name,
-      execute: (input: TItem[]) => {
+      execute: (input: TOut) => {
         if (!Array.isArray(input)) {
           throw new TypeError('Input must be an array')
         }
-        return [...input].sort(compareFn)
+        return [...(input as TItem[])].sort(compareFn)
       },
-    }) as any
+    })
   }
 
   /**
    * Add a limiting step
    */
   limit(name: string, count: number): ExtractionPipeline<TIn, TOut> {
-    return this.step({
+    return this.step<TOut>({
       name,
-      execute: (input: any[]) => {
+      execute: (input: TOut) => {
         if (!Array.isArray(input)) {
           throw new TypeError('Input must be an array')
         }
-        return input.slice(0, count)
+        return (input as any[]).slice(0, count) as TOut
       },
     })
   }
@@ -298,7 +299,7 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
             })
             continue
           }
-          catch (recoveryError) {
+          catch {
             // Error handler failed
           }
         }

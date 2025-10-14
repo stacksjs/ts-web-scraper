@@ -49,7 +49,7 @@ function exportJSON(data: any, options: ExportOptions): string {
 /**
  * Export to CSV
  */
-function exportCSV(data: any, options: ExportOptions): string {
+function exportCSV(data: any, _options: ExportOptions): string {
   // Handle single object
   if (!Array.isArray(data)) {
     data = [data]
@@ -60,8 +60,8 @@ function exportCSV(data: any, options: ExportOptions): string {
   }
 
   // Get all unique keys
-  const keys = Array.from(
-    new Set(
+  const keys: string[] = Array.from(
+    new Set<string>(
       data.flatMap((item: any) => Object.keys(flattenObject(item))),
     ),
   )
@@ -100,7 +100,7 @@ function exportXML(data: any, options: ExportOptions): string {
 
   function toXML(obj: any, name: string, level: number = 0): string {
     const spacing = ' '.repeat(level * indent)
-    const nextSpacing = ' '.repeat((level + 1) * indent)
+    const _nextSpacing = ' '.repeat((level + 1) * indent)
 
     if (Array.isArray(obj)) {
       const items = obj.map(item => toXML(item, 'item', level + 1)).join('\n')
@@ -128,7 +128,7 @@ function exportXML(data: any, options: ExportOptions): string {
 /**
  * Export to YAML
  */
-function exportYAML(data: any, options: ExportOptions): string {
+function exportYAML(data: any, _options: ExportOptions): string {
   function toYAML(obj: any, level: number = 0): string {
     const indent = '  '.repeat(level)
 
@@ -205,7 +205,7 @@ function exportYAML(data: any, options: ExportOptions): string {
 /**
  * Export to Markdown
  */
-function exportMarkdown(data: any, options: ExportOptions): string {
+function exportMarkdown(data: any, _options: ExportOptions): string {
   // Handle single object
   if (!Array.isArray(data)) {
     data = [data]
@@ -216,8 +216,8 @@ function exportMarkdown(data: any, options: ExportOptions): string {
   }
 
   // Get all unique keys
-  const keys = Array.from(
-    new Set(
+  const keys: string[] = Array.from(
+    new Set<string>(
       data.flatMap((item: any) => Object.keys(flattenObject(item))),
     ),
   )
@@ -242,7 +242,7 @@ function exportMarkdown(data: any, options: ExportOptions): string {
 /**
  * Export to HTML
  */
-function exportHTML(data: any, options: ExportOptions): string {
+function exportHTML(data: any, _options: ExportOptions): string {
   // Handle single object
   if (!Array.isArray(data)) {
     data = [data]
@@ -253,8 +253,8 @@ function exportHTML(data: any, options: ExportOptions): string {
   }
 
   // Get all unique keys
-  const keys = Array.from(
-    new Set(
+  const keys: string[] = Array.from(
+    new Set<string>(
       data.flatMap((item: any) => Object.keys(flattenObject(item))),
     ),
   )

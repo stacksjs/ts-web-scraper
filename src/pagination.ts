@@ -138,7 +138,7 @@ function detectNextPrev(html: string, baseUrl: URL): PaginationInfo {
 
   // Patterns for "next" links
   const nextPatterns = [
-    /<a[^>]*href=["']([^"']+)["'][^>]*>\s*(?:Next|next|NEXT|[→›»]|&gt;|&raquo;)\s*<\/a>/i,
+    /<a[^>]*href=["']([^"']+)["'][^>]*>\s*(?:Next|[→›»]|&gt;|&raquo;)\s*<\/a>/i,
     /<a[^>]*class=["'][^"']*next[^"']*["'][^>]*href=["']([^"']+)["']/i,
     /<a[^>]*rel=["']next["'][^>]*href=["']([^"']+)["']/i,
     /<link[^>]*rel=["']next["'][^>]*href=["']([^"']+)["']/i,
@@ -146,7 +146,7 @@ function detectNextPrev(html: string, baseUrl: URL): PaginationInfo {
 
   // Patterns for "previous" links
   const prevPatterns = [
-    /<a[^>]*href=["']([^"']+)["'][^>]*>\s*(?:Previous|Prev|prev|PREV|[←‹«]|&lt;|&laquo;)\s*<\/a>/i,
+    /<a[^>]*href=["']([^"']+)["'][^>]*>\s*(?:Previous|Prev|[←‹«]|&lt;|&laquo;)\s*<\/a>/i,
     /<a[^>]*class=["'][^"']*prev[^"']*["'][^>]*href=["']([^"']+)["']/i,
     /<a[^>]*rel=["']prev["'][^>]*href=["']([^"']+)["']/i,
     /<link[^>]*rel=["']prev["'][^>]*href=["']([^"']+)["']/i,

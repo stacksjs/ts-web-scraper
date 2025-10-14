@@ -107,7 +107,7 @@ export class ScraperCache {
       const age = Date.now() - node.value.timestamp
       if (age > node.value.ttl) {
         if (this.options.debug) {
-          console.log(`[Cache] Expired: ${key}`)
+          // Debug: Expired: ${key}
         }
         this.delete(key)
         this.misses++
@@ -119,7 +119,7 @@ export class ScraperCache {
       this.hits++
 
       if (this.options.debug) {
-        console.log(`[Cache] Hit: ${key}`)
+        // Debug: Hit: ${key}
       }
 
       return node.value
@@ -141,7 +141,7 @@ export class ScraperCache {
 
     this.misses++
     if (this.options.debug) {
-      console.log(`[Cache] Miss: ${key}`)
+      // Debug: Miss: ${key}
     }
 
     return null
@@ -199,7 +199,7 @@ export class ScraperCache {
     }
 
     if (this.options.debug) {
-      console.log(`[Cache] Set: ${key}`)
+      // Debug: Set: ${key}
     }
   }
 
@@ -216,7 +216,7 @@ export class ScraperCache {
     this.cache.delete(key)
 
     if (this.options.debug) {
-      console.log(`[Cache] Deleted: ${key}`)
+      // Debug: Deleted: ${key}
     }
 
     return true
@@ -246,7 +246,7 @@ export class ScraperCache {
     }
 
     if (this.options.debug) {
-      console.log('[Cache] Cleared')
+      // Debug: Cleared
     }
   }
 
@@ -333,7 +333,7 @@ export class ScraperCache {
     this.evictions++
 
     if (this.options.debug) {
-      console.log(`[Cache] Evicted: ${key}`)
+      // Debug: Evicted: ${key}
     }
   }
 

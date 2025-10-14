@@ -4,6 +4,8 @@
  * Showcasing the power and simplicity of the unified Scraper API
  */
 
+/* eslint-disable no-console, unused-imports/no-unused-vars */
+
 import { createScraper } from '../src'
 
 // Example 1: Basic Scraping with Auto-features
@@ -55,7 +57,7 @@ async function basicExample() {
   console.log(`Title: ${result.data?.title}`)
   console.log(`Links found: ${result.data?.links.length}`)
   console.log(`Cached: ${result.cached}`)
-  console.log(`Duration: ${result.metrics.totalDuration.toFixed(2)}ms`)
+  console.log(`Duration: ${result.metrics?.totalDuration.toFixed(2)}ms`)
 
   if (result.pagination?.hasMore) {
     console.log(`\n📄 Pagination detected: ${result.pagination.type}`)
@@ -152,7 +154,7 @@ async function changeTrackingExample() {
 
   // First scrape - creates baseline
   await scraper.scrape(url, {
-    extract: (doc) => ({
+    extract: doc => ({
       headline: doc.querySelector('h1')?.textContent,
       articles: doc.querySelectorAll('article').length,
     }),
@@ -196,9 +198,9 @@ async function parallelExample() {
 
   const results = await scraper.scrapeMany(urls, {
     concurrency: 3,
-    extract: (doc) => ({
+    extract: doc => ({
       title: doc.querySelector('title')?.textContent,
-      wordCount: doc.body?.textContent?.split(/\s+/).length || 0,
+      wordCount: doc.querySelector('body')?.textContent?.split(/\s+/).length || 0,
     }),
   })
 
@@ -235,7 +237,7 @@ async function priceMonitorExample() {
 
   for (const url of productUrls) {
     const result = await scraper.scrape(url, {
-      extract: (doc) => ({
+      extract: doc => ({
         name: doc.querySelector('.product-name')?.textContent?.trim(),
         price: Number.parseFloat(
           doc.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || '0',
@@ -287,7 +289,7 @@ async function priceMonitorExample() {
 // Run examples
 async function main() {
   console.log('🚀 Unified Scraper Examples\n')
-  console.log('=''.repeat(50))
+  console.log('='.repeat(50))
 
   try {
     console.log('\n1️⃣  Basic Scraping')

@@ -90,12 +90,12 @@ export async function withRetry<T>(
   } = options
 
   let lastError: ScraperError | null = null
-  let totalDelay = 0
+  let _totalDelay = 0
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       if (debug && attempt > 0) {
-        console.log(`[Retry] Attempt ${attempt}/${maxRetries}`)
+        // Debug: Attempt ${attempt}/${maxRetries}
       }
 
       const result = await fn()
@@ -113,7 +113,7 @@ export async function withRetry<T>(
       // Use custom shouldRetry if provided
       if (shouldRetry && !shouldRetry(lastError, attempt + 1)) {
         if (debug) {
-          console.log('[Retry] Custom shouldRetry returned false, not retrying')
+          // Debug: Custom shouldRetry returned false, not retrying
         }
         throw lastError
       }
@@ -124,7 +124,7 @@ export async function withRetry<T>(
         if (lastError.statusCode) {
           if (!retryOn.includes(lastError.statusCode)) {
             if (debug) {
-              console.log(`[Retry] Status code ${lastError.statusCode} is not in retryOn list`)
+              // Debug: Status code ${lastError.statusCode} is not in retryOn list
             }
             throw lastError
           }
@@ -134,7 +134,7 @@ export async function withRetry<T>(
           // No status code, check if it's a retryable error type
           if (!lastError.retryable) {
             if (debug) {
-              console.log(`[Retry] Error ${lastError.code} is not retryable`)
+              // Debug: Error ${lastError.code} is not retryable
             }
             throw lastError
           }
@@ -151,10 +151,10 @@ export async function withRetry<T>(
         delay = delay * (0.5 + Math.random() * 0.5)
       }
 
-      totalDelay += delay
+      _totalDelay += delay
 
       if (debug) {
-        console.log(`[Retry] Waiting ${Math.round(delay)}ms before attempt ${attempt + 2}`)
+        // Debug: Waiting ${Math.round(delay)}ms before attempt ${attempt + 2}
       }
 
       // Call onRetry callback

@@ -154,7 +154,8 @@ export {
 } from './robots'
 
 export type {
-  RobotsInfo,
+  ParsedRobots,
+  RobotRule,
   RobotsOptions,
 } from './robots'
 // Unified Scraper (🌟 recommended entry point)

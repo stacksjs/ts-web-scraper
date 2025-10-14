@@ -426,8 +426,8 @@ export function arrayDiff<T>(
   const changes: Array<{ type: ChangeType, value: T, index?: number }> = []
 
   // Simple approach: check which items exist in both
-  const oldSet = new Set(oldArray)
-  const newSet = new Set(newArray)
+  const _oldSet = new Set(oldArray)
+  const _newSet = new Set(newArray)
 
   // Find removed items
   for (let i = 0; i < oldArray.length; i++) {

@@ -794,7 +794,7 @@ describe('Real-World Scenarios', () => {
     const monitor = new PerformanceMonitor()
 
     // Simulate concurrent requests
-    const startTime = Date.now()
+    const _startTime = Date.now()
 
     for (let i = 1; i <= 5; i++) {
       monitor.recordRequest({

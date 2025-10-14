@@ -29,7 +29,7 @@ import { RateLimiter } from './rate-limiter'
 import { withRetry } from './retry'
 import { RobotsParser } from './robots'
 import { validate } from './validation'
-import { fetchHTML, parseHTML } from './web-scraper'
+import { parseHTML } from './web-scraper'
 
 export interface ScraperOptions {
   // Core options
@@ -102,12 +102,26 @@ export class Scraper {
 
     // Initialize cache
     if (options.cache) {
-      this.cache = new ScraperCache(options.cache)
+      this.cache = new ScraperCache({
+        enabled: options.cache.enabled ?? true,
+        ttl: options.cache.ttl ?? 3600000,
+        maxSize: options.cache.maxSize ?? 1000,
+        storage: options.cache.storage ?? 'memory',
+        cacheDir: options.cache.cacheDir ?? '.cache/scraper',
+        keyGenerator: options.cache.keyGenerator ?? ((url: string) => url),
+        debug: options.cache.debug ?? false,
+      })
     }
 
     // Initialize robots.txt parser
     if (options.respectRobotsTxt) {
-      this.robots = new RobotsParser(options.robotsOptions || {})
+      const robotsOpts = options.robotsOptions || {}
+      this.robots = new RobotsParser({
+        respectRobotsTxt: robotsOpts.respectRobotsTxt ?? true,
+        userAgent: robotsOpts.userAgent ?? 'BunScraper',
+        cacheTime: robotsOpts.cacheTime ?? 3600000,
+        timeout: robotsOpts.timeout ?? 5000,
+      })
     }
 
     // Initialize cookies
@@ -160,7 +174,7 @@ export class Scraper {
         }
       }
 
-      let html: string
+      let html: string = ''
       let cached = false
 
       // Try cache first
@@ -179,7 +193,7 @@ export class Scraper {
         if (this.options.enableClientSideRendering) {
           const result = await withRetry(
             () => scrapeClientSide(url, {
-              waitTime: this.options.clientSideWaitTime,
+              timeout: this.options.clientSideWaitTime,
             }),
             this.options.retry,
           )
@@ -198,10 +212,28 @@ export class Scraper {
         }
         else {
           html = await withRetry(
-            () => fetchHTML(url, {
-              timeout: this.options.timeout,
-              userAgent: this.options.userAgent,
-            }),
+            async () => {
+              const controller = new AbortController()
+              const timeoutId = setTimeout(() => controller.abort(), this.options.timeout || 30000)
+
+              try {
+                const response = await fetch(url, {
+                  headers: {
+                    'User-Agent': this.options.userAgent || 'ts-web-scraper',
+                  },
+                  signal: controller.signal,
+                })
+
+                if (!response.ok) {
+                  throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+                }
+
+                return await response.text()
+              }
+              finally {
+                clearTimeout(timeoutId)
+              }
+            },
             this.options.retry,
           )
         }
@@ -355,25 +387,12 @@ export class Scraper {
     while (queue.length > 0) {
       const batch = queue.splice(0, concurrency)
       const batchResults = await Promise.all(
-        batch.map(url => this.scrape<T>(url, scrapeOptions).catch(error => ({
+        batch.map(url => this.scrape<T>(url, scrapeOptions as any).catch((error: any): ScrapeResult<T> => ({
+          success: false,
           url,
-          html: '',
-          document: null as any,
-          data: undefined,
           cached: false,
-          metrics: {
-            url,
-            totalDuration: 0,
-            fetchDuration: 0,
-            parseDuration: 0,
-            extractionDuration: 0,
-            itemsExtracted: 0,
-            bytesDownloaded: 0,
-            cached: false,
-            retries: 0,
-            error: error.message,
-            timestamp: new Date(),
-          },
+          duration: 0,
+          error: error.message || String(error),
         }))),
       )
       results.push(...batchResults)
@@ -407,7 +426,7 @@ export class Scraper {
 
       // Scrape page
       const result = await this.scrape<T>(currentUrl, {
-        ...scrapeOptions,
+        ...(scrapeOptions as any),
         detectPagination: true,
       })
 
@@ -476,8 +495,8 @@ export class Scraper {
   /**
    * Get formatted performance report
    */
-  getReport(): string {
-    const { createReport } = require('./monitor')
+  async getReport(): Promise<string> {
+    const { createReport } = await import('./monitor')
     return createReport(this.monitor)
   }
 
