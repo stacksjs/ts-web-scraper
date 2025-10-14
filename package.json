@@ -1,7 +1,7 @@
 {
   "name": "ts-web-scraper",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A powerful web scraper for both static and client-side rendered sites using only Bun native APIs",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
@@ -13,7 +13,17 @@
   "bugs": {
     "url": "https://github.com/stacksjs/ts-web-scraper/issues"
   },
-  "keywords": ["web-scraper", "scraping", "bun", "typescript", "client-side", "react", "vue", "nextjs", "spa"],
+  "keywords": [
+    "web-scraper",
+    "scraping",
+    "bun",
+    "typescript",
+    "client-side",
+    "react",
+    "vue",
+    "nextjs",
+    "spa"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -28,7 +38,10 @@
   "bin": {
     "scraper": "./dist/bin/cli.js"
   },
-  "files": ["README.md", "dist"],
+  "files": [
+    "README.md",
+    "dist"
+  ],
   "scripts": {
     "build": "bun --bun build.ts && bun run compile",
     "compile": "bun build ./bin/cli.ts --compile --minify --outfile bin/scraper",
