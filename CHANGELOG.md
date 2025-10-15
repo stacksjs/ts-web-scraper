@@ -1,3 +1,26 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.0...v0.1.1)
+
+### 🧹 Chores
+
+- release v0.1.1 ([abe9e1d](https://github.com/stacksjs/ts-web-scraper/commit/abe9e1d))
+- wip ([fbed6ee](https://github.com/stacksjs/ts-web-scraper/commit/fbed6ee))
+- wip ([3e8bb1e](https://github.com/stacksjs/ts-web-scraper/commit/3e8bb1e))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.0...HEAD)
+
+### 🧹 Chores
+
+- wip ([fbed6ee](https://github.com/stacksjs/ts-web-scraper/commit/fbed6ee))
+- wip ([3e8bb1e](https://github.com/stacksjs/ts-web-scraper/commit/3e8bb1e))
+
+### Contributors
+
+- Chris <chrisbreuer93@gmail.com>
+
 ### 🧹 Chores
 
 - wip ([71db82b](https://github.com/stacksjs/ts-web-scraper/commit/71db82b))

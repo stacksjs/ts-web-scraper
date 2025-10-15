@@ -1,7 +1,7 @@
 {
   "name": "ts-web-scraper",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A powerful web scraper for both static and client-side rendered sites using only Bun native APIs",
   "author": "Chris Breuer <chris@stacksjs.org>",
   "license": "MIT",
