@@ -2,10 +2,12 @@
  * Client-Side Web Scraper - Handles JavaScript-rendered sites
  *
  * This scraper can extract data from client-side rendered applications
- * (React, Vue, Next.js, etc.) by analyzing JavaScript bundles and finding
- * API endpoints or embedded data.
+ * (React, Vue, Next.js, etc.) by:
+ * 1. Executing JavaScript to render the DOM using Bun's native capabilities
+ * 2. Analyzing JavaScript bundles to find API endpoints
+ * 3. Extracting embedded data
  *
- * Uses ONLY Bun native APIs - no external dependencies!
+ * Pure Bun implementation - NO external dependencies!
  */
 
 export interface ClientSideScraperOptions {
@@ -45,6 +47,12 @@ export interface ClientSideScraperOptions {
   reconstructAPI?: boolean
 
   /**
+   * Whether to execute scripts and extract rendered DOM
+   * @default false (due to security and complexity)
+   */
+  executeScripts?: boolean
+
+  /**
    * Maximum number of JS files to analyze
    * @default 10
    */
@@ -56,6 +64,16 @@ export interface ScrapedData {
    * Raw HTML from the page
    */
   html: string
+
+  /**
+   * Rendered HTML after JavaScript execution (if executeScripts is true)
+   */
+  renderedHtml?: string
+
+  /**
+   * Extracted text content from rendered DOM
+   */
+  renderedText?: string
 
   /**
    * Extracted script URLs
@@ -101,6 +119,7 @@ export async function scrapeClientSide(
     analyzeJavaScript = true,
     findEmbeddedData = true,
     reconstructAPI = true,
+    executeScripts = false,
     maxJSFiles = 10,
   } = options
 
