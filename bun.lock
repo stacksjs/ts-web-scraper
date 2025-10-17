@@ -5,7 +5,7 @@
       "name": "ts-web-scraper",
       "devDependencies": {
         "@stacksjs/eslint-config": "^4.14.0-beta.3",
-        "better-dx": "^0.1.5",
+        "better-dx": "^0.1.7",
       },
     },
   },
