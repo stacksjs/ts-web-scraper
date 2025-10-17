@@ -8,26 +8,44 @@
 
 # ts-web-scraper
 
-A powerful, type-safe web scraping library for TypeScript and Bun with **zero external dependencies**. Built entirely on Bun's native APIs for maximum performance and minimal footprint.
+A powerful, type-safe web scraping library for TypeScript and Bun with zero external dependencies. Built entirely on Bun's native APIs for maximum performance and minimal footprint.
 
 ## Features
+
+### Core Scraping
 
 - 🚀 **Zero Dependencies** - Built entirely on Bun native APIs
 - 💪 **Fully Typed** - Complete TypeScript support with type inference
 - ⚡️ **High Performance** - Optimized for speed with native Bun performance
-- 🔄 **Rate Limiting** - Built-in token bucket rate limiter with burst support
-- 💾 **Smart Caching** - LRU cache with TTL support
-- 🔁 **Automatic Retries** - Exponential backoff retry logic
-- 📊 **Data Extraction** - Powerful pipeline-based data extraction and transformation
-- 🎯 **Validation** - Built-in schema validation for extracted data
-- 📈 **Monitoring** - Performance metrics and analytics
-- 🔍 **Change Detection** - Track content changes over time with diff algorithms
-- 🤖 **Ethical Scraping** - Robots.txt support and user-agent management
-- 🍪 **Session Management** - Cookie jar and session persistence
-- 📝 **Multiple Export Formats** - JSON, CSV, XML, YAML, Markdown, HTML
+- 🎨 **Client-Side Rendering** - Support for JavaScript-heavy sites (React, Vue, Next.js)
 - 🌐 **Pagination** - Automatic pagination detection and traversal
-- 🎨 **Client-Side Rendering** - Support for JavaScript-heavy sites
-- 📚 **Comprehensive Docs** - Full documentation with examples
+- 🤖 **Ethical Scraping** - Robots.txt support and user-agent management
+
+### Data Extraction & Analysis
+
+- 📊 **Content Extraction** - Readability-style main content extraction
+- 📧 **Contact Information** - Automatic extraction of emails, phones, addresses, social profiles
+- 🏷️ **Metadata Extraction** - Open Graph, Twitter Cards, Schema.org structured data
+- 🌍 **Language Detection** - Multi-language detection with confidence scoring
+- ♿ **Accessibility Analysis** - WCAG compliance checking with scoring
+- ⚡ **Performance Metrics** - Resource analysis and optimization hints
+- 🤖 **ML-Ready Features** - Sentiment analysis, entity extraction, text statistics
+- 🔍 **Change Detection** - Track content changes over time with diff algorithms
+
+### Performance & Reliability
+
+- 🔄 **Rate Limiting** - Built-in token bucket rate limiter with burst support
+- 💾 **Smart Caching** - LRU cache with TTL support and disk persistence
+- 🔁 **Automatic Retries** - Exponential backoff retry logic with budgets
+- 📈 **Monitoring** - Performance metrics and analytics
+- 🍪 **Session Management** - Cookie jar and session persistence
+
+### Data Processing
+
+- 🔧 **Pipeline Architecture** - Powerful pipeline-based data extraction and transformation
+- 🎯 **Validation** - Built-in schema validation for extracted data
+- 📝 **Multiple Export Formats** - JSON, CSV, XML, YAML, Markdown, HTML
+- 🔐 **Security Tested** - Comprehensive XSS, injection, and edge case testing
 
 ## Installation
 
@@ -237,13 +255,17 @@ For full documentation, visit [https://ts-web-scraper.netlify.app](https://ts-we
 bun test
 ```
 
-All 482 tests passing with comprehensive coverage of:
-- Core scraping functionality
-- Rate limiting and caching
-- Data extraction pipelines
+_With comprehensive coverage of:_
+
+- Core scraping functionality (static & client-side rendered)
+- Content extraction (main content, contact info, metadata)
+- Analysis features (accessibility, performance, ML, language detection)
+- Rate limiting, caching, and retry logic
+- Data extraction pipelines and validation
 - Change detection and monitoring
-- Export formats
-- Error handling and edge cases
+- Export formats and session management
+- Security (XSS, injection attacks, sanitization)
+- Edge cases (malformed HTML, extreme values, encoding issues)
 
 ## Changelog
 

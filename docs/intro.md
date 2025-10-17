@@ -1,6 +1,6 @@
 # Introduction
 
-A powerful, type-safe web scraping library for TypeScript and Bun with **zero external dependencies**.
+A powerful, type-safe web scraping library for TypeScript and Bun with zero external dependencies.
 
 ## What is ts-web-scraper?
 
@@ -9,65 +9,85 @@ ts-web-scraper is a modern web scraping library built entirely on Bun's native A
 ## Key Features
 
 ### Zero Dependencies
+
 Built entirely on Bun native APIs - no external dependencies means faster installs, smaller bundle sizes, and better security.
 
 ### Fully Typed
+
 Complete TypeScript support with type inference ensures type safety throughout your scraping workflows.
 
 ### High Performance
+
 Optimized for speed with native Bun performance. Efficient memory usage and fast execution.
 
 ### Rate Limiting
+
 Built-in token bucket rate limiter with burst support and per-domain limits to respect server resources.
 
 ### Smart Caching
+
 LRU cache with TTL support reduces redundant requests and improves performance.
 
 ### Automatic Retries
+
 Exponential backoff retry logic handles transient failures gracefully.
 
 ### Data Extraction
+
 Powerful pipeline-based data extraction and transformation with composable steps.
 
 ### Validation
+
 Built-in schema validation ensures data quality with comprehensive type checking.
 
 ### Monitoring
+
 Performance metrics and analytics track scraping efficiency and success rates.
 
 ### Change Detection
+
 Track content changes over time with diff algorithms and snapshot history.
 
 ### Ethical Scraping
+
 Robots.txt support, user-agent management, and crawl-delay respect ensure ethical scraping practices.
 
 ### Session Management
+
 Cookie jar and session persistence enable authenticated scraping workflows.
 
 ### Multiple Export Formats
+
 Export data to JSON, CSV, XML, YAML, Markdown, or HTML formats.
 
 ### Pagination Support
+
 Automatic pagination detection and traversal for multi-page content.
 
 ### Client-Side Rendering
+
 Support for JavaScript-heavy sites (React, Vue, Next.js) with API endpoint discovery.
 
 ## Why ts-web-scraper?
 
 ### Modern Architecture
+
 Built from the ground up for Bun and modern JavaScript runtimes, leveraging native APIs for optimal performance.
 
 ### Developer Experience
+
 Intuitive API design with excellent TypeScript support makes scraping tasks straightforward and maintainable.
 
 ### Production Ready
+
 Comprehensive error handling, retry logic, rate limiting, and monitoring make it suitable for production use.
 
 ### Ethical & Compliant
+
 Built-in robots.txt support and rate limiting encourage responsible scraping practices.
 
 ### Feature Complete
+
 From basic scraping to advanced features like GraphQL detection, pagination, and change tracking - everything you need in one package.
 
 ## Use Cases

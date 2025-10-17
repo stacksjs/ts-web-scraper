@@ -65,6 +65,9 @@ const sidebar = [
     items: [
       { text: 'Web Scraping', link: '/features/scraping' },
       { text: 'Data Extraction', link: '/features/extraction' },
+      { text: 'Content Extraction', link: '/features/content-extraction' },
+      { text: 'Contact Extraction', link: '/features/contact-extraction' },
+      { text: 'Metadata Extraction', link: '/features/metadata' },
       { text: 'Rate Limiting', link: '/features/rate-limiting' },
       { text: 'Caching', link: '/features/caching' },
       { text: 'Retry Logic', link: '/features/retry' },
@@ -72,6 +75,16 @@ const sidebar = [
       { text: 'Export Formats', link: '/features/export' },
       { text: 'Change Detection', link: '/features/diff' },
       { text: 'Monitoring', link: '/features/monitoring' },
+    ],
+  },
+  {
+    text: 'Analysis',
+    items: [
+      { text: 'Accessibility Analysis', link: '/analysis/accessibility' },
+      { text: 'Performance Metrics', link: '/analysis/performance' },
+      { text: 'ML Features', link: '/analysis/ml-features' },
+      { text: 'Language Detection', link: '/analysis/language' },
+      { text: 'SEO Analysis', link: '/analysis/seo' },
     ],
   },
   {
