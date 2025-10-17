@@ -39,7 +39,6 @@
     "scraper": "./dist/bin/cli.js"
   },
   "files": [
-    "README.md",
     "dist"
   ],
   "git-hooks": {
