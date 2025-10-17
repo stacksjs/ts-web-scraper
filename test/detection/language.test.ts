@@ -330,8 +330,8 @@ describe('detectLanguage', () => {
 
     const result = detectLanguage(html)
 
-    expect(result.primary.confidence).toBeGreaterThanOrEqual(0)
-    expect(result.primary.confidence).toBeLessThanOrEqual(1)
+    expect(result.confidence).toBeGreaterThanOrEqual(0)
+    expect(result.confidence).toBeLessThanOrEqual(100)
   })
 
   it('should detect Portuguese content', () => {
@@ -346,7 +346,7 @@ describe('detectLanguage', () => {
 
     const result = detectLanguage(html)
 
-    expect(result.primary.code).toBe('pt')
+    expect(result.primary).toBe('pt')
   })
 
   it('should detect Italian content', () => {
@@ -361,6 +361,6 @@ describe('detectLanguage', () => {
 
     const result = detectLanguage(html)
 
-    expect(result.primary.code).toBe('it')
+    expect(result.primary).toBe('it')
   })
 })
