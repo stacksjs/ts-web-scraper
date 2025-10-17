@@ -10,6 +10,7 @@ import type { CookieJarOptions } from './cookies'
 import type { DiffResult } from './diff'
 import type { ExportFormat, ExportOptions } from './export'
 import type { GraphQLDetectionResult } from './graphql'
+import type { LinkPreview } from './meta'
 import type { ScrapeMetrics } from './monitor'
 import type { PaginationInfo } from './pagination'
 import type { RateLimiterOptions } from './rate-limiter'
@@ -74,6 +75,7 @@ export interface ScrapeResult<T = any> {
   data?: T
   pagination?: PaginationInfo
   graphql?: GraphQLDetectionResult
+  linkPreview?: LinkPreview
   cached: boolean
   duration: number
   changed?: boolean
@@ -156,6 +158,7 @@ export class Scraper {
       validate?: Schema
       detectPagination?: boolean
       detectGraphQL?: boolean
+      extractLinkPreview?: boolean
     } = {},
   ): Promise<ScrapeResult<T>> {
     const startTime = performance.now()
@@ -308,6 +311,13 @@ export class Scraper {
         graphql = detectGraphQL(html, url)
       }
 
+      // Extract link preview if requested
+      let linkPreview: LinkPreview | undefined
+      if (options.extractLinkPreview) {
+        const { extractLinkPreview: extractPreview } = await import('./meta')
+        linkPreview = extractPreview(html, url)
+      }
+
       // Record metrics
       const totalDuration = performance.now() - startTime
       const metrics: ScrapeMetrics = {
@@ -333,6 +343,7 @@ export class Scraper {
         data,
         pagination,
         graphql,
+        linkPreview,
         cached,
         duration: totalDuration,
         changed,

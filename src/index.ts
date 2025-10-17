@@ -1,8 +1,25 @@
+// Content Analysis (SEO, Accessibility, Performance, ML)
+export {
+  analyzeAccessibility,
+  analyzeSEO,
+  extractMLFeatures,
+  extractPerformanceMetrics,
+} from './analysis'
+export type {
+  AccessibilityAnalysis,
+  AccessibilityIssue,
+  ContentSection,
+  MLFeatures,
+  PerformanceMetrics,
+  SEOAnalysis,
+} from './analysis'
+
 // Caching
 export {
   generateCacheKey,
   ScraperCache,
 } from './cache'
+
 export type {
   CachedData,
   CacheOptions,
@@ -21,7 +38,6 @@ export type {
 } from './client-side-scraper'
 
 export * from './config'
-
 // Cookie and session management
 export {
   CookieJar,
@@ -32,6 +48,24 @@ export type {
   Cookie,
   CookieJarOptions,
 } from './cookies'
+// Content Detection (Classification, Paywall, Social, Security, Language)
+export {
+  classifyContentType,
+  detectLanguage,
+  detectNewsletterPrompt,
+  detectPaywall,
+  detectSecurityIndicators,
+  extractSocialMedia,
+} from './detection'
+
+export type {
+  AlternateLanguage,
+  ContentClassification,
+  LanguageDetection,
+  PaywallDetection,
+  SecurityIndicators,
+  SocialMediaLinks,
+} from './detection'
 // Content change detection
 export {
   arrayDiff,
@@ -67,6 +101,19 @@ export type {
   ExportOptions,
 } from './export'
 
+// Content Extraction (Main content, Contact info)
+export {
+  extractContactInfo,
+  extractMainContent,
+} from './extraction'
+export type {
+  ContactEmail,
+  ContactForm,
+  ContactInformation,
+  ContactPhone,
+  ExtractedContent,
+} from './extraction'
+
 // GraphQL detection and execution
 export {
   detectGraphQL,
@@ -83,6 +130,45 @@ export type {
   GraphQLQuery,
   GraphQLResponse,
 } from './graphql'
+
+// Metadata Extraction (Open Graph, Twitter Card, etc.)
+export {
+  calculateQualityScore,
+  calculateReadingTime,
+  extractEnhancedStructuredData,
+  extractFavicon,
+  extractFeeds,
+  extractLanguage,
+  extractLinkPreview,
+  extractLogo,
+  extractOpenGraph,
+  extractProductMetadata,
+  extractStandardMeta,
+  extractTitle,
+  extractTwitterCard,
+  extractVideoMetadata,
+  generateExcerpt,
+  resolveOpenGraphImages,
+  resolveUrl,
+  toCamelCase,
+  validateImage,
+} from './meta'
+export type {
+  ImageValidationResult,
+  LinkPreview,
+  MetadataQuality,
+  OpenGraphArticle,
+  OpenGraphAudio,
+  OpenGraphBasic,
+  OpenGraphBook,
+  OpenGraphImage,
+  OpenGraphProfile,
+  OpenGraphVideo,
+  ProductMetadata,
+  StructuredDataResult,
+  TwitterCard,
+  VideoMetadata,
+} from './meta'
 
 // Performance monitoring
 export {

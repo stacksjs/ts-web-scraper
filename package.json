@@ -1,17 +1,29 @@
 {
   "name": "ts-web-scraper",
+  "type": "module",
   "version": "0.1.1",
+  "description": "A powerful web scraper for both static and client-side rendered sites using only Bun native APIs",
   "author": "Chris Breuer <chris@stacksjs.org>",
+  "license": "MIT",
+  "homepage": "https://github.com/stacksjs/ts-web-scraper#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stacksjs/ts-web-scraper.git"
   },
-  "module": "./dist/src/index.js",
-  "devDependencies": {
-    "@stacksjs/eslint-config": "^4.14.0-beta.3",
-    "better-dx": "^0.1.4",
-    "typescript": "^5.9.3"
+  "bugs": {
+    "url": "https://github.com/stacksjs/ts-web-scraper/issues"
   },
+  "keywords": [
+    "web-scraper",
+    "scraping",
+    "bun",
+    "typescript",
+    "client-side",
+    "react",
+    "vue",
+    "nextjs",
+    "spa"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -21,13 +33,11 @@
       "import": "./dist/*"
     }
   },
+  "module": "./dist/src/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "scraper": "./dist/bin/cli.js"
   },
-  "bugs": {
-    "url": "https://github.com/stacksjs/ts-web-scraper/issues"
-  },
-  "description": "A powerful web scraper for both static and client-side rendered sites using only Bun native APIs",
   "files": [
     "README.md",
     "dist"
@@ -40,19 +50,6 @@
     },
     "commit-msg": "bunx gitlint --edit .git/COMMIT_EDITMSG"
   },
-  "homepage": "https://github.com/stacksjs/ts-web-scraper#readme",
-  "keywords": [
-    "web-scraper",
-    "scraping",
-    "bun",
-    "typescript",
-    "client-side",
-    "react",
-    "vue",
-    "nextjs",
-    "spa"
-  ],
-  "license": "MIT",
   "scripts": {
     "build": "bun --bun build.ts && bun run compile",
     "compile": "bun build ./bin/cli.ts --compile --minify --outfile bin/scraper",
@@ -82,6 +79,8 @@
     "preview:docs": "bun --bun vitepress preview docs",
     "typecheck": "bun --bun tsc --noEmit"
   },
-  "type": "module",
-  "types": "./dist/index.d.ts"
+  "devDependencies": {
+    "@stacksjs/eslint-config": "^4.14.0-beta.3",
+    "better-dx": "^0.1.5"
+  }
 }

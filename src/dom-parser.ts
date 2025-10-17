@@ -23,7 +23,7 @@ export function extractListItems(html: string, sectionTitle?: string): string[] 
     // Find the section with this title
     const sectionRegex = new RegExp(
       `<[^>]*>${sectionTitle}</[^>]*>.*?<ul[^>]*>(.*?)</ul>`,
-      'is'
+      'is',
     )
     const match = html.match(sectionRegex)
     if (match) {
@@ -117,7 +117,8 @@ export function querySelectorAll(html: string, selector: string): string[] {
       results.push(match[1])
       match = regex.exec(html)
     }
-  } else {
+  }
+  else {
     // Tag selector
     const regex = new RegExp(`<${selector}[^>]*>(.*?)</${selector}>`, 'gis')
     let match = regex.exec(html)
