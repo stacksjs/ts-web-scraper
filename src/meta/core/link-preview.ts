@@ -19,6 +19,8 @@ import { extractTwitterCard } from './twitter-card'
  * @param html - The HTML content to analyze
  * @param url - The base URL of the page (optional but recommended)
  * @param options - Additional options for extraction
+ * @param options.validateImage - Whether to validate image URLs (default: false)
+ * @param options.includeQualityScore - Whether to calculate and include quality score (default: false)
  * @returns A comprehensive link preview with all available metadata
  */
 export function extractLinkPreview(

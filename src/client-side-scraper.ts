@@ -119,9 +119,11 @@ export async function scrapeClientSide(
     analyzeJavaScript = true,
     findEmbeddedData = true,
     reconstructAPI = true,
-    executeScripts = false,
     maxJSFiles = 10,
   } = options
+
+  // Note: executeScripts is not yet implemented but reserved for future use
+  // const executeScripts = options.executeScripts ?? false
 
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeout)
