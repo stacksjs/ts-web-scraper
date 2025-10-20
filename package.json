@@ -1,46 +1,18 @@
 {
   "name": "ts-web-scraper",
+  "type": "module",
   "version": "0.1.1",
+  "description": "A powerful web scraper for both static and client-side rendered sites using only Bun native APIs",
   "author": "Chris Breuer <chris@stacksjs.org>",
+  "license": "MIT",
+  "homepage": "https://github.com/stacksjs/ts-web-scraper#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stacksjs/ts-web-scraper.git"
   },
-  "module": "./dist/src/index.js",
-  "devDependencies": {
-    "@stacksjs/eslint-config": "^4.14.0-beta.3",
-    "better-dx": "^0.1.7",
-    "typescript": "^5.9.3"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/src/index.js"
-    },
-    "./*": {
-      "import": "./dist/*"
-    }
-  },
-  "bin": {
-    "scraper": "./dist/bin/cli.js"
-  },
   "bugs": {
     "url": "https://github.com/stacksjs/ts-web-scraper/issues"
   },
-  "description": "A powerful web scraper for both static and client-side rendered sites using only Bun native APIs",
-  "files": [
-    "README.md",
-    "dist"
-  ],
-  "git-hooks": {
-    "pre-commit": {
-      "staged-lint": {
-        "*.{js,ts,json,yaml,yml,md}": "bunx --bun eslint --fix"
-      }
-    },
-    "commit-msg": "bunx gitlint --edit .git/COMMIT_EDITMSG"
-  },
-  "homepage": "https://github.com/stacksjs/ts-web-scraper#readme",
   "keywords": [
     "web-scraper",
     "scraping",
@@ -52,7 +24,31 @@
     "nextjs",
     "spa"
   ],
-  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./*": {
+      "import": "./dist/*"
+    }
+  },
+  "module": "./dist/src/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "scraper": "./dist/bin/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "git-hooks": {
+    "pre-commit": {
+      "staged-lint": {
+        "*.{js,ts,json,yaml,yml,md}": "bunx --bun eslint --fix"
+      }
+    },
+    "commit-msg": "bunx gitlint --edit .git/COMMIT_EDITMSG"
+  },
   "scripts": {
     "build": "bun --bun build.ts && bun run compile",
     "compile": "bun build ./bin/cli.ts --compile --minify --outfile bin/scraper",
@@ -82,6 +78,8 @@
     "preview:docs": "bun --bun vitepress preview docs",
     "typecheck": "bun --bun tsc --noEmit"
   },
-  "type": "module",
-  "types": "./dist/index.d.ts"
+  "devDependencies": {
+    "@stacksjs/eslint-config": "^4.14.0-beta.3",
+    "better-dx": "^0.2.0"
+  }
 }
