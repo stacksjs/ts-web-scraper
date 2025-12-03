@@ -15,12 +15,22 @@ export const defaultConfig: ScraperConfig = {
   followRedirects: true,
 }
 
-// eslint-disable-next-line antfu/no-top-level-await
-export const config: ScraperConfig = await loadConfig({
+// Lazy-loaded config to avoid top-level await (enables bun --compile)
+let _config: ScraperConfig | null = null
+
+export async function getConfig(): Promise<ScraperConfig> {
+  if (!_config) {
+    _config = await loadConfig({
   name: 'scraper',
   alias: 'web-scraper',
   defaultConfig,
 })
+  }
+  return _config
+}
+
+// For backwards compatibility - synchronous access with default fallback
+export const config: ScraperConfig = defaultConfig
 
 /**
  * Get configuration value with fallback to default
