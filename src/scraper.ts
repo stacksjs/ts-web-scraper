@@ -5,6 +5,7 @@
  * Uses ONLY Bun native APIs - no external dependencies!
  */
 
+import type { BrowserOptions, PageOptions } from './browser'
 import type { CacheOptions } from './cache'
 import type { CookieJarOptions } from './cookies'
 import type { DiffResult } from './diff'
@@ -18,6 +19,7 @@ import type { RetryOptions } from './retry'
 import type { RobotsOptions } from './robots'
 import type { Schema } from './validation'
 import type { Document } from './web-scraper'
+import { Browser } from './browser'
 import { ScraperCache } from './cache'
 import { scrapeClientSide } from './client-side-scraper'
 import { CookieJar, SessionManager } from './cookies'
@@ -62,6 +64,10 @@ export interface ScraperOptions {
   enableClientSideRendering?: boolean
   clientSideWaitTime?: number
 
+  // Browser-based rendering (headless Chrome)
+  browser?: boolean | BrowserOptions
+  browserPageOptions?: PageOptions
+
   // Content tracking
   trackChanges?: boolean
   maxSnapshots?: number
@@ -95,6 +101,8 @@ export class Scraper {
   private sessionManager?: SessionManager
   private monitor: PerformanceMonitor
   private contentTracker?: ContentTracker
+  private browser?: Browser
+  private browserLaunched = false
 
   constructor(private options: ScraperOptions = {}) {
     // Initialize rate limiter
@@ -145,6 +153,30 @@ export class Scraper {
         maxSnapshots: options.maxSnapshots || 10,
       })
     }
+
+    // Initialize browser if configured
+    if (options.browser) {
+      const browserOpts = typeof options.browser === 'object' ? options.browser : {}
+      this.browser = new Browser({
+        userAgent: options.userAgent,
+        timeout: options.timeout,
+        ...browserOpts,
+      })
+    }
+  }
+
+  /**
+   * Ensure browser is launched (lazy initialization)
+   */
+  private async ensureBrowser(): Promise<Browser> {
+    if (!this.browser) {
+      throw new Error('Browser mode not enabled. Set browser: true in options.')
+    }
+    if (!this.browserLaunched) {
+      await this.browser.launch()
+      this.browserLaunched = true
+    }
+    return this.browser
   }
 
   /**
@@ -193,7 +225,18 @@ export class Scraper {
       if (!cached) {
         const fetchStart = performance.now()
 
-        if (this.options.enableClientSideRendering) {
+        if (this.browser) {
+          // Use browser-based rendering
+          const browser = await this.ensureBrowser()
+          html = await withRetry(
+            () => browser.goto(url, {
+              ...this.options.browserPageOptions,
+              timeout: this.options.timeout,
+            }),
+            this.options.retry,
+          )
+        }
+        else if (this.options.enableClientSideRendering) {
           const result = await withRetry(
             () => scrapeClientSide(url, {
               timeout: this.options.clientSideWaitTime,
@@ -562,6 +605,23 @@ export class Scraper {
    */
   getCacheStats(): import('./cache').CacheStats | undefined {
     return this.cache?.getStats()
+  }
+
+  /**
+   * Get browser instance (if browser mode is enabled)
+   */
+  getBrowser(): Browser | undefined {
+    return this.browser
+  }
+
+  /**
+   * Close browser and cleanup resources
+   */
+  async close(): Promise<void> {
+    if (this.browser && this.browserLaunched) {
+      await this.browser.close()
+      this.browserLaunched = false
+    }
   }
 }
 

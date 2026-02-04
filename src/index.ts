@@ -37,6 +37,19 @@ export type {
   ScrapedData,
 } from './client-side-scraper'
 
+// Browser-based scraping (headless Chrome via CDP)
+export {
+  Browser,
+  createBrowser,
+  scrapeBrowser,
+} from './browser'
+
+export type {
+  BrowserOptions,
+  BrowserScrapeResult,
+  PageOptions,
+} from './browser'
+
 export * from './config'
 // Cookie and session management
 export {
