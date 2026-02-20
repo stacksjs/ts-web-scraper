@@ -44,7 +44,7 @@
   "git-hooks": {
     "pre-commit": {
       "staged-lint": {
-        "*.{js,ts,json,yaml,yml,md}": "bunx --bun eslint --fix"
+        "*.{js,ts,json,yaml,yml,md}": "bunx --bun pickier lint --fix"
       }
     },
     "commit-msg": "bunx gitlint --edit .git/COMMIT_EDITMSG"
@@ -68,18 +68,19 @@
     "fresh": "bunx rimraf node_modules/ bun.lock && bun i",
     "prepublishOnly": "bun --bun run build && bun run compile:all && bun run zip",
     "test": "bun test",
-    "lint": "bunx --bun eslint .",
-    "lint:fix": "bunx --bun eslint . --fix",
+    "lint": "bunx --bun pickier lint .",
+    "lint:fix": "bunx --bun pickier lint . --fix",
     "changelog": "bunx logsmith --verbose",
     "changelog:generate": "bunx logsmith --output CHANGELOG.md",
     "release": "bun run changelog:generate && bunx --bun bumpx prompt --recursive",
     "dev:docs": "bun --bun vitepress dev docs",
     "build:docs": "bun --bun vitepress build docs",
     "preview:docs": "bun --bun vitepress preview docs",
-    "typecheck": "bun --bun tsc --noEmit"
+    "typecheck": "bun --bun tsc --noEmit",
+    "format": "bunx --bun pickier format .",
+    "format:fix": "bunx --bun pickier format . --write"
   },
   "devDependencies": {
-    "@stacksjs/eslint-config": "^4.14.0-beta.3",
     "better-dx": "^0.1.7"
   }
 }
