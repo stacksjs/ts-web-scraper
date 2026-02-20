@@ -188,6 +188,9 @@ export class Browser {
     })
 
     // Wait for DevTools URL from stderr
+    if (!this.process.stderr || typeof this.process.stderr === 'number') {
+      throw new Error('Failed to capture browser stderr')
+    }
     const reader = this.process.stderr.getReader()
     const decoder = new TextDecoder()
     let output = ''

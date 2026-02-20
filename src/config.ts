@@ -35,7 +35,7 @@ export const config: ScraperConfig = defaultConfig
 /**
  * Get configuration value with fallback to default
  */
-export function getConfig<K extends keyof ScraperConfig>(
+export function getConfigValue<K extends keyof ScraperConfig>(
   key: K,
   override?: ScraperConfig[K],
 ): ScraperConfig[K] {
