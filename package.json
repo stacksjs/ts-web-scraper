@@ -81,6 +81,6 @@
     "format:fix": "bunx --bun pickier format . --write"
   },
   "devDependencies": {
-    "better-dx": "^0.1.7"
+    "better-dx": "^0.2.5"
   }
 }
