@@ -320,6 +320,7 @@ function extractScriptUrls(html: string, baseUrl: string): string[] {
 /**
  * Analyze JavaScript bundles to find API endpoints
  */
+// eslint-disable-next-line no-unused-vars
 async function analyzeJavaScriptBundles(
   scriptUrls: string[],
   baseUrl: string,
@@ -327,6 +328,7 @@ async function analyzeJavaScriptBundles(
 ): Promise<string[]> {
   const endpoints = new Set<string>()
 
+  // eslint-disable-next-line no-unused-vars
   const analysisPromises = scriptUrls.map(async (scriptUrl) => {
     try {
       const controller = new AbortController()

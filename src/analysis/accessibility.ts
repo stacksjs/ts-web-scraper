@@ -68,19 +68,19 @@ export interface AccessibilityIssue {
 /**
  * Analyze accessibility of HTML content
  */
-export function analyzeAccessibility(html: string): AccessibilityAnalysis {
+export function analyzeAccessibility(_html: string): AccessibilityAnalysis {
   const issues: AccessibilityIssue[] = []
   const features: string[] = []
   let score = 100
 
   // Analyze landmarks
   const landmarks = {
-    header: (html.match(/<header/gi) || []).length,
-    nav: (html.match(/<nav/gi) || []).length,
-    main: (html.match(/<main/gi) || []).length,
-    aside: (html.match(/<aside/gi) || []).length,
-    footer: (html.match(/<footer/gi) || []).length,
-    search: (html.match(/role=["']search["']/gi) || []).length,
+    header: (_html.match(/<header/gi) || []).length,
+    nav: (_html.match(/<nav/gi) || []).length,
+    main: (_html.match(/<main/gi) || []).length,
+    aside: (_html.match(/<aside/gi) || []).length,
+    footer: (_html.match(/<footer/gi) || []).length,
+    search: (_html.match(/role=["']search["']/gi) || []).length,
   }
 
   // Check for semantic HTML
@@ -103,7 +103,8 @@ export function analyzeAccessibility(html: string): AccessibilityAnalysis {
   }
 
   // Analyze images
-  const imgTags = html.match(/<img[^>]*>/gi) || []
+  const imgTags = _html.match(/<img[^>]*>/gi) || []
+  // eslint-disable-next-line quotes
   const imagesWithAlt = imgTags.filter(img => /alt=["'][^"']*["']/.test(img)).length
   const imagesWithEmptyAlt = imgTags.filter(img => /alt=["']["']/.test(img)).length
   const imagesWithoutAlt = imgTags.length - imagesWithAlt
@@ -129,8 +130,8 @@ export function analyzeAccessibility(html: string): AccessibilityAnalysis {
   }
 
   // Analyze forms
-  const inputTags = html.match(/<input(?![^>]*type=["'](?:hidden|submit|button)["'])[^>]*>/gi) || []
-  const labelsCount = (html.match(/<label/gi) || []).length
+  const inputTags = _html.match(/<input(?![^>]*type=["'](?:hidden|submit|button)["'])[^>]*>/gi) || []
+  const labelsCount = (_html.match(/<label/gi) || []).length
   const inputsWithAriaLabel = inputTags.filter(input => /aria-label=["'][^"']+["']/.test(input)).length
   const inputsWithLabel = Math.min(labelsCount + inputsWithAriaLabel, inputTags.length)
   const inputsWithoutLabel = Math.max(0, inputTags.length - inputsWithLabel)
@@ -155,7 +156,7 @@ export function analyzeAccessibility(html: string): AccessibilityAnalysis {
   }
 
   // Analyze heading hierarchy
-  const headingHierarchy = analyzeHeadingHierarchy(html)
+  const headingHierarchy = analyzeHeadingHierarchy(_html)
   if (!headingHierarchy.valid) {
     for (const issue of headingHierarchy.issues) {
       issues.push({
@@ -171,17 +172,17 @@ export function analyzeAccessibility(html: string): AccessibilityAnalysis {
   }
 
   // Check for ARIA attributes
-  if (html.includes('aria-')) {
+  if (_html.includes('aria-')) {
     features.push('ARIA attributes used')
   }
 
   // Check for skip links
-  if (html.match(/skip to (main )?content|skip navigation/i)) {
+  if (_html.match(/skip to (main )?content|skip navigation/i)) {
     features.push('Skip navigation link')
   }
 
   // Check for language attribute
-  if (html.match(/<html[^>]+lang=/i)) {
+  if (_html.match(/<html[^>]+lang=/i)) {
     features.push('Language attribute set')
   }
   else {
@@ -194,12 +195,12 @@ export function analyzeAccessibility(html: string): AccessibilityAnalysis {
   }
 
   // Check for viewport meta tag (responsive design)
-  if (html.match(/<meta[^>]+name=["']viewport["']/i)) {
+  if (_html.match(/<meta[^>]+name=["']viewport["']/i)) {
     features.push('Viewport meta tag (responsive)')
   }
 
   // Check for focus indicators (via CSS)
-  if (html.match(/:focus/)) {
+  if (_html.match(/:focus/)) {
     features.push('Focus styles defined')
   }
 

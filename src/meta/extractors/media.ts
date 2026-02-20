@@ -11,6 +11,7 @@ import { resolveUrl } from '../utils/url'
 export function extractFavicon(html: string, baseUrl?: string): string | undefined {
   // Try various favicon link tags
   const faviconPatterns = [
+    // eslint-disable-next-line quotes
     /<link[^>]+rel=["'](?:icon|shortcut icon)["'][^>]+href=["']([^"']+)["'][^>]*>/i,
     /<link[^>]+href=["']([^"']+)["'][^>]+rel=["'](?:icon|shortcut icon)["'][^>]*>/i,
     /<link[^>]+rel=["']apple-touch-icon["'][^>]+href=["']([^"']+)["'][^>]*>/i,

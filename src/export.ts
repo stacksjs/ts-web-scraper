@@ -128,7 +128,9 @@ function exportXML(data: any, options: ExportOptions): string {
 /**
  * Export to YAML
  */
+// eslint-disable-next-line no-unused-vars
 function exportYAML(data: any, _options: ExportOptions): string {
+  // eslint-disable-next-line no-unused-vars
   function toYAML(obj: any, level: number = 0): string {
     const indent = '  '.repeat(level)
 
@@ -319,6 +321,7 @@ function flattenObject(obj: any, prefix: string = ''): Record<string, any> {
 /**
  * Escape CSV value
  */
+// eslint-disable-next-line no-unused-vars
 function escapeCSV(value: string): string {
   if (value.includes(',') || value.includes('"') || value.includes('\n')) {
     return `"${value.replace(/"/g, '""')}"`

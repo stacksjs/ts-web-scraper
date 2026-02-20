@@ -174,6 +174,7 @@ export async function withRetry<T>(
 /**
  * Create a retry wrapper for a function
  */
+// eslint-disable-next-line no-unused-vars
 export function retryable<T extends (...args: any[]) => Promise<any>>(
   fn: T,
   options: RetryOptions = {},

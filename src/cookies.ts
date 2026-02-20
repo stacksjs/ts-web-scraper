@@ -383,6 +383,7 @@ export class SessionManager {
   extractCSRFToken(html: string): string | null {
     // Common CSRF token patterns
     const patterns = [
+      // eslint-disable-next-line quotes
       /<input[^>]+name=["']csrf[_-]?token["'][^>]+value=["']([^"']+)["']/i,
       /<input[^>]+value=["']([^"']+)["'][^>]+name=["']csrf[_-]?token["']/i,
       /<meta[^>]+name=["']csrf[_-]?token["'][^>]+content=["']([^"']+)["']/i,

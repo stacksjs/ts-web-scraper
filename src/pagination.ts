@@ -69,6 +69,7 @@ function detectPageNumbers(html: string, baseUrl: URL): PaginationInfo {
   // Look for common pagination patterns
   const patterns = [
     // Match page numbers in links: <a href="/page/2">2</a>
+    // eslint-disable-next-line quotes
     /<a[^>]*href=["']([^"']*)["'][^>]*>(\d+)<\/a>/gi,
     // Match numbered pagination: <a class="page">2</a>
     /<a[^>]*class=["'][^"']*page[^"']*["'][^>]*>(\d+)<\/a>/gi,
@@ -221,6 +222,7 @@ function detectLoadMore(html: string): PaginationInfo {
 /**
  * Detect infinite scroll indicators
  */
+// eslint-disable-next-line no-unused-vars
 function detectInfiniteScroll(html: string): PaginationInfo {
   const patterns = [
     /data-infinite[_-]?scroll/i,

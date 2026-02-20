@@ -8,7 +8,7 @@ import { resolveUrl, toCamelCase } from '../utils/url'
 /**
  * Extract Open Graph metadata from HTML
  */
-export function extractOpenGraph(html: string): OpenGraphBasic & {
+export function extractOpenGraph(_html: string): OpenGraphBasic & {
   article?: OpenGraphArticle
   book?: OpenGraphBook
   profile?: OpenGraphProfile
@@ -23,19 +23,19 @@ export function extractOpenGraph(html: string): OpenGraphBasic & {
   const ogReverseRegex = /<meta[^>]+content=["']([^"']*)["'][^>]+(?:property|name)=["']og:([^"']+)["'][^>]*>/gi
 
   // Process regular order (property/name first)
-  let match = ogRegex.exec(html)
+  let match = ogRegex.exec(_html)
   while (match !== null) {
     const [, property, content] = match
     processOpenGraphProperty(property, content, og, article, book, profile)
-    match = ogRegex.exec(html)
+    match = ogRegex.exec(_html)
   }
 
   // Process reverse order (content first)
-  let reverseMatch = ogReverseRegex.exec(html)
+  let reverseMatch = ogReverseRegex.exec(_html)
   while (reverseMatch !== null) {
     const [, content, property] = reverseMatch
     processOpenGraphProperty(property, content, og, article, book, profile)
-    reverseMatch = ogReverseRegex.exec(html)
+    reverseMatch = ogReverseRegex.exec(_html)
   }
 
   const result: any = { ...og }

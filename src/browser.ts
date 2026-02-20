@@ -398,6 +398,7 @@ export class Browser {
    */
   async waitForSelector(selector: string, timeout: number = 30000): Promise<void> {
     const startTime = Date.now()
+    // eslint-disable-next-line quotes
     const escapedSelector = selector.replace(/'/g, "\\'")
 
     while (Date.now() - startTime < timeout) {

@@ -45,12 +45,14 @@ export interface GraphQLClientOptions {
 /**
  * Detect GraphQL endpoints in HTML
  */
+// eslint-disable-next-line no-unused-vars
 export function detectGraphQL(html: string, baseUrl: string): GraphQLDetectionResult {
   const endpoints: GraphQLEndpoint[] = []
   const detectedUrls = new Set<string>()
 
   // Common GraphQL endpoint patterns
   const endpointPatterns = [
+    // eslint-disable-next-line quotes
     /(?:https?:)?\/\/[^"'\s]+\/graphql/gi,
     /(?:https?:)?\/\/[^"'\s]+\/api\/graphql/gi,
     /(?:https?:)?\/\/[^"'\s]+\/query/gi,

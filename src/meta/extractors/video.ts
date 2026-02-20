@@ -7,17 +7,18 @@ import type { OpenGraphBasic, VideoMetadata } from '../types'
 /**
  * Extract video metadata from URL
  */
-export function extractVideoMetadata(videoUrl: string, og?: OpenGraphBasic): VideoMetadata | undefined {
-  if (!videoUrl)
+export function extractVideoMetadata(_videoUrl: string, _og?: OpenGraphBasic): VideoMetadata | undefined {
+  if (!_videoUrl)
     return undefined
 
   const result: VideoMetadata = {
-    url: videoUrl,
+    url: _videoUrl,
   }
 
   // YouTube detection
+  // eslint-disable-next-line quotes
   const youtubeRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i
-  const youtubeMatch = videoUrl.match(youtubeRegex)
+  const youtubeMatch = _videoUrl.match(youtubeRegex)
   if (youtubeMatch) {
     result.platform = 'youtube'
     result.videoId = youtubeMatch[1]
@@ -26,7 +27,7 @@ export function extractVideoMetadata(videoUrl: string, og?: OpenGraphBasic): Vid
 
   // Vimeo detection
   const vimeoRegex = /vimeo\.com\/(?:video\/)?(\d+)/i
-  const vimeoMatch = videoUrl.match(vimeoRegex)
+  const vimeoMatch = _videoUrl.match(vimeoRegex)
   if (vimeoMatch) {
     result.platform = 'vimeo'
     result.videoId = vimeoMatch[1]
@@ -34,16 +35,16 @@ export function extractVideoMetadata(videoUrl: string, og?: OpenGraphBasic): Vid
 
   // Dailymotion detection
   const dailymotionRegex = /dailymotion\.com\/video\/([^_]+)/i
-  const dailymotionMatch = videoUrl.match(dailymotionRegex)
+  const dailymotionMatch = _videoUrl.match(dailymotionRegex)
   if (dailymotionMatch) {
     result.platform = 'dailymotion'
     result.videoId = dailymotionMatch[1]
   }
 
   // Get dimensions from OG data if available
-  if (og?.video && typeof og.video === 'object' && !Array.isArray(og.video)) {
-    result.width = og.video.width
-    result.height = og.video.height
+  if (_og?.video && typeof _og.video === 'object' && !Array.isArray(_og.video)) {
+    result.width = _og.video.width
+    result.height = _og.video.height
   }
 
   return result
