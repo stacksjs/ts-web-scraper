@@ -5,7 +5,7 @@
     "": {
       "name": "ts-web-scraper",
       "devDependencies": {
-        "better-dx": "^0.2.5",
+        "better-dx": "^0.2.6",
       },
     },
   },
