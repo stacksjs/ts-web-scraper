@@ -2,7 +2,7 @@
 
 ## About
 
-A powerful web scraper for both static and client-side rendered sites using only Bun native APIs.
+A type-safe web scraping library for TypeScript and Bun with zero external dependencies, built entirely on Bun's native APIs. It provides a pipeline-based architecture for data extraction and transformation, with support for client-side rendered pages, automatic pagination, rate limiting (token bucket), LRU caching with TTL, retry with exponential backoff, content validation, and change detection. It also includes extractors for metadata (Open Graph, Schema.org), contact info, accessibility analysis, and ML-ready features, with export to JSON, CSV, XML, YAML, and Markdown.
 
 ## Linting
 
