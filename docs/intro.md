@@ -2,7 +2,7 @@
 
 A powerful, type-safe web scraping library for TypeScript and Bun with zero external dependencies.
 
-## What is ts-web-scraper?
+## What is ts-web-scraper
 
 ts-web-scraper is a modern web scraping library built entirely on Bun's native APIs. It provides a comprehensive toolkit for extracting data from both static and client-side rendered websites with maximum performance and minimal footprint.
 
@@ -68,7 +68,7 @@ Automatic pagination detection and traversal for multi-page content.
 
 Support for JavaScript-heavy sites (React, Vue, Next.js) with API endpoint discovery.
 
-## Why ts-web-scraper?
+## Why ts-web-scraper
 
 ### Modern Architecture
 

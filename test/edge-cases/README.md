@@ -5,6 +5,7 @@ This directory contains comprehensive edge case and stress tests designed to bre
 ## Overview
 
 These tests cover extreme scenarios, malicious inputs, and edge cases that real-world web scrapers may encounter. The goal is to ensure the scraper:
+
 1. **Never crashes** on invalid input
 2. **Returns sensible defaults** when data is missing
 3. **Doesn't infinite loop** on circular or recursive structures
@@ -103,7 +104,7 @@ Tests the scraper's security against various injection attacks:
 
 - **SSRF (Server-Side Request Forgery)**: Internal IP addresses
 
-- **Prototype Pollution**: __proto__ in attributes and JSON
+- **Prototype Pollution**:**proto** in attributes and JSON
 
 - **ReDoS (Regular Expression DoS)**: Patterns that could cause regex hangs
 

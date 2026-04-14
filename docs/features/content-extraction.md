@@ -48,6 +48,7 @@ console.log(content)
 ```
 
 The extractor uses multiple strategies:
+
 1. Look for `<article>` element (semantic HTML5)
 2. Look for `<main>` element
 3. Analyze content density (most paragraphs)
@@ -79,6 +80,7 @@ console.log('Title:', title)
 ```
 
 Title extraction priority:
+
 1. `<h1>` within article content
 2. `<title>` tag in document head
 3. `undefined` if not found
@@ -96,6 +98,7 @@ if (author) {
 ```
 
 Author detection sources:
+
 - `<meta name="author">` tag
 - `<a rel="author">` link
 - Elements with class containing "author"
@@ -114,6 +117,7 @@ if (publishedDate) {
 ```
 
 Date extraction sources:
+
 - `<time datetime="">` attribute
 - `<meta property="article:published_time">` tag
 - ISO 8601 format dates
@@ -129,6 +133,7 @@ console.log(`${readingTime} min read`)
 ```
 
 Calculation:
+
 - Based on 225 words per minute (average reading speed)
 - Formula: `ceil(word_count / 225)`
 
@@ -143,6 +148,7 @@ console.log('Summary:', excerpt)
 ```
 
 Excerpt generation:
+
 - First 200 characters of plain text
 - Adds "..." if truncated
 - Great for previews and meta descriptions
@@ -160,6 +166,7 @@ if (leadImage) {
 ```
 
 Image extraction:
+
 - First `<img>` in article content
 - Resolves relative URLs using provided base URL
 - Returns absolute URL
@@ -730,6 +737,7 @@ const migrated = await migrateContent([
 - Lead image may not be the most relevant image
 
 For better results:
+
 - Use on traditional blog posts and articles
 - Prefer semantic HTML5 (`<article>`, `<main>`)
 - Test extraction quality before production use
@@ -741,48 +749,66 @@ For better results:
 ```typescript
 interface ExtractedContent {
   /**
-   * Main article title
-   */
+
+   _ Main article title
+
+   _/
   title?: string
 
   /**
-   * Main article content (HTML)
-   */
+
+   _ Main article content (HTML)
+
+   _/
   content: string
 
   /**
-   * Plain text version
-   */
+
+   _ Plain text version
+
+   _/
   textContent: string
 
   /**
-   * Article excerpt/summary
-   */
+
+   _ Article excerpt/summary
+
+   _/
   excerpt?: string
 
   /**
-   * Article author
-   */
+
+   _ Article author
+
+   _/
   author?: string
 
   /**
-   * Published date
-   */
+
+   _ Published date
+
+   _/
   publishedDate?: string
 
   /**
-   * Reading time in minutes
-   */
+
+   _ Reading time in minutes
+
+   _/
   readingTime: number
 
   /**
-   * Content length
-   */
+
+   _ Content length
+
+   _/
   length: number
 
   /**
-   * Main image
-   */
+
+   _ Main image
+
+   _/
   leadImage?: string
 }
 ```

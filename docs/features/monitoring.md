@@ -178,7 +178,7 @@ const scraper = createScraper({
   rateLimit: { requestsPerSecond: 2 },
 })
 
-const urls = Array.from({ length: 100 }, (_, i) =>
+const urls = Array.from({ length: 100 }, (*, i) =>
   `https://example.com/page${i}`)
 
 console.log('Starting batch scrape...')
@@ -307,7 +307,7 @@ const monitor = new PerformanceMonitor({
     // Send to Datadog
     await fetch('https://api.datadoghq.com/api/v1/series', {
       method: 'POST',
-      headers: { 'DD-API-KEY': process.env.DATADOG_API_KEY },
+      headers: { 'DD-API-KEY': process.env.DATADOG*API_KEY },
       body: JSON.stringify({
         series: metrics.map(m => ({
           metric: 'scraper.duration',

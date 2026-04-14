@@ -604,38 +604,52 @@ For production internationalization:
 ```typescript
 interface LanguageDetection {
   /**
-   * Primary language code (ISO 639-1)
-   */
+
+   _ Primary language code (ISO 639-1)
+
+   _/
   primary: string
 
   /**
-   * Confidence score (0-100)
-   */
+
+   _ Confidence score (0-100)
+
+   _/
   confidence: number
 
   /**
-   * Alternative languages detected
-   */
+
+   _ Alternative languages detected
+
+   _/
   alternatives: string[]
 
   /**
-   * Alternate language versions available
-   */
+
+   _ Alternate language versions available
+
+   _/
   alternateVersions: AlternateLanguage[]
 
   /**
-   * Direction (ltr or rtl)
-   */
+
+   _ Direction (ltr or rtl)
+
+   _/
   direction: 'ltr' | 'rtl'
 
   /**
-   * Character set
-   */
+
+   _ Character set
+
+   _/
   charset?: string
 
   /**
-   * Translation readiness
-   */
+
+   _ Translation readiness
+
+   _/
   i18n: {
     hasLanguageSwitcher: boolean
     hasHreflang: boolean

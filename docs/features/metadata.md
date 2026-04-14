@@ -201,6 +201,7 @@ console.log('Image Alt:', twitter.imageAlt)
 ```
 
 Card types:
+
 - **summary**: Default card with small image
 - **summary_large_image**: Large image card
 - **app**: Mobile app installation card
@@ -259,6 +260,7 @@ if (structured.jsonLd && structured.jsonLd.length > 0) {
 ```
 
 Common schema types:
+
 - **Organization**: Company information
 - **Person**: Individual profiles
 - **Article**: Blog posts and articles
@@ -320,6 +322,7 @@ if (favicon) {
 ```
 
 Favicon sources (in order of priority):
+
 1. Apple touch icon (`apple-touch-icon`)
 2. Standard favicon link (`rel="icon"`)
 3. Shortcut icon (`rel="shortcut icon"`)
@@ -340,6 +343,7 @@ if (logo) {
 ```
 
 Logo sources:
+
 - Schema.org Organization logo
 - Open Graph image (if marked as logo)
 - Image with "logo" in alt text or class
@@ -878,6 +882,7 @@ console.log('Sharing Optimization:', optimized)
 - Cannot verify structured data correctness
 
 For production use:
+
 - Implement image validation and caching
 - Use specialized tools for structured data validation
 - Monitor social media preview appearance

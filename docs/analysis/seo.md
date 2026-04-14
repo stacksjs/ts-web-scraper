@@ -721,27 +721,37 @@ For comprehensive SEO:
 ```typescript
 interface SEOAnalysis {
   /**
+
    * Readability score (0-100, higher is better)
+
    */
   readabilityScore: number
 
   /**
+
    * Flesch Reading Ease score
+
    */
   fleschScore: number
 
   /**
+
    * Keyword density map (keyword -> percentage)
+
    */
   keywordDensity: Record<string, number>
 
   /**
+
    * Top keywords
+
    */
   topKeywords: Array<{ keyword: string, count: number, density: number }>
 
   /**
+
    * Content statistics
+
    */
   stats: {
     wordCount: number
@@ -752,7 +762,9 @@ interface SEOAnalysis {
   }
 
   /**
+
    * Heading structure
+
    */
   headings: {
     h1: number
@@ -764,12 +776,16 @@ interface SEOAnalysis {
   }
 
   /**
+
    * SEO warnings
+
    */
   warnings: string[]
 
   /**
+
    * SEO recommendations
+
    */
   recommendations: string[]
 }

@@ -81,21 +81,25 @@ const scraper = createScraper({
 ### Request Settings
 
 #### `timeout`
+
 - **Type**: `number`
 - **Default**: `30000`
 - **Description**: Request timeout in milliseconds
 
 #### `userAgent`
+
 - **Type**: `string`
 - **Default**: `'BunScraper/1.0'`
 - **Description**: User agent string for requests
 
 #### `followRedirects`
+
 - **Type**: `boolean`
 - **Default**: `true`
 - **Description**: Whether to follow HTTP redirects
 
 #### `headers`
+
 - **Type**: `Record<string, string>`
 - **Default**: `{}`
 - **Description**: Custom headers to include in all requests
@@ -103,16 +107,19 @@ const scraper = createScraper({
 ### Rate Limiting
 
 #### `rateLimit.requestsPerSecond`
+
 - **Type**: `number`
 - **Default**: No limit
 - **Description**: Maximum requests per second
 
 #### `rateLimit.burstSize`
+
 - **Type**: `number`
 - **Default**: `1`
 - **Description**: Number of requests allowed in a burst
 
 #### `rateLimit.perDomain`
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Apply rate limit per domain instead of globally
@@ -120,16 +127,19 @@ const scraper = createScraper({
 ### Caching
 
 #### `cache.enabled`
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Enable response caching
 
 #### `cache.ttl`
+
 - **Type**: `number`
 - **Default**: `300000` (5 minutes)
 - **Description**: Cache time-to-live in milliseconds
 
 #### `cache.maxSize`
+
 - **Type**: `number`
 - **Default**: `100`
 - **Description**: Maximum number of cached responses
@@ -137,21 +147,25 @@ const scraper = createScraper({
 ### Retry Logic
 
 #### `retry.maxRetries`
+
 - **Type**: `number`
 - **Default**: `0`
 - **Description**: Maximum number of retry attempts
 
 #### `retry.initialDelay`
+
 - **Type**: `number`
 - **Default**: `1000`
 - **Description**: Initial delay between retries in milliseconds
 
 #### `retry.backoff`
+
 - **Type**: `'fixed' | 'linear' | 'exponential'`
 - **Default**: `'exponential'`
 - **Description**: Backoff strategy for retries
 
 #### `retry.maxDelay`
+
 - **Type**: `number`
 - **Default**: `30000`
 - **Description**: Maximum delay between retries in milliseconds
@@ -159,6 +173,7 @@ const scraper = createScraper({
 ### Ethics & Compliance
 
 #### `respectRobotsTxt`
+
 - **Type**: `boolean`
 - **Default**: `true`
 - **Description**: Whether to respect robots.txt rules
@@ -166,16 +181,19 @@ const scraper = createScraper({
 ### Cookies & Sessions
 
 #### `cookies.enabled`
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Enable cookie handling
 
 #### `cookies.persistPath`
+
 - **Type**: `string`
 - **Default**: `undefined`
 - **Description**: File path to persist cookies
 
 #### `cookies.autoSave`
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Automatically save cookies to disk
@@ -183,6 +201,7 @@ const scraper = createScraper({
 ### Monitoring
 
 #### `monitor`
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Enable performance monitoring and statistics
@@ -190,11 +209,13 @@ const scraper = createScraper({
 ### Change Tracking
 
 #### `trackChanges`
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Track content changes between scrapes
 
 #### `maxSnapshots`
+
 - **Type**: `number`
 - **Default**: `5`
 - **Description**: Maximum number of snapshots to keep per URL

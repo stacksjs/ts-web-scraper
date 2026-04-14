@@ -73,8 +73,10 @@ console.log(`  Potential Scripts: ${estimates.potentialScriptSize} KB`)
 console.log(`  Potential Styles: ${estimates.potentialStyleSize} KB`)
 console.log(`  Total Estimate: ${
   estimates.htmlSize
+
   + estimates.potentialScriptSize
   + estimates.potentialStyleSize
+
 } KB`)
 ```
 
@@ -576,7 +578,9 @@ For comprehensive performance testing, combine this tool with:
 ```typescript
 interface PerformanceMetrics {
   /**
+
    * Resource counts
+
    */
   resources: {
     scripts: number
@@ -588,7 +592,9 @@ interface PerformanceMetrics {
   }
 
   /**
+
    * External resources
+
    */
   externalResources: {
     count: number
@@ -596,7 +602,9 @@ interface PerformanceMetrics {
   }
 
   /**
+
    * Page size estimates (KB)
+
    */
   estimates: {
     htmlSize: number
@@ -605,7 +613,9 @@ interface PerformanceMetrics {
   }
 
   /**
+
    * Performance hints
+
    */
   hints: {
     hasLazyLoading: boolean
@@ -617,12 +627,16 @@ interface PerformanceMetrics {
   }
 
   /**
+
    * Performance warnings
+
    */
   warnings: string[]
 
   /**
+
    * Performance score (0-100)
+
    */
   score: number
 }

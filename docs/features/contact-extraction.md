@@ -44,6 +44,7 @@ emails.forEach((email) => {
 ```
 
 Email types:
+
 - **support**: Support and help desk emails
 - **sales**: Sales and business inquiries
 - **info**: General information emails
@@ -76,6 +77,7 @@ contact.emails.forEach((email) => {
 ```
 
 This helps understand:
+
 - Purpose of the email address
 - Department or person
 - Hours of availability
@@ -104,6 +106,7 @@ phones.forEach((phone) => {
 ```
 
 Phone types:
+
 - **mobile**: Mobile phone numbers
 - **landline**: Landline/office numbers
 - **toll-free**: Toll-free numbers (800, 888, 877)
@@ -164,6 +167,7 @@ if (addresses.length > 0) {
 ```
 
 Address sources:
+
 - Schema.org PostalAddress structured data
 - `<address>` HTML elements
 - Pattern matching (future enhancement)
@@ -207,6 +211,7 @@ social.forEach((profile) => {
 ```
 
 Supported platforms:
+
 - **Twitter/X**: twitter.com or x.com URLs
 - **Facebook**: Personal profiles and pages
 - **Instagram**: User profiles
@@ -260,6 +265,7 @@ if (contactForms.length > 0) {
 ```
 
 Form information:
+
 - **action**: Where the form submits to
 - **method**: HTTP method (GET/POST)
 - **fields**: Array of input field names
@@ -780,6 +786,7 @@ await analyzeSocialPresence([
 - Cannot verify if contacts are current or valid
 
 For production use:
+
 - Implement email validation services
 - Use phone number validation libraries (libphonenumber)
 - Verify addresses with geocoding APIs
@@ -792,22 +799,30 @@ For production use:
 ```typescript
 interface ContactInformation {
   /**
+
    * Email addresses found
+
    */
   emails: ContactEmail[]
 
   /**
+
    * Phone numbers found
+
    */
   phones: ContactPhone[]
 
   /**
+
    * Physical addresses found
+
    */
   addresses: string[]
 
   /**
+
    * Social media profiles
+
    */
   social: Array<{
     platform: string
@@ -816,7 +831,9 @@ interface ContactInformation {
   }>
 
   /**
+
    * Contact forms detected
+
    */
   contactForms: ContactForm[]
 }

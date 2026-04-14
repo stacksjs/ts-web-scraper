@@ -231,6 +231,7 @@ function prepareForEmbedding(
   // Count total entities
   const entityCount
     = features.entities.emails.length
+
       + features.entities.phones.length
       + features.entities.urls.length
       + features.entities.dates.length
@@ -348,9 +349,11 @@ function scoreContentQuality(
 
   const totalScore = (
     lengthScore * 0.3
+
     + vocabScore * 0.3
     + structureScore * 0.3
     + sentimentScore * 0.1
+
   )
 
   let verdict: QualityScore['verdict']
@@ -564,6 +567,7 @@ function calculateSimilarity(
   // Combine metrics (0-100 scale)
   const score
     = (1 - sentimentDiff) * 20
+
       + (1 - vocabDiff) * 20
       + lengthRatio * 20
       + overlap * 40
@@ -677,17 +681,23 @@ For production ML pipelines, consider:
 ```typescript
 interface MLFeatures {
   /**
+
    * Clean text content suitable for embeddings
+
    */
   textContent: string
 
   /**
+
    * Structured content sections
+
    */
   sections: ContentSection[]
 
   /**
+
    * Named entities detected
+
    */
   entities: {
     emails: string[]
@@ -698,7 +708,9 @@ interface MLFeatures {
   }
 
   /**
+
    * Content features for classification
+
    */
   features: {
     averageSentenceLength: number
@@ -711,7 +723,9 @@ interface MLFeatures {
   }
 
   /**
+
    * Sentiment indicators
+
    */
   sentiment: {
     positiveWords: number
@@ -721,7 +735,9 @@ interface MLFeatures {
   }
 
   /**
+
    * Document statistics
+
    */
   stats: {
     totalWords: number

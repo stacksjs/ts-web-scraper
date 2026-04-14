@@ -243,7 +243,7 @@ else {
 
 ## Documentation
 
-For full documentation, visit [https://ts-web-scraper.netlify.app](https://ts-web-scraper.netlify.app)
+For full documentation, visit [<https://ts-web-scraper.netlify.ap>p](https://ts-web-scraper.netlify.app)
 
 - [Getting Started Guide](https://ts-web-scraper.netlify.app/guide/)
 - [API Reference](https://ts-web-scraper.netlify.app/api/)

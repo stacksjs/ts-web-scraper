@@ -49,6 +49,7 @@ const result = await scraper.scrape('https://example.com', {
 ```
 
 Returns `ScrapeResult<T>`:
+
 - `success: boolean` - Whether the scrape succeeded
 - `url: string` - The scraped URL
 - `data?: T` - Extracted data
