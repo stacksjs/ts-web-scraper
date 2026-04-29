@@ -325,7 +325,7 @@ function generateContactCard(html: string, url: string): ContactCard {
   // Extract business name from title or h1
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
   if (titleMatch) {
-    card.businessName = titleMatch[1].split('|')[0].trim()
+    card.businessName = titleMatch.at(1).split('|').at(0).trim()
   }
 
   // Organize emails by type
@@ -390,7 +390,7 @@ async function extractLead(url: string): Promise<Lead> {
   // Try to extract company name
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
   const company = titleMatch
-    ? titleMatch[1].split(/[-|]/)[0].trim()
+    ? titleMatch.at(1).split(/[-|]/).at(0).trim()
     : new URL(url).hostname
 
   return {
@@ -481,7 +481,7 @@ function validateContactInfo(
     if (emailRegex.test(email)) {
       // Check for disposable email domains
       const disposableDomains = ['tempmail.com', 'guerrillamail.com', 'mailinator.com']
-      const domain = email.split('@')[1]
+      const domain = email.split('@').at(1)
 
       if (disposableDomains.includes(domain)) {
         result.emails.disposable.push(email)
@@ -625,7 +625,7 @@ async function scrapBusinessDirectory(urls: string[]): Promise<DirectoryEntry[]>
       // Extract business name
       const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
       const name = titleMatch
-        ? titleMatch[1].split(/[-|]/)[0].trim()
+        ? titleMatch.at(1).split(/[-|]/).at(0).trim()
         : new URL(url).hostname
 
       entries.push({

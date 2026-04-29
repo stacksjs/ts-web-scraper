@@ -334,7 +334,7 @@ if (mainScript) {
   const jsCode = await response.text()
 
   // Look for specific patterns
-  const apiKeys = jsCode.match(/apiKey["']?\s*[:=]\s*["']([^"']+)["']/g)
+  const apiKeys = jsCode.match(/apiKey['"]?\s*[:=]\s*['"](.+?)(?=['"])/g)
   const endpoints = jsCode.match(/https?:\/\/[^"'\s]+/g)
 
   console.log('API keys found:', apiKeys)
