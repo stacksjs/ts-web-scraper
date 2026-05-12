@@ -13,3 +13,4 @@ docs/.vitepress/cache
 bin/scraper
 .zed
 .cursor
+pantry
