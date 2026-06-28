@@ -2,6 +2,15 @@ import { describe, expect, it } from 'bun:test'
 import { generateCacheKey, ScraperCache } from '../src/cache'
 
 describe('ScraperCache', () => {
+  it('should use default options when none are provided', async () => {
+    const cache = new ScraperCache()
+
+    await cache.set('default-key', 'default-data')
+
+    const cached = await cache.get('default-key')
+    expect(cached?.data).toBe('default-data')
+  })
+
   it('should store and retrieve data', async () => {
     const cache = new ScraperCache({
       enabled: true,

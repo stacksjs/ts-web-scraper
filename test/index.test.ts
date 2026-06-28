@@ -105,6 +105,18 @@ describe('Web Scraper - Static HTML Parsing', () => {
     expect(link?.hasAttribute('href')).toBe(true)
     expect(link?.hasAttribute('nonexistent')).toBe(false)
   })
+
+  it('should parse custom elements and hyphenated attributes', () => {
+    const doc = parseHTML(`
+      <ytd-watch-flexy video-id="abc123">
+        <ytd-display-ad-renderer data-ad-slot="masthead">Ad</ytd-display-ad-renderer>
+      </ytd-watch-flexy>
+    `)
+
+    expect(doc.querySelector('ytd-watch-flexy')?.getAttribute('video-id')).toBe('abc123')
+    expect(doc.querySelector('ytd-display-ad-renderer')?.textContent).toContain('Ad')
+    expect(doc.querySelector('[data-ad-slot]')?.tagName).toBe('ytd-display-ad-renderer')
+  })
 })
 
 describe('Client-Side Scraper - Detection', () => {

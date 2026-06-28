@@ -88,8 +88,11 @@ export class ScraperCache {
   private hits = 0
   private misses = 0
   private evictions = 0
+  private options: Required<CacheOptions>
 
-  constructor(private options: Required<CacheOptions>) {}
+  constructor(options: CacheOptions = {}) {
+    this.options = { ...DEFAULT_CACHE_OPTIONS, ...options }
+  }
 
   /**
    * Get cached data

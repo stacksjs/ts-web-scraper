@@ -269,7 +269,7 @@ function parseElement(html: string, startIndex: number, parent: ParsedElement | 
   }
 
   // eslint-disable-next-line regexp/no-super-linear-backtracking
-  const tagRegex = /<(\w+)([\s\S]*?)>/g
+  const tagRegex = /<([A-Za-z][\w:-]*)([\s\S]*?)>/g
   const selfClosingTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
 
   let lastIndex = 0
@@ -353,7 +353,7 @@ function parseElement(html: string, startIndex: number, parent: ParsedElement | 
 
 function parseChildren(html: string, parent: ParsedElement): void {
   // eslint-disable-next-line regexp/no-super-linear-backtracking
-  const tagRegex = /<(\w+)([\s\S]*?)>/g
+  const tagRegex = /<([A-Za-z][\w:-]*)([\s\S]*?)>/g
   const selfClosingTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
 
   let lastIndex = 0
@@ -414,7 +414,7 @@ function parseChildren(html: string, parent: ParsedElement): void {
 
 function parseAttributes(attrString: string): Record<string, string> {
   const attributes: Record<string, string> = {}
-  const attrRegex = /(\w+)(?:=["']([^"']*)["']|=([^\s>]+)|(?=\s|>|$))/g
+  const attrRegex = /([\w:-]+)(?:=["']([^"']*)["']|=([^\s>]+)|(?=\s|>|$))/g
 
   let match = attrRegex.exec(attrString)
   while (match !== null) {
@@ -453,7 +453,7 @@ function querySelectorAll(element: HTMLElement, selector: string): HTMLElement[]
     }
     else if (part.startsWith('[')) {
       // Attribute selector
-      const attrMatch = part.match(/\[(\w+)(?:=["']?([^"'\]]+)["']?)?\]/)
+      const attrMatch = part.match(/\[([\w:-]+)(?:=["']?([^"'\]]+)["']?)?\]/)
       if (attrMatch) {
         const [, attrName, attrValue] = attrMatch
         results.push(...filterByAttribute(element, attrName, attrValue))
@@ -481,7 +481,7 @@ function querySelectorAll(element: HTMLElement, selector: string): HTMLElement[]
           return false
       }
 
-      const tagMatch = selector.match(/^(\w+)/)
+      const tagMatch = selector.match(/^([A-Za-z][\w:-]*)/)
       if (tagMatch && el.tagName.toLowerCase() !== tagMatch[1].toLowerCase())
         return false
 

@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "ts-web-scraper",
+      "dependencies": {
+        "bunfig": "^0.15.14",
+      },
       "devDependencies": {
         "better-dx": "^0.2.15",
       },
