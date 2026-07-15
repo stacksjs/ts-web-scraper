@@ -1,3 +1,18 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.2...v0.1.3)
+
+## 🧹 Chores
+
+- release v0.1.3 ([573ded3](https://github.com/stacksjs/ts-web-scraper/commit/573ded3)) _(by Chris <chrisbreuer93@gmail.com>)_
+- add release:patch script ([0b4f882](https://github.com/stacksjs/ts-web-scraper/commit/0b4f882)) _(by Chris <chrisbreuer93@gmail.com>)_
+- release v0.1.2 ([d312c9b](https://github.com/stacksjs/ts-web-scraper/commit/d312c9b)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **pkg**: add sideEffects:false for bundler tree-shaking (publint) ([a6c6837](https://github.com/stacksjs/ts-web-scraper/commit/a6c6837)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: refresh bun.lock to pick up pickier 0.1.37 ([eb3e166](https://github.com/stacksjs/ts-web-scraper/commit/eb3e166)) _(by glennmichael123 <gtorregosa@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+- _glennmichael123 <gtorregosa@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.1...v0.1.2)
 
 ## 🐛 Bug Fixes
