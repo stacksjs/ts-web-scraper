@@ -1,3 +1,18 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.3...v0.1.4)
+
+## 🐛 Bug Fixes
+
+- **pkg**: drop sideEffects:false, it broke the published dist ([9c05bda](https://github.com/stacksjs/ts-web-scraper/commit/9c05bda)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.4 ([123c8ad](https://github.com/stacksjs/ts-web-scraper/commit/123c8ad)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **deps**: declare bun ^1.3.14 in deps.yaml ([7182bd1](https://github.com/stacksjs/ts-web-scraper/commit/7182bd1)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.2...v0.1.3)
 
 ## 🧹 Chores
