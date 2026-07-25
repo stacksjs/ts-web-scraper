@@ -108,7 +108,7 @@ Ready to start scraping? Head over to the [Installation](/install) guide to get 
 - **GitHub**: [stacksjs/ts-web-scraper](https://github.com/stacksjs/ts-web-scraper)
 - **Issues**: [Report bugs or request features](https://github.com/stacksjs/ts-web-scraper/issues)
 - **Discussions**: [Ask questions and share ideas](https://github.com/stacksjs/ts-web-scraper/discussions)
-- **Discord**: [Join the Stacks community](https://discord.gg/stacksjs)
+- **Discord**: [Join the Stacks community](https://stacksjs.com/discord)
 
 ## License
 
