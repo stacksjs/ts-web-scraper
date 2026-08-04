@@ -336,3 +336,67 @@ Sitemap: https://example.com/sitemap-news.xml
     expect(canFetch).toBe(true)
   })
 })
+
+/**
+ * Group matching, per RFC 9309 §2.2.1.
+ *
+ * Crawlers send a full product string (`Mozilla/5.0 (compatible;
+ * ExampleBot/1.0; +https://example.com/bot)`) while sites write bare
+ * tokens (`User-agent: ExampleBot`). Matching those two with string
+ * equality never succeeds, so a group naming a crawler specifically was
+ * skipped and the crawler fell through to `*` and proceeded. That is the
+ * one case where getting this wrong actually matters.
+ */
+describe('robots group matching', () => {
+  const fixture = `User-agent: *
+Disallow: /internal
+
+User-agent: Slurp
+Crawl-delay: 2
+
+User-agent: ExampleBot
+Disallow: /
+
+User-agent: Example
+Disallow: /narrower
+`
+
+  function parserFor(userAgent: string) {
+    const parser = new RobotsParser({ userAgent, respectRobotsTxt: true })
+    return { parser, parsed: (parser as any).parse(fixture) }
+  }
+
+  function allowed(userAgent: string, path: string): boolean {
+    const { parser, parsed } = parserFor(userAgent)
+    return (parser as any).isAllowedByRules(path, parsed)
+  }
+
+  it('matches a named group inside a full user agent string', () => {
+    expect(allowed('Mozilla/5.0 (compatible; ExampleBot/1.0; +https://example.com)', '/anything')).toBe(false)
+  })
+
+  it('still matches when the token is sent bare', () => {
+    expect(allowed('ExampleBot', '/anything')).toBe(false)
+  })
+
+  it('falls back to the wildcard group for an unnamed crawler', () => {
+    expect(allowed('SomeOtherBot', '/anything')).toBe(true)
+    expect(allowed('SomeOtherBot', '/internal/page')).toBe(false)
+  })
+
+  it('prefers the most specific matching group', () => {
+    // 'ExampleBot' contains 'Example', so both groups match. The longer
+    // token wins, which disallows everything rather than only /narrower.
+    expect(allowed('ExampleBot', '/anywhere')).toBe(false)
+  })
+
+  it('does not let the wildcard outrank a named group', () => {
+    const { parser, parsed } = parserFor('Mozilla/5.0 (compatible; ExampleBot/1.0)')
+    const rule = (parser as any).findMatchingRule('Mozilla/5.0 (compatible; ExampleBot/1.0)', parsed)
+    expect(rule.userAgent).toBe('ExampleBot')
+  })
+
+  it('is case insensitive in both directions', () => {
+    expect(allowed('mozilla/5.0 (compatible; EXAMPLEBOT/1.0)', '/anything')).toBe(false)
+  })
+})

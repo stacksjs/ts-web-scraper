@@ -61,7 +61,17 @@ export class RobotsParser {
       return true
     }
 
+    // Deliberately not caught: an unparseable URL is the caller's bug, and
+    // swallowing it here turns a fast, clear failure into a request that
+    // proceeds and then hangs on a URL that was never valid.
     const parsed = new URL(url)
+
+    // A valid non-http(s) URL has no robots.txt to consult, so skip
+    // straight past rather than spending a request and a timeout finding
+    // that out.
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:')
+      return true
+
     const robotsUrl = `${parsed.protocol}//${parsed.host}/robots.txt`
 
     try {
@@ -245,22 +255,36 @@ export class RobotsParser {
   /**
    * Find matching rule for user agent
    */
+  /**
+   * Find the group that applies to our user agent, per RFC 9309 §2.2.1.
+   *
+   * A group matches when its product token appears in our user agent, not
+   * only when the two strings are equal. Crawlers send something like
+   * `Mozilla/5.0 (compatible; ExampleBot/1.0; +https://example.com/bot)`,
+   * and a site writes `User-agent: ExampleBot`. Exact comparison never
+   * matches those, so the crawler fell through to `*` and proceeded, which
+   * means a group naming that crawler specifically was silently ignored.
+   * That is the one case where getting this wrong actually matters.
+   *
+   * The most specific match wins, again per the RFC: with groups for both
+   * `Example` and `ExampleBot`, a request from ExampleBot obeys the longer
+   * one. `*` is the fallback and never competes on length.
+   */
   private findMatchingRule(userAgent: string, robots: ParsedRobots): RobotRule | null {
-    // First try exact match
+    const ua = userAgent.toLowerCase()
+    let best: RobotRule | null = null
+
     for (const rule of robots.rules) {
-      if (rule.userAgent.toLowerCase() === userAgent.toLowerCase()) {
-        return rule
-      }
+      const token = rule.userAgent.toLowerCase()
+
+      if (token === '*' || !ua.includes(token))
+        continue
+
+      if (!best || token.length > best.userAgent.length)
+        best = rule
     }
 
-    // Then try wildcard
-    for (const rule of robots.rules) {
-      if (rule.userAgent === '*') {
-        return rule
-      }
-    }
-
-    return null
+    return best ?? robots.rules.find(rule => rule.userAgent === '*') ?? null
   }
 
   /**
