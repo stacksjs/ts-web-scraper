@@ -39,6 +39,19 @@ describe('Web Scraper - Static HTML Parsing', () => {
     expect(doc.tagName).toBe('root')
   })
 
+  it('preserves siblings after a nested element', () => {
+    const doc = parseHTML(`
+      <div class="transfer-row">
+        <div class="season">25/26</div>
+        <a href="/from/verein/1">From FC</a>
+        <a href="/to/verein/2">To FC</a>
+      </div>
+    `)
+    const row = doc.querySelector('.transfer-row')
+    expect(row?.querySelectorAll('a').map(link => link.textContent)).toEqual(['From FC', 'To FC'])
+    expect(row?.children.map(child => child.tagName.toLowerCase())).toEqual(['div', 'a', 'a'])
+  })
+
   it('should extract title using querySelector', () => {
     const doc = parseHTML(testHTML)
     const title = doc.querySelector('title')

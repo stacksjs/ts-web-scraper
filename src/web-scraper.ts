@@ -186,6 +186,8 @@ interface ParsedElement {
   innerHTML: string
   children: ParsedElement[]
   parent: ParsedElement | null
+  contentStart?: number
+  closedAt?: number
 }
 
 function createHTMLElement(parsed: ParsedElement): HTMLElement {
@@ -268,148 +270,144 @@ function parseElement(html: string, startIndex: number, parent: ParsedElement | 
     parent,
   }
 
-  // eslint-disable-next-line regexp/no-super-linear-backtracking
-  const tagRegex = /<([A-Za-z][\w:-]*)([\s\S]*?)>/g
   const selfClosingTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
-
-  let lastIndex = 0
   const stack: ParsedElement[] = [root]
+  let index = Math.max(0, startIndex)
 
-  tagRegex.lastIndex = startIndex
-  let match = tagRegex.exec(html)
+  const appendText = (value: string): void => {
+    const decoded = decodeHTMLEntities(value).replace(/[\t\n\f\r ]+/g, ' ').trim()
+    if (!decoded) return
+    const current = stack[stack.length - 1]
+    current.textContent += `${current.textContent ? ' ' : ''}${decoded}`
+  }
 
-  while (match !== null) {
-    const [, tagName, attributesStr] = match
-    const matchIndex = match.index
+  while (index < html.length) {
+    const current = stack[stack.length - 1]
+    const currentTag = current.tagName.toLowerCase()
 
-    // Add text content before this tag
-    if (matchIndex > lastIndex) {
-      const textContent = html.slice(lastIndex, matchIndex).trim()
-      if (textContent) {
-        const current = stack[stack.length - 1]
-        current.textContent += textContent
-      }
+    // Script/style contents are raw text. Treating `<` inside JavaScript or
+    // CSS as markup corrupts the stack and everything after it.
+    if (currentTag === 'script' || currentTag === 'style') {
+      const closePattern = new RegExp(`</${currentTag}\\s*>`, 'ig')
+      closePattern.lastIndex = index
+      const close = closePattern.exec(html)
+      const end = close?.index ?? html.length
+      current.innerHTML = html.slice(current.contentStart ?? index, end)
+      current.textContent = currentTag === 'style' ? '' : current.innerHTML
+      current.closedAt = end
+      if (!close) break
+      stack.pop()
+      index = closePattern.lastIndex
+      continue
     }
 
-    const attributes = parseAttributes(attributesStr)
-    const isSelfClosing = selfClosingTags.has(tagName.toLowerCase()) || attributesStr.trim().endsWith('/')
+    const nextTag = html.indexOf('<', index)
+    if (nextTag < 0) {
+      appendText(html.slice(index))
+      break
+    }
+    if (nextTag > index)
+      appendText(html.slice(index, nextTag))
 
+    if (html.startsWith('<!--', nextTag)) {
+      const end = html.indexOf('-->', nextTag + 4)
+      index = end < 0 ? html.length : end + 3
+      continue
+    }
+
+    const tagEnd = findTagEnd(html, nextTag + 1)
+    if (tagEnd < 0) {
+      appendText(html.slice(nextTag))
+      break
+    }
+
+    const token = html.slice(nextTag, tagEnd + 1)
+    const closing = token.match(/^<\/\s*([A-Za-z][\w:-]*)[^>]*>$/)
+    if (closing) {
+      const tagName = closing[1].toLowerCase()
+      let matchingIndex = -1
+      for (let candidate = stack.length - 1; candidate > 0; candidate--) {
+        if (stack[candidate].tagName.toLowerCase() === tagName) {
+          matchingIndex = candidate
+          break
+        }
+      }
+
+      // HTML error recovery: close the matching ancestor and any malformed
+      // descendants above it. An unmatched closer is ignored.
+      if (matchingIndex > 0) {
+        for (let candidate = stack.length - 1; candidate >= matchingIndex; candidate--) {
+          const element = stack[candidate]
+          element.closedAt = nextTag
+          element.innerHTML = html.slice(element.contentStart ?? nextTag, nextTag)
+        }
+        stack.length = matchingIndex
+      }
+      index = tagEnd + 1
+      continue
+    }
+
+    if (/^<!|^<\?/.test(token)) {
+      index = tagEnd + 1
+      continue
+    }
+
+    const opening = token.match(/^<\s*([A-Za-z][\w:-]*)([\s\S]*?)>$/)
+    if (!opening) {
+      appendText(token)
+      index = tagEnd + 1
+      continue
+    }
+
+    const tagName = opening[1]
+    const attributesStr = opening[2] || ''
     const element: ParsedElement = {
       tagName,
-      attributes,
+      attributes: parseAttributes(attributesStr),
       textContent: '',
       innerHTML: '',
       children: [],
-      parent: stack[stack.length - 1],
+      parent: current,
+      contentStart: tagEnd + 1,
     }
+    current.children.push(element)
 
-    stack[stack.length - 1].children.push(element)
-
-    if (!isSelfClosing) {
+    const isSelfClosing = selfClosingTags.has(tagName.toLowerCase()) || /\/\s*>$/.test(token)
+    if (!isSelfClosing)
       stack.push(element)
-    }
 
-    lastIndex = tagRegex.lastIndex
-
-    // Look for closing tag
-    if (!isSelfClosing) {
-      const closingPattern = new RegExp(`</${tagName}>`, 'i')
-      const closingMatch = closingPattern.exec(html.slice(lastIndex))
-
-      if (closingMatch) {
-        const closingIndex = lastIndex + closingMatch.index
-        const innerHtml = html.slice(lastIndex, closingIndex)
-
-        element.innerHTML = innerHtml
-        element.textContent = extractText(innerHtml)
-
-        // Parse children
-        if (innerHtml.includes('<')) {
-          element.children = []
-          parseChildren(innerHtml, element)
-        }
-        else {
-          element.textContent = decodeHTMLEntities(innerHtml).trim()
-        }
-
-        lastIndex = closingIndex + closingMatch[0].length
-        tagRegex.lastIndex = lastIndex
-        stack.pop()
-      }
-    }
-    match = tagRegex.exec(html)
+    index = tagEnd + 1
   }
 
-  // Add remaining text content
-  if (lastIndex < html.length) {
-    const textContent = html.slice(lastIndex).trim()
-    if (textContent) {
-      root.textContent += textContent
-    }
+  // Anything left open consumes the rest of the document, matching browser
+  // error recovery closely enough for querying malformed pages.
+  for (let candidate = stack.length - 1; candidate > 0; candidate--) {
+    const element = stack[candidate]
+    if (element.closedAt === undefined)
+      element.innerHTML = html.slice(element.contentStart ?? html.length)
   }
 
+  const aggregateText = (element: ParsedElement): string => {
+    const own = element.textContent
+    const childText = element.children.map(aggregateText).filter(Boolean).join(' ')
+    element.textContent = `${own}${own && childText ? ' ' : ''}${childText}`.replace(/[\t\n\f\r ]+/g, ' ').trim()
+    return element.textContent
+  }
+  aggregateText(root)
   return root
 }
 
-function parseChildren(html: string, parent: ParsedElement): void {
-  // eslint-disable-next-line regexp/no-super-linear-backtracking
-  const tagRegex = /<([A-Za-z][\w:-]*)([\s\S]*?)>/g
-  const selfClosingTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
-
-  let lastIndex = 0
-  let match = tagRegex.exec(html)
-
-  while (match !== null) {
-    const [, tagName, attributesStr] = match
-    const matchIndex = match.index
-
-    // Add text node if there's content before this tag
-    if (matchIndex > lastIndex) {
-      const textContent = html.slice(lastIndex, matchIndex).trim()
-      if (textContent) {
-        parent.textContent += textContent
-      }
-    }
-
-    const attributes = parseAttributes(attributesStr)
-    const isSelfClosing = selfClosingTags.has(tagName.toLowerCase()) || attributesStr.trim().endsWith('/')
-
-    const closingPattern = new RegExp(`</${tagName}>`, 'i')
-    const remainingHtml = html.slice(tagRegex.lastIndex)
-    const closingMatch = closingPattern.exec(remainingHtml)
-
-    const element: ParsedElement = {
-      tagName,
-      attributes,
-      textContent: '',
-      innerHTML: '',
-      children: [],
-      parent,
-    }
-
-    if (!isSelfClosing && closingMatch) {
-      const innerHtml = remainingHtml.slice(0, closingMatch.index)
-      element.innerHTML = innerHtml
-      element.textContent = extractText(innerHtml)
-
-      // Recursively parse children
-      if (innerHtml.includes('<')) {
-        parseChildren(innerHtml, element)
-      }
-      else {
-        element.textContent = decodeHTMLEntities(innerHtml).trim()
-      }
-
-      lastIndex = tagRegex.lastIndex + closingMatch.index + closingMatch[0].length
-      tagRegex.lastIndex = lastIndex
-    }
-    else {
-      lastIndex = tagRegex.lastIndex
-    }
-
-    parent.children.push(element)
-    match = tagRegex.exec(html)
+/** Find a tag's `>` without stopping inside a quoted attribute value. */
+function findTagEnd(html: string, start: number): number {
+  let quote = ''
+  for (let index = start; index < html.length; index++) {
+    const character = html[index]
+    if ((character === '"' || character === '\'') && (!quote || quote === character))
+      quote = quote ? '' : character
+    else if (character === '>' && !quote)
+      return index
   }
+  return -1
 }
 
 function parseAttributes(attrString: string): Record<string, string> {
