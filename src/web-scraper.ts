@@ -119,10 +119,10 @@ export async function fetchHTML(url: string, options: FetchHTMLOptions = {}): Pr
  * Extract text content from HTML, stripping all tags
  */
 export function extractText(html: string): string {
-  return html
+  return decodeHTMLEntities(html
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    .replace(/<[^>]+>/g, '')
+    .replace(/<[^>]+>/g, ' '))
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -329,7 +329,7 @@ function parseElement(html: string, startIndex: number, parent: ParsedElement | 
           parseChildren(innerHtml, element)
         }
         else {
-          element.textContent = innerHtml.trim()
+          element.textContent = decodeHTMLEntities(innerHtml).trim()
         }
 
         lastIndex = closingIndex + closingMatch[0].length
@@ -397,7 +397,7 @@ function parseChildren(html: string, parent: ParsedElement): void {
         parseChildren(innerHtml, element)
       }
       else {
-        element.textContent = innerHtml.trim()
+        element.textContent = decodeHTMLEntities(innerHtml).trim()
       }
 
       lastIndex = tagRegex.lastIndex + closingMatch.index + closingMatch[0].length
@@ -420,7 +420,7 @@ function parseAttributes(attrString: string): Record<string, string> {
   while (match !== null) {
     const name = match[1]
     const value = match[2] || match[3] || ''
-    attributes[name] = value
+    attributes[name] = decodeHTMLEntities(value)
     match = attrRegex.exec(attrString)
   }
 
@@ -435,79 +435,189 @@ function querySelector(element: HTMLElement, selector: string): HTMLElement | nu
 function querySelectorAll(element: HTMLElement, selector: string): HTMLElement[] {
   const results: HTMLElement[] = []
 
-  // Simple selector parsing (supports tag, class, id, and attribute selectors)
-  const parts = selector.match(/([.#[]?)([^\s.#[]+)/g) || []
+  for (const group of splitSelectorGroups(selector)) {
+    const steps = parseSelectorSteps(group)
+    let candidates = [element]
 
-  for (const part of parts) {
-    if (part.startsWith('#')) {
-      // ID selector
-      const id = part.slice(1)
-      const found = element.getElementById(id)
-      if (found)
-        results.push(found)
+    for (const [index, step] of steps.entries()) {
+      const next: HTMLElement[] = []
+
+      for (const candidate of candidates) {
+        const pool = step.combinator === 'child' && index > 0
+          ? candidate.children
+          : descendants(candidate)
+
+        for (const item of pool) {
+          if (matchesSimpleSelector(item, step.selector))
+            next.push(item)
+        }
+      }
+
+      candidates = uniqueElements(next)
     }
-    else if (part.startsWith('.')) {
-      // Class selector
-      const className = part.slice(1)
-      results.push(...element.getElementsByClassName(className))
+
+    results.push(...candidates)
+  }
+
+  return uniqueElements(results)
+}
+
+type SelectorCombinator = 'descendant' | 'child'
+
+interface SelectorStep {
+  combinator: SelectorCombinator
+  selector: string
+}
+
+function splitSelectorGroups(selector: string): string[] {
+  const groups: string[] = []
+  let current = ''
+  let bracketDepth = 0
+  let quote = ''
+
+  for (const character of selector) {
+    if ((character === '"' || character === '\'') && (!quote || quote === character))
+      quote = quote ? '' : character
+    else if (!quote && character === '[')
+      bracketDepth++
+    else if (!quote && character === ']')
+      bracketDepth--
+
+    if (character === ',' && bracketDepth === 0 && !quote) {
+      if (current.trim())
+        groups.push(current.trim())
+      current = ''
     }
-    else if (part.startsWith('[')) {
-      // Attribute selector
-      const attrMatch = part.match(/\[([\w:-]+)(?:=["']?([^"'\]]+)["']?)?\]/)
-      if (attrMatch) {
-        const [, attrName, attrValue] = attrMatch
-        results.push(...filterByAttribute(element, attrName, attrValue))
+    else {
+      current += character
+    }
+  }
+
+  if (current.trim())
+    groups.push(current.trim())
+
+  return groups
+}
+
+function parseSelectorSteps(selector: string): SelectorStep[] {
+  const steps: SelectorStep[] = []
+  let current = ''
+  let bracketDepth = 0
+  let quote = ''
+  let pendingCombinator: SelectorCombinator = 'descendant'
+
+  const pushCurrent = (): void => {
+    const value = current.trim()
+    if (value)
+      steps.push({ combinator: pendingCombinator, selector: value })
+    current = ''
+  }
+
+  for (const character of selector) {
+    if ((character === '"' || character === '\'') && (!quote || quote === character))
+      quote = quote ? '' : character
+    else if (!quote && character === '[')
+      bracketDepth++
+    else if (!quote && character === ']')
+      bracketDepth--
+
+    if (!quote && bracketDepth === 0 && character === '>') {
+      pushCurrent()
+      pendingCombinator = 'child'
+    }
+    else if (!quote && bracketDepth === 0 && /\s/.test(character)) {
+      if (current.trim()) {
+        pushCurrent()
+        pendingCombinator = 'descendant'
       }
     }
     else {
-      // Tag selector
-      results.push(...element.getElementsByTagName(part))
+      current += character
     }
   }
 
-  // Handle compound selectors (e.g., "a.className" or "div#id")
-  if (selector.includes('.') || selector.includes('#') || selector.includes('[')) {
-    return results.filter((el) => {
-      if (selector.includes('.')) {
-        const classNames = selector.match(/\.([^\s.#[]+)/g)?.map(c => c.slice(1)) || []
-        const elementClasses = el.attributes.class?.split(/\s+/) || []
-        if (!classNames.every(cn => elementClasses.includes(cn)))
-          return false
-      }
-
-      if (selector.includes('#')) {
-        const idMatch = selector.match(/#([^\s.#[]+)/)
-        if (idMatch && el.attributes.id !== idMatch[1])
-          return false
-      }
-
-      const tagMatch = selector.match(/^([A-Za-z][\w:-]*)/)
-      if (tagMatch && el.tagName.toLowerCase() !== tagMatch[1].toLowerCase())
-        return false
-
-      return true
-    })
-  }
-
-  return results
+  pushCurrent()
+  return steps
 }
 
-function filterByAttribute(element: HTMLElement, attrName: string, attrValue?: string): HTMLElement[] {
+function descendants(element: HTMLElement): HTMLElement[] {
   const results: HTMLElement[] = []
 
   function traverse(el: HTMLElement): void {
-    if (el.hasAttribute(attrName)) {
-      if (!attrValue || el.getAttribute(attrName) === attrValue) {
-        results.push(el)
-      }
-    }
     for (const child of el.children) {
+      results.push(child)
       traverse(child)
     }
   }
 
   traverse(element)
   return results
+}
+
+function matchesSimpleSelector(element: HTMLElement, selector: string): boolean {
+  const tagMatch = selector.match(/^([A-Za-z][\w:-]*|\*)/)
+  if (tagMatch && tagMatch[1] !== '*' && element.tagName.toLowerCase() !== tagMatch[1].toLowerCase())
+    return false
+
+  const idMatches = [...selector.matchAll(/#([\w-]+)/g)]
+  if (idMatches.some(match => element.getAttribute('id') !== match[1]))
+    return false
+
+  const elementClasses = element.getAttribute('class')?.split(/\s+/) || []
+  const classMatches = [...selector.matchAll(/\.([\w-]+)/g)]
+  if (classMatches.some(match => !elementClasses.includes(match[1])))
+    return false
+
+  const attributeMatches = [...selector.matchAll(/\[([\w:-]+)(?:\s*(\^=|\$=|\*=|~=|\|=|=)\s*["']?([^"'\]]*)["']?)?\]/g)]
+  for (const match of attributeMatches) {
+    const [, name, operator, expected] = match
+    if (!element.hasAttribute(name))
+      return false
+    if (!operator)
+      continue
+
+    const actual = element.getAttribute(name) || ''
+    if (operator === '=' && actual !== expected)
+      return false
+    if (operator === '*=' && !actual.includes(expected))
+      return false
+    if (operator === '^=' && !actual.startsWith(expected))
+      return false
+    if (operator === '$=' && !actual.endsWith(expected))
+      return false
+    if (operator === '~=' && !actual.split(/\s+/).includes(expected))
+      return false
+    if (operator === '|=' && actual !== expected && !actual.startsWith(`${expected}-`))
+      return false
+  }
+
+  return Boolean(tagMatch || idMatches.length || classMatches.length || attributeMatches.length)
+}
+
+function uniqueElements(elements: HTMLElement[]): HTMLElement[] {
+  return [...new Set(elements)]
+}
+
+function decodeHTMLEntities(value: string): string {
+  const namedEntities: Record<string, string> = {
+    amp: '&',
+    apos: '\'',
+    gt: '>',
+    lt: '<',
+    nbsp: '\u00A0',
+    quot: '"',
+  }
+
+  return value.replace(/&(#x[\da-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
+    if (code[0] !== '#')
+      return namedEntities[code.toLowerCase()] ?? entity
+
+    const numeric = code[1].toLowerCase() === 'x'
+      ? Number.parseInt(code.slice(2), 16)
+      : Number.parseInt(code.slice(1), 10)
+
+    return Number.isFinite(numeric) ? String.fromCodePoint(numeric) : entity
+  })
 }
 
 /**

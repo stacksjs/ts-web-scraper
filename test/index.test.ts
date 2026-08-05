@@ -117,6 +117,30 @@ describe('Web Scraper - Static HTML Parsing', () => {
     expect(doc.querySelector('ytd-display-ad-renderer')?.textContent).toContain('Ad')
     expect(doc.querySelector('[data-ad-slot]')?.tagName).toBe('ytd-display-ad-renderer')
   })
+
+  it('should follow descendant and child combinators for table rows', () => {
+    const doc = parseHTML(`
+      <table class="items">
+        <tbody>
+          <tr class="odd"><td><a href="/club/startseite/verein/31">Club</a></td></tr>
+          <tr class="even"><td><a href="/club/startseite/verein/42">Other</a></td></tr>
+        </tbody>
+      </table>
+    `)
+
+    expect(doc.querySelectorAll('table.items > tbody > tr')).toHaveLength(2)
+    expect(doc.querySelectorAll('table.items a[href*="/verein/"]')).toHaveLength(2)
+    expect(doc.querySelector('tr.odd > td > a')?.getAttribute('href')).toContain('/verein/31')
+  })
+
+  it('should decode entities in text and attributes', () => {
+    const doc = parseHTML('<a title="Brighton &amp; Hove Albion">Brighton &amp; Hove&nbsp;Albion &#x20AC;1.2bn</a>')
+    const link = doc.querySelector('a')
+
+    expect(link?.getAttribute('title')).toBe('Brighton & Hove Albion')
+    expect(link?.textContent).toBe('Brighton & Hove\u00A0Albion €1.2bn')
+    expect(extractText('<span>one</span><span>two</span>')).toBe('one two')
+  })
 })
 
 describe('Client-Side Scraper - Detection', () => {
