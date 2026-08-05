@@ -1,3 +1,23 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.4...v0.1.5)
+
+## 🐛 Bug Fixes
+
+- emit valid scraper declarations ([d596d56](https://github.com/stacksjs/ts-web-scraper/commit/d596d56)) _(by Chris <chrisbreuer93@gmail.com>)_
+- support structured DOM selectors ([98491ab](https://github.com/stacksjs/ts-web-scraper/commit/98491ab)) _(by Chris <chrisbreuer93@gmail.com>)_
+- **robots**: match a user-agent group the way RFC 9309 says to ([ada27a8](https://github.com/stacksjs/ts-web-scraper/commit/ada27a8)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 📚 Documentation
+
+- link the community as stacksjs.com/discord ([90dbbb6](https://github.com/stacksjs/ts-web-scraper/commit/90dbbb6)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.5 ([e02169e](https://github.com/stacksjs/ts-web-scraper/commit/e02169e)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.3...v0.1.4)
 
 ## 🐛 Bug Fixes
