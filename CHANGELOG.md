@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.5...v0.1.6)
+
+## 🐛 Bug Fixes
+
+- **dom**: preserve siblings after nested elements ([6d035bc](https://github.com/stacksjs/ts-web-scraper/commit/6d035bc)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.6 ([9f68e15](https://github.com/stacksjs/ts-web-scraper/commit/9f68e15)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.4...v0.1.5)
 
 ## 🐛 Bug Fixes
