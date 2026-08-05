@@ -362,7 +362,12 @@ Disallow: /narrower
 `
 
   function parserFor(userAgent: string) {
-    const parser = new RobotsParser({ userAgent, respectRobotsTxt: true })
+    const parser = new RobotsParser({
+      userAgent,
+      respectRobotsTxt: true,
+      cacheTime: 60_000,
+      timeout: 5_000,
+    })
     return { parser, parsed: (parser as any).parse(fixture) }
   }
 

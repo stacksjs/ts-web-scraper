@@ -347,7 +347,16 @@ export class ExtractionPipeline<TIn = any, TOut = any> {
 /**
  * Built-in extractors for common patterns
  */
-export const extractors = {
+export interface Extractors {
+  text: (selector: string) => PipelineStep<Document, string[]>
+  attr: (selector: string, attribute: string) => PipelineStep<Document, string[]>
+  links: (selector?: string) => PipelineStep<Document, string[]>
+  images: (selector?: string) => PipelineStep<Document, Array<{ src: string | null, alt: string | null, title: string | null }>>
+  structured: (selector: string, schema: Record<string, string>) => PipelineStep<Document, Array<Record<string, any>>>
+  jsonLd: () => PipelineStep<Document, any[]>
+}
+
+export const extractors: Extractors = {
   /**
    * Extract text from elements
    */
