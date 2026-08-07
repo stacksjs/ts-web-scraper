@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.8...v0.1.9)
+
+## 🚀 Features
+
+- let conditionalFetch return a failure instead of throwing ([b1cc5ce](https://github.com/stacksjs/ts-web-scraper/commit/b1cc5ce)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.9 ([5b13551](https://github.com/stacksjs/ts-web-scraper/commit/5b13551)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.7...v0.1.8)
 
 ## 🚀 Features
