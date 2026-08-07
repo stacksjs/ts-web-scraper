@@ -136,6 +136,34 @@ describe('conditionalFetch', () => {
     await expect(conditionalFetch(`${base}/missing`, { cache: freshCache() })).rejects.toThrow('404')
   })
 
+  it('routes through a proxy when one is given', async () => {
+    // The proxy is a real server here, so this proves the option reaches
+    // Bun's fetch rather than being silently dropped — a dropped proxy
+    // would send the request direct, which for a geo-restricted service is
+    // exactly the failure the option exists to prevent.
+    let sawProxiedRequest = false
+
+    const proxy = Bun.serve({
+      port: 0,
+      fetch() {
+        sawProxiedRequest = true
+        return new Response('via proxy', { headers: { ETag: '"p1"' } })
+      },
+    })
+
+    try {
+      const result = await conditionalFetch(`${base}/doc`, {
+        proxy: `http://localhost:${proxy.port}`,
+      })
+
+      expect(sawProxiedRequest).toBe(true)
+      expect(result.body).toBe('via proxy')
+    }
+    finally {
+      proxy.stop(true)
+    }
+  })
+
   it('honours a caller abort', async () => {
     const controller = new AbortController()
     controller.abort()

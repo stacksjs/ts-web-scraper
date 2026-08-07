@@ -35,6 +35,15 @@ export interface ConditionalFetchOptions {
    */
   useFresh?: boolean
   signal?: AbortSignal
+  /**
+   * Route the request through an HTTP proxy.
+   *
+   * The case that motivates this is a service lawfully available only from
+   * certain countries. The correct response to that is to make the request
+   * from somewhere it is permitted — a host you own in that country —
+   * rather than to disguise where it came from. Passed to Bun's `fetch`.
+   */
+  proxy?: string
 }
 
 export interface ConditionalFetchResult {
@@ -70,7 +79,7 @@ export async function conditionalFetch(
   url: string,
   options: ConditionalFetchOptions = {},
 ): Promise<ConditionalFetchResult> {
-  const { cache, timeout, ttl, signal } = options
+  const { cache, timeout, ttl, signal, proxy } = options
   const key = options.key ?? url
   const useFresh = options.useFresh !== false
 
@@ -112,7 +121,11 @@ export async function conditionalFetch(
     signal?.addEventListener('abort', onAbort, { once: true })
 
   try {
-    const response = await fetch(url, { headers, signal: controller.signal })
+    const response = await fetch(url, {
+      headers,
+      signal: controller.signal,
+      ...(proxy ? { proxy } : {}),
+    })
     const responseHeaders = headerRecord(response.headers)
 
     if (response.status === 304) {
