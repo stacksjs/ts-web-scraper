@@ -51,6 +51,27 @@ export type {
 } from './browser'
 
 export * from './config'
+
+// Conditional requests — revalidate rather than re-download.
+export {
+  conditionalFetch,
+} from './conditional'
+
+export type {
+  ConditionalFetchOptions,
+  ConditionalFetchResult,
+} from './conditional'
+
+// Reconnecting WebSocket client, for sites that push instead of polling.
+export {
+  createReconnectingSocket,
+} from './websocket'
+
+export type {
+  ReconnectingSocket,
+  ReconnectingSocketOptions,
+} from './websocket'
+
 // Cookie and session management
 export {
   CookieJar,
