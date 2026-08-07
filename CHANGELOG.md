@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.7...v0.1.8)
+
+## 🚀 Features
+
+- let conditionalFetch route through a proxy ([f347882](https://github.com/stacksjs/ts-web-scraper/commit/f347882)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.8 ([ff1e86f](https://github.com/stacksjs/ts-web-scraper/commit/ff1e86f)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.6...v0.1.7)
 
 ## 🚀 Features
