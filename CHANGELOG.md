@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.9...v0.1.10)
+
+## 🐛 Bug Fixes
+
+- **browser**: launching a browser never worked ([155362b](https://github.com/stacksjs/ts-web-scraper/commit/155362b)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.10 ([a1074ee](https://github.com/stacksjs/ts-web-scraper/commit/a1074ee)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.8...v0.1.9)
 
 ## 🚀 Features
