@@ -218,20 +218,28 @@ export class Browser {
       throw new Error('Failed to get Chrome DevTools URL')
     }
 
-    // Get the page target
-    const browserWsUrl = this.debuggerUrl
-    const httpUrl = browserWsUrl.replace('ws://', 'http://').replace('/devtools/browser/', '/json/list')
+    // Get the page target.
+    //
+    // The JSON endpoints live at the origin, so the base has to be built
+    // from the host rather than by rewriting a path segment. Chrome's
+    // debugger URL is `ws://host:port/devtools/browser/<uuid>`, and
+    // substituting `/devtools/browser/` for `/json/list` leaves the uuid
+    // stranded on the end — `/json/list<uuid>` — which 404s with an HTML
+    // body and surfaces as "Failed to parse JSON" a long way from the
+    // cause. Launching a browser never worked.
+    const { host } = new URL(this.debuggerUrl.replace(/^ws:/, 'http:'))
+    const httpBase = `http://${host}`
 
     // Wait a moment for targets to be available
     await new Promise(r => setTimeout(r, 500))
 
-    const response = await fetch(httpUrl.replace('/json/list', '/json/list'))
+    const response = await fetch(`${httpBase}/json/list`)
     const targets = await response.json() as Array<{ type: string, webSocketDebuggerUrl: string }>
 
     const pageTarget = targets.find(t => t.type === 'page')
     if (!pageTarget) {
-      // Create a new page
-      const newPageResponse = await fetch(httpUrl.replace('/json/list', '/json/new'))
+      // `/json/new` requires PUT; Chrome has rejected GET on it since 111.
+      const newPageResponse = await fetch(`${httpBase}/json/new`, { method: 'PUT' })
       const newPage = await newPageResponse.json() as { webSocketDebuggerUrl: string }
       this.debuggerUrl = newPage.webSocketDebuggerUrl
     }
