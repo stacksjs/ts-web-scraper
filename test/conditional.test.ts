@@ -164,6 +164,24 @@ describe('conditionalFetch', () => {
     }
   })
 
+  it('returns the failure body when asked to, so the caller can read it', async () => {
+    // Servers explain themselves in the body of a 4xx. A 403 that is a
+    // blocked country and one that is a blocked client want different
+    // responses, and a thrown error carries only the status line.
+    const result = await conditionalFetch(`${base}/missing`, { throwOnError: false })
+
+    expect(result.status).toBe(404)
+    expect(result.body).toBe('gone')
+  })
+
+  it('never caches a failure body', async () => {
+    const cache = freshCache()
+    await conditionalFetch(`${base}/missing`, { cache, throwOnError: false })
+
+    // Caching it would serve the error as the document for the whole TTL.
+    expect(await cache.get(`${base}/missing`)).toBeNull()
+  })
+
   it('honours a caller abort', async () => {
     const controller = new AbortController()
     controller.abort()

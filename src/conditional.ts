@@ -44,6 +44,20 @@ export interface ConditionalFetchOptions {
    * rather than to disguise where it came from. Passed to Bun's `fetch`.
    */
   proxy?: string
+  /**
+   * Throw on a non-success status, rather than returning it.
+   *
+   * True by default, which is right when the caller only wants a body: a
+   * moved endpoint must not be able to look like a quiet one.
+   *
+   * Set false when the caller needs to *read* the failure. Servers explain
+   * themselves in the body of a 4xx — a 403 may be a blocked client or a
+   * blocked country, and those want different responses — and a thrown
+   * error carries only the status line, which sends whoever reads the log
+   * hunting for the wrong problem.
+   * @default true
+   */
+  throwOnError?: boolean
 }
 
 export interface ConditionalFetchResult {
@@ -154,10 +168,23 @@ export async function conditionalFetch(
       }
     }
 
-    if (!response.ok)
+    if (!response.ok && options.throwOnError !== false)
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
 
     const body = await response.text()
+
+    // A failure is reported, never cached. Storing an error body under this
+    // URL's validators would serve the error back as though it were the
+    // document for the rest of the TTL.
+    if (!response.ok) {
+      return {
+        body,
+        status: response.status,
+        notModified: false,
+        fromCache: false,
+        headers: responseHeaders,
+      }
+    }
 
     await cache?.set(key, body, ttl, {
       etag: responseHeaders.etag,
