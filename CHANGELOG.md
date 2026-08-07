@@ -1,3 +1,17 @@
+[Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.6...v0.1.7)
+
+## 🚀 Features
+
+- revalidate instead of re-downloading, and add a socket client ([c0000df](https://github.com/stacksjs/ts-web-scraper/commit/c0000df)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## 🧹 Chores
+
+- release v0.1.7 ([0d0557d](https://github.com/stacksjs/ts-web-scraper/commit/0d0557d)) _(by Chris <chrisbreuer93@gmail.com>)_
+
+## Contributors
+
+- _Chris <chrisbreuer93@gmail.com>_
+
 [Compare changes](https://github.com/stacksjs/ts-web-scraper/compare/v0.1.5...v0.1.6)
 
 ## 🐛 Bug Fixes
