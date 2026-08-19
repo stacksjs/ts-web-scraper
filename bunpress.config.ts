@@ -1,12 +1,14 @@
-import type { BunpressConfig } from 'bunpress'
+import type { BunPressConfig } from '@stacksjs/bunpress'
 
-const config: BunpressConfig = {
-  name: 'ts-web-scraper',
+const config: BunPressConfig = {
+  title: 'ts-web-scraper',
   description: 'A powerful, type-safe web scraping library for TypeScript and Bun',
   url: 'https://ts-web-scraper.netlify.app',
 
-  theme: {
-    primaryColor: '#059669',
+  themeConfig: {
+    colors: {
+      primary: '#059669',
+    },
   },
 
   sidebar: [
@@ -53,7 +55,7 @@ const config: BunpressConfig = {
     { text: 'Configuration', link: '/config' },
   ],
 
-  navbar: [
+  nav: [
     { text: 'Guide', link: '/guide/getting-started' },
     { text: 'API', link: '/api/scraper' },
     { text: 'GitHub', link: 'https://github.com/stacksjs/ts-web-scraper' },
